@@ -281,8 +281,10 @@ def hold_unread():
 
 
 def short_logo():
-    """The logo in the stats box: Cargo 3's CΔRGΩ]|[, or plain letters where Greek cannot show."""
-    return "CARGO]|[" if plain_terminal() else "CΔRGΩ]|["
+    """The logo in the stats box: CΔRGΩ≡, the triple bar standing for ]|[ (more compact in a
+    box), or plain letters where Greek cannot show. The intro and the README keep the full
+    C Δ R G Ω ]|[."""
+    return "CARGO]|[" if plain_terminal() else "CΔRGΩ≡"
 
 
 def display_logo(logo, centered=True):

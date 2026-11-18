@@ -9,7 +9,8 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
   styles, every screen from 36 columns.
 - CLIo 2.2.1's layer in `kit/`, now with banners, pictures (pixels, blocks, braille, LED,
   ASCII) and animation effects.
-- The logo reads C Δ R G Ω ]|[ (CARGO]|[ on plain terminals).
+- The logo reads C Δ R G Ω ]|[ in the intro and the README; the stats box shows the more
+  compact CΔRGΩ≡, the triple bar standing for ]|[ (CARGO]|[ on plain terminals).
 - The captain is a person apart from the ship (`game/person.py`): money, equipment and
   research points are the captain's, with six skills, wounds, gear for fights on foot, a locker
   and a berth. A ship the captain owns spends and earns through them. The story, the chapters'
@@ -28,7 +29,7 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
   - `passage` (pa), `locker` (lo): ten units of private trade, `skills` (sk);
   - skills rise with practice (3, 12, 27, 48 and 75 for the five levels); wounds heal with time
     and faster with rest; work and duties can put a captain down but not kill.
-- The stats box without a ship: C Δ R G Ω ]|[, turn, money, the place, the chapter and plot
+- The stats box without a ship: CΔRGΩ≡, turn, money, the place, the chapter and plot
   points, with wounds and the locker when there are any. `help` explains the hand's game.
 - The story sees `afloat`, `wounds`, `voyages`, `shifts` (and by site), the six skills, each
   berths captain's regard and the locker's profit. `give_ship` gives the captain a ship.

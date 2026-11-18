@@ -52,9 +52,11 @@ for cols in (36, 50, 100):
     text = screen(game, cols, game.display_turn_info)
     expect(widest(text) <= cols, "the stats box fits %d columns (%d)" % (cols, widest(text)))
     flat = " ".join(text.split())
-    for word in ("Turn: 0", "¤: %d" % cargo.STARTING_PURSE, "Chapter I", "Plot Points", game.current_location.name):
+    for word in (cargo.short_logo(), "Turn: 0", "¤: %d" % cargo.STARTING_PURSE, "Chapter I", "Plot Points",
+                 game.current_location.name):
         expect(word in flat, "the stats box at %d columns shows %r" % (cols, word))
     expect("ATK" not in flat and "Hold" not in flat, "the stats box shows no ship at %d columns" % cols)
+expect(cargo.short_logo() in ("CΔRGΩ≡", "CARGO]|["), "the stats box's logo is CΔRGΩ≡ (CARGO]|[ on plain terminals)")
 game.person.wounds = 30
 game.person.locker = {"tech": 3}
 flat = " ".join(screen(game, 36, game.display_turn_info).split())
