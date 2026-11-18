@@ -26,6 +26,9 @@ $PY $T/systems.py || fail=1
 echo "== the captain as a person, apart from the ship"
 $PY $T/person.py || fail=1
 
+echo "== the able hand: work, the berths board, voyages, passage, the locker, wounds"
+$PY $T/hand.py || fail=1
+
 echo "== sound: songs composed and rendered, places, fights, effects, sound off (into a recorder)"
 $PY $T/sound.py || fail=1
 
@@ -55,23 +58,26 @@ ok=r.get('identical') and r.get('captain_ok') and not r.get('stale_refs_to_old_g
 print('  seed', r['seed'], 'ok' if ok else 'FAIL', r.get('traceback','')[-300:])
 sys.exit(0 if ok else 1)" || fail=1; done
 
-echo "== random play at each width (crashes, lines wider than the screen)"
-for w in $WIDTHS; do for s in $SEEDS; do $PY $T/infuzz.py $G $w $N $s | $PY -c "
+echo "== random play at each width (crashes, lines wider than the screen), on foot and with a ship"
+for w in $WIDTHS; do for s in $SEEDS; do for a in "" --afloat; do $PY $T/infuzz.py $G $w $N $s $a | $PY -c "
 import json,sys
 r=json.load(sys.stdin)
 ok=not r['traceback'] and not r['overflow_kinds']
-print('  cols', r['cols'], 'seed', r['seed'], 'inputs', r['inputs'], 'ok' if ok else 'FAIL', (r['traceback'] or '')[-300:], r['overflow'][:2] if r['overflow_kinds'] else '')
-sys.exit(0 if ok else 1)" || fail=1; done; done
+print('  cols', r['cols'], 'seed', r['seed'], 'with a ship' if r.get('afloat') else 'on foot', 'inputs', r['inputs'], 'ok' if ok else 'FAIL', (r['traceback'] or '')[-300:], r['overflow'][:2] if r['overflow_kinds'] else '')
+sys.exit(0 if ok else 1)" || fail=1; done; done; done
 
 echo "== long games through the real prompts at 36 columns, with saves and loads"
-echo "   (seed 2 plays a Cargo 1 captain; the story has no endings yet, so these only must not fail)"
+echo "   (trade plays on foot as an able hand, combat with a ship from the start; seed 2 plays"
+echo "   a Cargo 1 captain; the story has no endings yet, so these only must not fail)"
 for goal in trade combat; do for s in $SEEDS; do
 captain=""; [ $s = 2 ] && captain="--captain=$goal"
-$PY $T/bot.py $G $goal $s 400 --save-every=9 --cols=36 $captain | $PY -c "
+afloat=""; [ $goal = combat ] && afloat="--afloat"
+$PY $T/bot.py $G $goal $s 400 --save-every=9 --cols=36 $captain $afloat | $PY -c "
 import json,sys
 r=json.load(sys.stdin)
 crash='traceback' in r
-print('  %-7s seed %s%s: %s at turn %s, chapter %s, %s loads %s' % (r['goal'], r['seed'], ' (Cargo 1 captain)' if r.get('captain') else '', r.get('ending') or r.get('end') or 'playing', r.get('turn'), r.get('chapter'), r.get('loads'), 'CRASH '+r['traceback'][-300:] if crash else ''))
+hand = '' if r.get('afloat', True) else ', on foot: %s voyages, %s shifts' % (r.get('voyages'), sum((r.get('shifts') or {}).values()))
+print('  %-7s seed %s%s%s: %s at turn %s, chapter %s, %s loads%s %s' % (r['goal'], r['seed'], ' (Cargo 1 captain)' if r.get('captain') else '', ' (with a ship)' if r.get('afloat') else '', r.get('ending') or r.get('end') or 'playing', r.get('turn'), r.get('chapter'), r.get('loads'), hand, 'CRASH '+r['traceback'][-300:] if crash else ''))
 sys.exit(1 if crash else 0)" || fail=1; done; done
 
 if [ $fail = 0 ]; then echo "ALL CHECKS PASSED"; else echo "SOME CHECKS FAILED"; exit 1; fi

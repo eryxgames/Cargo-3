@@ -37,7 +37,7 @@ for nid, node in sorted(data["nodes"].items()):
             problems += 1
             print("CRASH", nid, "choice", pick, repr(e)[:200])
 
-g, io = new_game(cargo)
+g, io = new_game(cargo, afloat=True)          # special cargo takes room in a ship's hold
 room = g.ship.hold_room("tech")
 with quiet() as buf:
     cargo.story_hook(g, "stow 150 hovertank as the legion's prototype hovertank")

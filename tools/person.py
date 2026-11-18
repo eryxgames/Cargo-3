@@ -22,9 +22,9 @@ def expect(ok, what):
 
 
 # ---- the ship spends the owner's money ---------------------------------------------------------
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 person, ship = game.person, game.ship
-expect(isinstance(person, cargo.Person) and ship.owner is person, "a new game has a captain who owns the ship")
+expect(isinstance(person, cargo.Person) and ship.owner is person, "a captain with a ship owns it")
 expect("money" not in ship.__dict__ and "items" not in ship.__dict__, "the ship keeps no money or items of its own")
 person.money = 5000
 expect(ship.money == 5000, "the ship's money is its owner's")
@@ -50,7 +50,7 @@ expect(fresh.best_skill() == "loader", "the best skill is the highest")
 
 # ---- the story and the records without a ship ------------------------------------------------------
 game, io = headless.new_game(cargo)
-game.ship = None
+expect(game.ship is None, "a new game has no ship")
 game.person.money = 2000
 snap = game.story_snapshot()
 expect(snap["stats"]["money"] == 2000 and snap["stats"]["hull_class"] == 0 and snap["sets"]["crew"] == [],
@@ -91,7 +91,7 @@ with headless.quiet():
 expect(loaded.ship is None and loaded.person.money == 2570, "a game without a ship saves and loads")
 
 # ---- an older save: the ship's money becomes the captain's -------------------------------------------
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 ship = game.ship
 ship.owner = None
 ship.__dict__.update(money=4321, items={"combat_drone": 2}, research_points=11)

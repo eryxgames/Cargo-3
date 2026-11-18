@@ -28,7 +28,7 @@ backend = NullBackend(record=True)
 player = Audio(songs=table["songs"], backend=backend, cache_dir=tempfile.mkdtemp(prefix="cargo3-audio-"))
 sound._AUDIO[:] = [player]
 
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 for kind, song in table["places"].items():
     if kind == "default":
         continue

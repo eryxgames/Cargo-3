@@ -76,6 +76,10 @@ GLOBAL_COMMANDS = [('hansa', 'ha'), ('log', 'l'), ('journal', 'j'), ('save', 'sv
                    ('look', 'lk'), ('think', 'th'), ('captain', 'cap'), ('style', 'st'), ('sound', 'so'), ('help', 'h'), ('version', 'v'), ('resign', 'rs'), ('quit', 'q')]
 
 
+# every word of the global commands
+GLOBAL_WORDS = [word for pair in GLOBAL_COMMANDS for word in pair]
+
+
 def commodity_from(answer):
     """'t', 'tech', 'agro', 'a' ... -> the commodity's name, or None."""
     answer = (answer or "").strip().lower()

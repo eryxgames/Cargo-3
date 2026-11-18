@@ -6,10 +6,11 @@ class RanksMixin:
 
     def display_score(self):
         """Display final game score and statistics in a formatted box"""
-        # Calculate final statistics
-        total_cargo_value = (self.ship.cargo['tech'] * 10) + (self.ship.cargo['agri'] * 5) + \
-                           (self.ship.cargo['salt'] * 15) + (self.ship.cargo['fuel'] * 20)
-        final_score = self.ship.money + total_cargo_value
+        # Calculate final statistics (a captain without a ship has no hold)
+        cargo = self.ship.cargo if self.ship is not None else {"tech": 0, "agri": 0, "salt": 0, "fuel": 0}
+        total_cargo_value = (cargo['tech'] * 10) + (cargo['agri'] * 5) + \
+                           (cargo['salt'] * 15) + (cargo['fuel'] * 20)
+        final_score = self.person.money + total_cargo_value
         efficiency_score = (final_score / self.turn) if self.turn > 0 else final_score
 
         # Create score content
@@ -17,32 +18,35 @@ class RanksMixin:
             ["FINAL SCORE REPORT", ""],  # Title row
             ["─" * 18, "─" * 18],  # Separator
             ["Assets", "Value"],
-            ["Money", f"{self.format_money(self.ship.money)}"],
-            ["Tech Cargo", f"{self.format_money(self.ship.cargo['tech'])} units"],
-            ["Agri Cargo", f"{self.format_money(self.ship.cargo['agri'])} units"],
-            ["Salt Cargo", f"{self.format_money(self.ship.cargo['salt'])} units"],
-            ["Fuel Cargo", f"{self.format_money(self.ship.cargo['fuel'])} units"],
+            ["Money", f"{self.format_money(self.person.money)}"],
+            ["Tech Cargo", f"{self.format_money(cargo['tech'])} units"],
+            ["Agri Cargo", f"{self.format_money(cargo['agri'])} units"],
+            ["Salt Cargo", f"{self.format_money(cargo['salt'])} units"],
+            ["Fuel Cargo", f"{self.format_money(cargo['fuel'])} units"],
             ["", ""],  # Empty row for spacing
             ["Performance Metrics", ""],
             ["Total Score", f"{self.format_money(final_score)}"],
             ["Efficiency Score", f"{self.format_money(efficiency_score)}/turn"],
             ["Turns Played", str(self.turn)],
             ["Final Rank", self.rank],
-            ["", ""],  # Empty row for spacing
-            ["Ship Statistics", ""],
-            ["Attack Level", str(self.ship.attack)],
-            ["Defense Level", str(self.ship.defense)],
-            ["Speed Level", str(self.ship.speed)],
-            ["Hull Damage", f"{self.ship.damage}%"]
         ]
+        if self.ship is not None:
+            score_content += [
+                ["", ""],  # Empty row for spacing
+                ["Ship Statistics", ""],
+                ["Attack Level", str(self.ship.attack)],
+                ["Defense Level", str(self.ship.defense)],
+                ["Speed Level", str(self.ship.speed)],
+                ["Hull Damage", f"{self.ship.damage}%"]
+            ]
 
         # Add equipment section if player has any
-        if self.ship.items:
+        if self.person.items:
             score_content.extend([
                 ["", ""],  # Empty row for spacing
                 ["Equipment", "Count"]
             ])
-            for item, count in self.ship.items.items():
+            for item, count in self.person.items.items():
                 score_content.append([item.capitalize(), str(count)])
 
         # Add research section if player has any
@@ -82,7 +86,8 @@ class RanksMixin:
             return f"Game Complete! {self.player_name}, you have completed your journey as an Explorer!"
 
     def update_rank(self):
-        score = self.ship.money + (self.ship.cargo['tech'] * 10) + (self.ship.cargo['agri'] * 5)
+        cargo = self.ship.cargo if self.ship is not None else {}
+        score = self.person.money + cargo.get('tech', 0) * 10 + cargo.get('agri', 0) * 5
         if score >= 1000000:
             self.rank = "Galactic Legend"
         elif score >= 500000:

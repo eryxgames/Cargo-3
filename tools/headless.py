@@ -70,7 +70,9 @@ def quiet():
         sys.stdout = old
 
 
-def new_game(cargo, difficulty="1", name="Tester", silent=True, voyage="2"):
+def new_game(cargo, difficulty="1", name="Tester", silent=True, voyage="2", afloat=False):
+    """A new game, answered through its first prompts. Cargo 3 begins without a ship; `afloat`
+    gives the captain one at once, for the checks of the ship's own systems."""
     io = IO()
     patch(cargo, io)
     io.feed([difficulty, voyage, name])
@@ -79,4 +81,6 @@ def new_game(cargo, difficulty="1", name="Tester", silent=True, voyage="2"):
             game = cargo.Game()
     else:
         game = cargo.Game()
+    if afloat and getattr(game, "ship", None) is None and hasattr(game, "give_ship"):
+        game.give_ship()
     return game, io

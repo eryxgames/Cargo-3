@@ -1,0 +1,42 @@
+{
+ "format": "storykit",
+ "version": 1,
+ "about": "Captains who hire able hands (game/hand.py): each flies a route of their own and posts berths on the board where they dock. Their ships are in game/hand.py (NAMED_SHIPS). Names from the pool in the project's names list.",
+ "characters": {
+  "plumb": {
+   "name": "Ola Plumb",
+   "short": "Plumb",
+   "kind": "human",
+   "about": "captain of the Level Best, a Hansa hauler; honest to a fault, and the fault shows in her margins",
+   "route": {"places": ["Alpha", "Beta", "Gamma"], "stay": 2}
+  },
+  "ghillie": {
+   "name": "Jak Ghillie",
+   "short": "Ghillie",
+   "kind": "human",
+   "about": "captain of the Low Water, a hauler that files no manifest; pays well and does not explain",
+   "route": {"places": ["Gamma", "Epsilon", "Delta"], "stay": 3, "start": 1}
+  },
+  "caspic": {
+   "name": "Lieutenant Caspic",
+   "short": "Caspic",
+   "kind": "human",
+   "about": "commands the Sealed Orders, a Mandate courier; never two turns in one place",
+   "route": {"places": ["Alpha", "Delta", "Epsilon", "Beta"], "stay": 1}
+  },
+  "vrtoch": {
+   "name": "Dr Vrtoch",
+   "short": "Vrtoch",
+   "kind": "human",
+   "about": "runs the Errata, a research ship that should not exist after the Debacle, on a whim and a grant nobody signed",
+   "route": {"places": ["Epsilon", "Gamma"], "stay": 4, "start": 2}
+  },
+  "caboose": {
+   "name": "Brother Caboose",
+   "short": "Caboose",
+   "kind": "human",
+   "about": "rides the Clean Lading at the back of every needle and guards the tail; a Cargolyte, and hires anyone who will sign the lading",
+   "route": {"places": ["Beta", "Delta", "Alpha", "Epsilon", "Gamma"], "stay": 2, "start": 3}
+  }
+ }
+}

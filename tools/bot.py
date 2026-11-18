@@ -5,6 +5,10 @@ only by answering the game's own prompts, so every step is something a player
 can type.
 
 usage: bot.py cargo.py <path: trade|combat|discovery> <seed> [max_turns] [--verbose]
+
+Without a ship (Cargo 3's first chapters) it plays an able hand: it signs on where the pay and
+its skill are best, works a shift when no berth suits, rests when hurt, and keeps a locker of
+private trade.
 """
 import sys, os, io, re, json, random, shutil, traceback, tempfile, builtins, collections
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -21,6 +25,9 @@ verbose = "--verbose" in sys.argv
 CAPTAIN = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--captain=")), None)
 # --difficulty=1|2|3 (default 2)
 DIFFICULTY = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--difficulty=")), "2")
+# --afloat: the captain has a ship from the start (Cargo 3 begins on foot), to play a captain's
+# turns until the story gives a ship
+AFLOAT = "--afloat" in sys.argv
 # --curious: look around at every dock and follow what turns up (people, sights, side quests);
 # without it the bot never looks, and the result still says whom it shared a dock with
 CURIOUS = "--curious" in sys.argv or "--leads" in sys.argv
@@ -60,8 +67,8 @@ def install_ledger(cargo):
                 who = getattr(frame.f_code, "co_qualname", frame.f_code.co_name) if frame else "?"
                 LEDGER[book + ("+" if delta > 0 else "-")][who] += delta
         setattr(cls, attr, property(get, put))
-    tracked(cargo.Ship, "money", "money")
-    tracked(cargo.Ship, "research_points", "rp")
+    tracked(cargo.Person, "money", "money")
+    tracked(cargo.Person, "research_points", "rp")
     tracked(cargo.StoryManager, "plot_points", "plot_points")
 traced_turn = [-1]
 
@@ -140,6 +147,9 @@ class Bot:
         self.reload_step = None
         self.reload_turn = -1
         self.sight = None
+        self.hand = {}             # the able hand's pending answers: {prompt word: answer}
+        self.hand_log = collections.Counter()
+        self.first_ship = None
         self.docks = {"places": collections.Counter(), "together": collections.Counter(), "first": {}, "flags": {},
                       "leads": collections.Counter(), "lead_first": {},
                       "unlocked": {}, "chapters": {}, "lead_from": collections.Counter()}
@@ -169,7 +179,7 @@ class Bot:
         if any(not states.get(f) for f in ([effects["set"]] if isinstance(effects.get("set"), str) else effects.get("set", []))):
             return True
         items = (effects.get("give") or {}).get("items", [])
-        return any(not g.ship.items.get(i) for i in ([items] if isinstance(items, str) else items))
+        return any(not g.person.items.get(i) for i in ([items] if isinstance(items, str) else items))
 
     def lead_place(self, g):
         """A place one of the captain's thoughts names (not this one), read off the think screen."""
@@ -502,8 +512,15 @@ class Bot:
             self.ctx = None
             options = list(options)
             p = prompt.lower()
+            if "end" in options and "work" in options:
+                return self.hand_action(options)
             if "end" in options and "buy" in options:
+                if self.first_ship is None:
+                    self.first_ship = g.turn
                 return self.main_action(options)
+            hand = self.hand_answer(p, options)
+            if hand is not None:
+                return hand
             if p.startswith(("buy which", "sell which")):
                 return self.item
             if "your place in the needle" in p:      # the needle office (Cargo 2)
@@ -639,6 +656,93 @@ class Bot:
         self.unknown[("raw", t.strip().splitlines()[-1][:50] if t.strip() else "")] += 1
         return ""
 
+    # ---- the able hand (Cargo 3, without a ship) ------------------------------------------
+    def hand_action(self, options):
+        g = self.game
+        person = g.person
+        if g.turn != self.turn_seen:
+            self.turn_seen = g.turn
+            self.flags = set()
+            self.note_docks(g)
+        if self.reload_step == "load" and "load" in options:
+            self.reload_step = None
+            return "load"
+        if save_every and g.turn and g.turn % save_every == 0 and g.turn != self.reload_turn and "save" in options:
+            self.reload_turn = g.turn
+            self.reload_step = "load"
+            return "save"
+        if CURIOUS and "look" not in self.flags and hasattr(g, "sights_here"):
+            self.flags.add("look")
+            self.sight = self.pick_sight(g)
+            if self.sight:
+                return "look"
+        if person.wounds >= 45:
+            self.hand_log["rest"] += 1
+            return "end"
+        # the locker: sell what is dearer here than it cost, buy what is cheap here
+        goods = g.locker_goods_here()
+        for good, units in list(person.locker.items()):
+            paid = person.locker_cost.get(good, 0) / max(1, units)
+            if good in goods and g.current_location.market[good] > paid * 1.15 and ("sold", good) not in self.flags:
+                self.flags.add(("sold", good))
+                self.hand.update({"buy or sell": "s", "which": good, "how many": str(units)})
+                self.hand_log["locker sale"] += 1
+                return "locker"
+        if not person.locker and goods and person.money > 250 and "bought" not in self.flags:
+            seen = getattr(g, "prices_seen", {})
+            best = None
+            for good in goods:
+                here = g.current_location.market[good]
+                dear = max([m.get(good, 0) for _, m in seen.values()] or [0])
+                if dear > here * 1.3 and (best is None or dear / here > best[0]):
+                    best = (dear / here, good, here)
+            if best:
+                units = min(cargo.LOCKER_UNITS, int((person.money - 150) // (best[2] * 1.1)))
+                if units > 0:
+                    self.flags.add("bought")
+                    self.hand.update({"buy or sell": "b", "which": best[1], "how many": str(units)})
+                    self.hand_log["locker buy"] += 1
+                    return "locker"
+        # a berth: the best pay for a duty the hand can do, somewhere new now and then
+        offers = g.berths()
+        if offers and "berth" not in self.flags:
+            def worth(o):
+                skill = person.skill(o["duty"])
+                new = 1.3 if o["to"] not in g.known_locations else 1.0
+                named = 1.15 if o["who"] else 1.0
+                return o["wage"] / o["legs"] * (1 + 0.25 * skill) * new * named
+            pick = max(range(len(offers)), key=lambda i: worth(offers[i]))
+            if rng.random() < 0.75:
+                self.flags.add("berth")
+                self.hand.update({"sign on (": str(pick + 1), "sign on?": "yes"})
+                self.hand_log["voyage"] += 1
+                self.hand_log["with " + (offers[pick]["who"] or offers[pick]["kind"])] += 1
+                return "berths"
+        jobs = [(site, job) for site in g.sites_here() for job in site["jobs"]]
+        if jobs:
+            pick = max(range(len(jobs)), key=lambda i: g.shift_wage(jobs[i][1][2], jobs[i][1][0]))
+            self.hand.update({"work which": str(pick + 1)})
+            self.hand_log["shift " + jobs[pick][0]["id"]] += 1
+            return "work"
+        return "end"
+
+    def hand_answer(self, p, options):
+        """Answers to the hand's own prompts, as hand_action planned them; None if not one."""
+        g = self.game
+        if g is None or g.ship is not None:
+            return None
+        if p.startswith("your call"):
+            person = g.person
+            bold = person.wounds < 30 and rng.random() < 0.35 + 0.1 * max(person.skills.values())
+            return "1" if bold else "2"
+        for key in list(self.hand):
+            if p.startswith(key):
+                answer = self.hand.pop(key)
+                return answer if answer in options or not options else (options[0] if options else "")
+        if p.startswith(("work which", "sign on", "book (", "buy or sell", "which?", "how many")):
+            return ""
+        return None
+
     def move(self, numbers):
         """Read the options on screen (game.move_options) and pick one like a sensible captain."""
         g = self.game
@@ -743,7 +847,7 @@ def fake_input(prompt=""):
             for chapter in g.story_manager.completed_chapters:
                 if chapter not in marks:
                     marks[chapter] = {"turn": g.turn, "plot_points": g.story_manager.plot_points,
-                                      "money": int(g.ship.money)}
+                                      "money": int(g.person.money)}
         prog = (g.turn, g.story_manager.current_chapter)
         if prog == bot.last_progress:
             bot.stall += 1
@@ -755,7 +859,7 @@ def fake_input(prompt=""):
     a = bot.answer(tail)
     if verbose:
         real.write("turn %s ch %s $%s -> %r\n" % (g.turn if g else "-", g.story_manager.current_chapter if g else "-",
-                                                 int(g.ship.money) if g else "-", a))
+                                                 int(g.person.money) if g else "-", a))
     return a if a is not None else ""
 
 
@@ -799,6 +903,9 @@ try:
         answers = iter([DIFFICULTY, VOYAGE, "Bot %s %d" % (goal, seed)])
         builtins.input = lambda prompt="": next(answers)
         game = cargo.Game()
+    if AFLOAT and getattr(game, "ship", None) is None:
+        game.give_ship()
+        result["afloat"] = True
     builtins.input = fake_input
     bot.game = game
     while True:
@@ -827,18 +934,33 @@ g = bot.game
 write_trace(g, final=True)
 if trace_file:
     trace_file.close()
-if g is not None:
+if g is not None and g.ship is None:          # still on foot (Cargo 3)
     sm = g.story_manager
     result.update({
         "turn": g.turn, "chapter": sm.current_chapter, "completed": sorted(sm.completed_chapters),
-        "ending": getattr(g, "ending_reached", None), "money": int(g.ship.money),
+        "ending": getattr(g, "ending_reached", None), "money": int(g.person.money), "afloat": False,
+        "plot_points": sm.plot_points, "wounds": g.person.wounds, "skills": dict(g.person.skills),
+        "voyages": getattr(g, "voyages", 0), "shifts": dict(getattr(g, "shifts", {})),
+        "locker_profit": getattr(g, "locker_profit", 0), "regard": dict(getattr(g, "hand_regard", {})),
+        "hand": dict(bot.hand_log), "known": len(g.known_locations), "here": g.current_location.name,
+        "inputs": bot.inputs, "loads": bot.loads, "standing": dict(getattr(g, "standing", {}) or {}),
+        "docks": {"places": dict(bot.docks["places"].most_common()), "together": dict(bot.docks["together"]),
+                  "first": bot.docks["first"], "chapters": bot.docks["chapters"]},
+        "unknown_prompts": [[list(map(str, k)), n] for k, n in bot.unknown.most_common(8)],
+    })
+elif g is not None:
+    sm = g.story_manager
+    result.update({
+        "first_ship": bot.first_ship,
+        "turn": g.turn, "chapter": sm.current_chapter, "completed": sorted(sm.completed_chapters),
+        "ending": getattr(g, "ending_reached", None), "money": int(g.person.money),
         "modules": ["%s %d" % (m["kind"], m["condition"]) for m in getattr(g.ship, "modules", [])],
         "difficulty": getattr(g, "difficulty", None), "wins": g.ship.combat_victories.get("total", 0),
         "losses": g.ship.combat_defeats.get("total", 0),
         "plot_points": sm.plot_points, "trades": g.trades_completed,
         "victories": g.ship.combat_victories.get("total"), "defeats": g.ship.combat_defeats.get("total"),
         "rating": g.ship.attack + g.ship.defense + g.ship.speed, "damage": g.ship.damage,
-        "rp": g.ship.research_points, "research": sorted(g.research.unlocked_options),
+        "rp": g.person.research_points, "research": sorted(g.research.unlocked_options),
         "pax": g.reputation_manager.total_passengers, "pax_rep": g.ship.passenger_reputation,
         "trade_profit": int(sum(g.ship.trade_profits.values())),
         "stockmarkets": sum(1 for l in g.locations for b in l.buildings if b == "stockmarket"),

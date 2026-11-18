@@ -23,8 +23,15 @@ it around: the captain begins on foot.
 - The person and the ship apart: money, equipment, research points and six skills (loader,
   mechanic, gunner, navigator, steward, broker) are the captain's; a ship the captain owns
   spends and earns through them, and the story and the records work without a ship.
-- **Next in M0:** a shipless start with its own stats box; dock jobs, the berths board and
-  voyages as an able hand; the openings (why the captain has no ship); act 1's first scenes.
+- On foot as an able hand, until the story gives a ship (chapter III). The stats box shows the
+  logo, the turn, money, the place, the chapter and plot points, and wounds and the locker when
+  there are any. `work` a shift at the cargo ring, the hovertank plant at Delta, the deep levels
+  at Gamma and the asteroid bases, or the farm drums at Beta and Geod's Row at Delta; sign on
+  from the `berths` board (five captains fly routes of their own, other ships come and go) and
+  handle a duty on each turn of the way, paid at the destination; buy `passage`; keep a
+  `locker` of private trade; `skills` shows the captain. Work and duties can put a captain down;
+  a fight can kill.
+- **Next in M0:** the openings (why the captain has no ship) and act 1's first scenes.
 
 The plan (the shipless chapters, the ways to the first ship, fights on foot, investments
 matured from Cargo 2) is in the project's design document.
@@ -58,6 +65,7 @@ game/           the game, Cargo 2.2's engine:
   terminal.py     width, narrow layouts, wrapping, boxes;  screens.py: the Game's screens
   look.py         CLIo's terminal detection and themes, applied to the boxes
   person.py       the captain as a person: money, things carried, skills, wounds, locker, berth
+  hand.py         the captain without a ship: work, the berths board, voyages, passage, locker
   saves.py  captain.py      saves; the captain's record carried between the parts
   story.py  chapters.py     the storykit runtime; chapters, milestones, endings
   ship.py  travel.py  market.py  hansa.py  encounters.py  events.py  research.py
@@ -71,7 +79,7 @@ story/          the story: cargo3.story.json and the files in story/cargo3/, bui
 storykit/       the trilogy's story tools (format, validator, map), copied
 themes/         the game's own styles (CLIo theme files), beside CLIo's in kit/style/
 tools/          checks: smoke, bot, fuzzing, save round trips, hostile files, kit, story,
-                systems, the person, fights, sound
+                systems, the person, the able hand, fights, sound
 .github/        the release workflow: tag vX.Y.Z to build, release and push to itch.io
 ```
 

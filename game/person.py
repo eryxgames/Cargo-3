@@ -17,6 +17,7 @@ SKILL_WORDS = {
 }
 SKILL_TOP = 5              # a skill runs from 0 (never done it) to 5 (better than anyone aboard)
 WOUNDS_DEAD = 100          # wounds run from 0 (whole) to 100 (dead: the game is over)
+WOUNDS_DOWN = 90           # work and duties put a captain down here, never further: only a fight kills
 LOCKER_UNITS = 10          # an able hand's locker: room for this many units of private trade
 
 
@@ -40,12 +41,13 @@ class Person:
         return max(SKILLS, key=lambda s: (self.skills.get(s, 0), -SKILLS.index(s)))
 
     def train(self, name, amount=1):
-        """Practice at a skill; enough of it raises the level (each level asks for more).
-        Returns the new level when it rose, else None."""
+        """Practice at a skill; enough of it raises the level, and each level asks for more
+        (3, 12, 27, 48, 75: a master has 165 behind them). Returns the new level when it rose,
+        else None."""
         if name not in SKILLS or self.skills.get(name, 0) >= SKILL_TOP:
             return None
         self.practice[name] = self.practice.get(name, 0) + amount
-        need = 3 * (self.skills.get(name, 0) + 1)
+        need = 3 * (self.skills.get(name, 0) + 1) ** 2
         if self.practice[name] >= need:
             self.practice[name] -= need
             self.skills[name] = self.skills.get(name, 0) + 1

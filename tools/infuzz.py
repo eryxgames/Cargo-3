@@ -1,8 +1,9 @@
 """In-process fuzzer: play cargo.py with random commands at a fixed terminal width.
 
-usage: infuzz.py cargo.py <cols> <n_inputs> <seed> [--boxes]
+usage: infuzz.py cargo.py <cols> <n_inputs> <seed> [--boxes] [--afloat]
 Reports crashes (with traceback), lines wider than the terminal, and with --boxes the
-multi-column tables that did not fit at their natural width.
+multi-column tables that did not fit at their natural width. --afloat gives the captain a ship
+from the start (Cargo 3 begins without one), to fuzz a captain's turns too.
 """
 import sys, os, io, random, re, shutil, traceback, unicodedata, collections, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -10,6 +11,7 @@ import headless
 
 path, cols, n_inputs, seed = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4])
 want_boxes = "--boxes" in sys.argv
+afloat = "--afloat" in sys.argv
 
 from infuzz_pool import POOL
 
@@ -77,6 +79,8 @@ tb = None
 exited = None
 try:
     game = cargo.Game()
+    if afloat and getattr(game, "ship", None) is None:
+        game.give_ship()
     while True:
         try:
             game.play()
@@ -106,7 +110,7 @@ for ln in ANSI.sub("", buf.getvalue()).split("\n"):
         over[re.sub(r"\d+", "N", ln.strip())[:50]] = (w, ln.rstrip()[:110])
     if "..." in ln and ("│" in ln or "║" in ln):
         trunc[re.sub(r"\d+", "N", ln.strip())[:60]] += 1
-res = {"cols": cols, "seed": seed, "inputs": min(count[0], n_inputs), "exited": exited,
+res = {"cols": cols, "seed": seed, "afloat": afloat, "inputs": min(count[0], n_inputs), "exited": exited,
        "overflow": sorted(over.values(), reverse=True)[:6], "overflow_kinds": len(over),
        "truncated_kinds": len(trunc), "truncated": [k for k, _ in trunc.most_common(6)],
        "traceback": tb, "last_inputs": last}

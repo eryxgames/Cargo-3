@@ -46,7 +46,7 @@ for name in names:
 terminal.terminal_columns = lambda: 80
 
 # the command, through the real prompts: pick the third style, it is kept for later games
-game, io_ = headless.new_game(cargo)
+game, io_ = headless.new_game(cargo, afloat=True)
 look.setup(out=io.StringIO(), color=0)
 io_.feed(["3"])
 with headless.quiet():

@@ -30,6 +30,7 @@
  ],
  "include": [
   "cargo3/places.json",
+  "cargo3/hands.json",
   "cargo3/main.json"
  ],
  "stats": {
@@ -165,6 +166,66 @@
   },
   "modules_fitted": {
    "about": "modules on the ship's grips (game/modules.py)"
+  },
+  "afloat": {
+   "about": "1 when the captain has a ship of their own, 0 before"
+  },
+  "wounds": {
+   "about": "the captain's wounds, 0 (whole) to 100 (dead)"
+  },
+  "voyages": {
+   "about": "voyages worked as an able hand, to their end"
+  },
+  "shifts": {
+   "about": "shifts worked at any site"
+  },
+  "locker_profit": {
+   "about": "profit from the able hand's locker of private trade"
+  },
+  "shifts.ring": {
+   "about": "shifts worked at the cargo rings"
+  },
+  "shifts.hovertank": {
+   "about": "shifts worked at the hovertank plant"
+  },
+  "shifts.mine": {
+   "about": "shifts worked at the deep levels and the asteroid mines"
+  },
+  "shifts.biomass": {
+   "about": "shifts worked at the farm drums and Geod's Row"
+  },
+  "skill.loader": {
+   "about": "the captain's loader skill, 0 (untried) to 5 (master)"
+  },
+  "skill.mechanic": {
+   "about": "the captain's mechanic skill, 0 (untried) to 5 (master)"
+  },
+  "skill.gunner": {
+   "about": "the captain's gunner skill, 0 (untried) to 5 (master)"
+  },
+  "skill.navigator": {
+   "about": "the captain's navigator skill, 0 (untried) to 5 (master)"
+  },
+  "skill.steward": {
+   "about": "the captain's steward skill, 0 (untried) to 5 (master)"
+  },
+  "skill.broker": {
+   "about": "the captain's broker skill, 0 (untried) to 5 (master)"
+  },
+  "regard.plumb": {
+   "about": "what the captain of the Level Best thinks of you as a hand (voyages worked well)"
+  },
+  "regard.ghillie": {
+   "about": "what the captain of the Low Water thinks of you as a hand (voyages worked well)"
+  },
+  "regard.caspic": {
+   "about": "what the captain of the Sealed Orders thinks of you as a hand (voyages worked well)"
+  },
+  "regard.vrtoch": {
+   "about": "what the captain of the Errata thinks of you as a hand (voyages worked well)"
+  },
+  "regard.caboose": {
+   "about": "what the captain of the Clean Lading thinks of you as a hand (voyages worked well)"
   }
  },
  "sets": {

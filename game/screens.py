@@ -106,6 +106,8 @@ class ScreensMixin:
 
     # Update Game class methods
     def display_turn_info(self):
+        if self.ship is None:
+            return self.display_hand_info()      # without a ship (game/hand.py)
         self.clear_screen()
 
         # Calculate passenger stats

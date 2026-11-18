@@ -22,13 +22,14 @@ from .tactics import TacticsMixin
 from .achievements import AchievementsMixin
 from .sound import SoundMixin
 from .looking import LookMixin
+from .hand import HandMixin
 
 
 class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
            MarketMixin, HansaMixin, EncountersMixin, EventsMixin,
            ResearchMixin, ActionsMixin, PortMixin, RanksMixin,
            FactionsMixin, NeedlesMixin, ModulesMixin, TacticsMixin, AchievementsMixin, SoundMixin,
-           LookMixin):
+           LookMixin, HandMixin):
     # How often something happens between docks, by difficulty: an easy game has calmer lanes
     LANE_ACTIVITY = {0: 0.55, 1: 0.85, 2: 1.0}
 
@@ -45,8 +46,10 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         self.locations = self.generate_initial_locations()  # Generate all locations
         self.current_location = random.choice([loc for loc in self.locations if isinstance(loc, Planet)])  # Start at a planet
         self.shop = Shop()  # Initialize the shop system
-        self.person = Person()      # the captain: money, things carried, skills (game/person.py)
-        self.ship = Ship(game=self, owner=self.person)
+        # the captain: money, things carried, skills (game/person.py); Cargo 3 begins without a
+        # ship (game/hand.py) until the story gives one (give_ship)
+        self.person = Person(money=STARTING_PURSE)
+        self.ship = None
         self.turn = 0
         self.known_locations = [self.current_location.name]
         self.event_log = []
@@ -145,6 +148,20 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             "dues_arrears": getattr(self, "dues_arrears", 0),
             "dawn_trust": getattr(self, "dawn_trust", 0),
         }
+        # the captain on foot (game/person.py, game/hand.py)
+        stats["afloat"] = int(afloat)
+        stats["wounds"] = person.wounds
+        stats["voyages"] = getattr(self, "voyages", 0)
+        shifts = getattr(self, "shifts", {})
+        stats["shifts"] = sum(shifts.values())
+        for site in SITES:
+            stats["shifts." + site["id"]] = shifts.get(site["id"], 0)
+        for skill in SKILLS:
+            stats["skill." + skill] = person.skill(skill)
+        regard = getattr(self, "hand_regard", {})
+        for who in NAMED_SHIPS:
+            stats["regard." + who] = regard.get(who, 0)
+        stats["locker_profit"] = getattr(self, "locker_profit", 0)
         for good in ('tech', 'agri', 'salt', 'fuel'):
             stats["cargo." + good] = ship.cargo[good] if afloat else 0
         for faction in FACTIONS:
@@ -181,6 +198,15 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             "done_at": {n: t for n, t in self.story.done.items() if ":" not in n},
             "visitors": list(getattr(self, "visiting_captains", [])),
         }
+
+    def give_ship(self, hull=0, name=None):
+        """The captain has a ship again: from here the turn is a captain's (play_turn)."""
+        self.ship = Ship(game=self, owner=self.person)
+        self.ship.hull = hull
+        if name:
+            self.ship.name = name
+        self.person.berth = None
+        return self.ship
 
     def reveal_place(self, name):
         """Put a place the story describes on the map (story effect 'reveal')."""
@@ -405,6 +431,8 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
 
 
     def play_turn(self):
+            if self.ship is None:
+                return self.play_hand_turn()
             self.new_turn()
             self.display_turn_info()
             self.check_location_unlocks()  # Check for new unlocks each turn
@@ -458,17 +486,8 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             if action is None:
                 return
 
-            elif action in ['save', 'sv']:
-                self.handle_save()
-                return
-
-            elif action in ['load', 'ld']:
-                self.handle_load()
-                return
-
-            elif action in ['captain', 'cap']:
-                self.handle_captain_menu()
-                return
+            elif action in GLOBAL_WORDS:
+                return self.global_action(action)
 
             # Handle research/repair based on location type ('r' is research at a colony)
             elif action in ['research', 'r', 'repair']:
@@ -652,54 +671,6 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
                 else:
                     self.display_simple_message("No port available at this location.")
 
-            elif action in ['log', 'l']:
-                self.story_manager.display_story_progress()
-                return    # Return after showing log to avoid counting it as a turn
-
-            elif action in ['journal', 'j']:
-                self.story.journal()
-                return
-
-            elif action in ['hansa', 'ha']:
-                self.handle_hansa()
-                return
-
-            elif action in ['help', 'h']:
-                self.show_help()
-                return
-
-            elif action in ['style', 'st']:
-                self.choose_style()
-            elif action in ['sound', 'so']:
-                self.handle_sound()
-            elif action in ['look', 'lk']:
-                self.handle_look()
-            elif action in ['think', 'th']:
-                self.handle_think()
-                return
-
-            elif action in ['version', 'v']:
-                display_logo(logo_data, centered=True)
-                print_centered_text("")
-                print_centered_text("Created by Dan Sandner")
-                print_centered_text(f"v{VERSION}, ©2025-2026")
-
-                time.sleep(3)
-                return
-
-            # Handle quit and resign commands
-            elif action in ['quit', 'q']:
-                if self.validate_input("Are you sure you want to quit? (yes/no): ", ['yes', 'no']) == 'yes':
-                    self.display_simple_message("Thanks for playing!")
-                    exit()
-                return
-
-            elif action in ['resign', 'rs']:
-                if self.validate_input("Are you sure you want to resign? (yes/no): ", ['yes', 'no']) == 'yes':
-                    self.display_score()
-                    exit()
-                return
-
             elif action in ['hunt', 'hu']:
                 if self.handle_hunt():
                     # the hunt took the day: the turn ends without another event
@@ -723,6 +694,49 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             else:
                 self.display_simple_message("Invalid action.")
         # Implement trade tip functionality here
+
+    def global_action(self, action):
+        """The commands every turn has, with a ship or without: none of them takes a turn."""
+        if action in ['save', 'sv']:
+            self.handle_save()
+        elif action in ['load', 'ld']:
+            self.handle_load()
+        elif action in ['captain', 'cap']:
+            self.handle_captain_menu()
+        elif action in ['log', 'l']:
+            self.story_manager.display_story_progress()
+        elif action in ['journal', 'j']:
+            self.story.journal()
+        elif action in ['hansa', 'ha']:
+            self.handle_hansa()
+        elif action in ['help', 'h']:
+            if self.ship is None:
+                self.show_hand_help()
+            else:
+                self.show_help()
+        elif action in ['style', 'st']:
+            self.choose_style()
+        elif action in ['sound', 'so']:
+            self.handle_sound()
+        elif action in ['look', 'lk']:
+            self.handle_look()
+        elif action in ['think', 'th']:
+            self.handle_think()
+        elif action in ['version', 'v']:
+            display_logo(logo_data, centered=True)
+            print_centered_text("")
+            print_centered_text("Created by Dan Sandner")
+            print_centered_text(f"v{VERSION}, ©2025-2026")
+            time.sleep(3)
+        elif action in ['quit', 'q']:
+            if self.validate_input("Are you sure you want to quit? (yes/no): ", ['yes', 'no']) == 'yes':
+                self.display_simple_message("Thanks for playing!")
+                exit()
+        elif action in ['resign', 'rs']:
+            if self.validate_input("Are you sure you want to resign? (yes/no): ", ['yes', 'no']) == 'yes':
+                self.display_score()
+                exit()
+        return None
 
     def unlock_location_type(self, location_type):
         """Unlock a new type of location and add its instances to available locations"""
@@ -788,7 +802,8 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         if not first:
             for loc in self.locations:
                 loc.recover()
-            self.mend_on_the_way()
+            if self.ship is not None:
+                self.mend_on_the_way()
             self.check_achievements()
         self.play_music()
         self.note_prices()
@@ -800,6 +815,8 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
 
     def check_milestone_triggers(self):
         """Check for milestone triggers each turn"""
+        if self.ship is None:
+            return
         # First trade
         if self.trades_completed == 2:
             self.story_manager.complete_milestone("first_trade")
@@ -848,6 +865,12 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             self.update_rank()
 
             # Check game over conditions
+            if self.person.wounds >= WOUNDS_DEAD:
+                self.display_simple_message("Game Over: %s is dead." % self.player_name, 2)
+                self.display_score()
+                break
+            if self.ship is None:
+                continue
             if self.person.money <= 0 and self.ship.is_empty_cargo():
                 self.display_simple_message("Game Over: No money and no cargo left.", 2)
                 self.display_score()
@@ -988,9 +1011,12 @@ from .actions import (  # noqa: E402,F401
 from .ship import (  # noqa: E402,F401
     Ship)
 from .person import (  # noqa: E402,F401
-    LOCKER_UNITS, SKILL_TOP, SKILL_WORDS, SKILLS, WOUNDS_DEAD, Person, person_from_ship)
+    LOCKER_UNITS, SKILL_TOP, SKILL_WORDS, SKILLS, WOUNDS_DEAD, WOUNDS_DOWN, Person, person_from_ship)
 from .commands import (  # noqa: E402,F401
-    COMMODITIES, GLOBAL_COMMANDS, LocationCommands, commodity_from)
+    COMMODITIES, GLOBAL_COMMANDS, GLOBAL_WORDS, LocationCommands, commodity_from)
+from .hand import (  # noqa: E402,F401
+    CLEAN_VOYAGE_POINTS, DUTIES, FIRST_SHIFT_POINTS, HAND_COMMANDS, KINDS, LEG_WAGE, NAMED_SHIPS,
+    PASSAGE_FARE, SHIP_NAMES, SITES, STARTING_PURSE, TROUBLE, VOYAGE_POINTS, skill_word, wound_word)
 from .encounters import (  # noqa: E402,F401
     ENEMIES, FIGHT_TRICKS, SITUATIONS, odds_word)
 from .events import (  # noqa: E402,F401

@@ -22,7 +22,7 @@ def expect(ok, what):
 
 
 # ---- standing ------------------------------------------------------------------------
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 expect(game.standing == {"hansa": 0, "mandate": 0, "concord": 0}, "a new game starts at standing 0: %s" % game.standing)
 game.story.apply({"standing.hansa": 30, "standing.mandate": -250, "dawn_trust": 15})
 expect(game.standing_of("hansa") == 30, "an effect moves the Hansa standing")
@@ -48,7 +48,7 @@ with headless.quiet() as out:
 expect("The Hansa: +30, trusted" in out.getvalue(), "the journal shows standing")
 
 # a save from before standing existed loads with every standing at 0
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 del game.standing, game.dawn_trust
 with headless.quiet():
     game.save_game("old")
@@ -57,7 +57,7 @@ expect(loaded.standing == {"hansa": 0, "mandate": 0, "concord": 0} and loaded.da
        "an older save gets standing 0")
 
 # ---- the needles -----------------------------------------------------------------------
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 game.turn = 50
 here = game.current_location
 by_name = {loc.name: loc for loc in game.locations + [l for g in game.hidden_locations.values() for l in g]
@@ -101,7 +101,7 @@ with headless.quiet():
     booked = game.book_needle(here)
 expect(booked is None and game.ship.cargo["salt"] < 40, "past the limit the office refuses and the convoy master takes cargo")
 # a hop inside a system burns fuel, or buys it
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 omega, ruins = by_name["Omega XIV"], by_name["Ancient Ruins Alpha"]
 game.locations += [omega, ruins]
 game.current_location = omega
@@ -117,7 +117,7 @@ with headless.quiet():
     game.travel_to_location(ruins.name)
 expect(game.ship.cargo["fuel"] == 0 and money - game.ship.money >= 60, "fuel the hold lacks is bought from the yard")
 # the tail: the Cargolytes sometimes cut containers off
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 game.ship.cargo["tech"] = 100
 losses = 0
 for seed in range(200):
@@ -145,7 +145,7 @@ def yard(answers):
         game.handle_yard()
 
 
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 ship = game.ship
 game.current_location = at("Planet")
 expect(ship.modules == [] and ship.grips() == 3, "a new ship has three empty grips")
@@ -183,7 +183,7 @@ yard(["f", "1"])
 expect(len(ship.modules) == 2, "outposts have no yard")
 
 # effects outside the ship's own sums
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 ship = game.ship
 ship.money = 10 ** 6
 game.current_location = at("Planet")
@@ -235,7 +235,7 @@ loaded.bring_up_to_date()
 expect(loaded.ship.modules == [] and loaded.ship.grips() == 3, "an old save gets an empty spine")
 
 # ---- research branches -------------------------------------------------------------------------
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 research = game.research
 expect("bulk_logistics" not in research.open_options(), "a branch waits for its root")
 research.unlock("xenoeconomy")
@@ -244,7 +244,7 @@ research.unlock("bulk_logistics")
 expect("fast_turnaround" not in research.open_options() and research.closed("fast_turnaround"),
        "choosing one branch closes its twin")
 game.ship.modules.append({"kind": "container", "condition": 100})
-expect(game.ship.hold_sizes()[0] == headless.new_game(cargo)[0].ship.hold_sizes()[0] + 150,
+expect(game.ship.hold_sizes()[0] == headless.new_game(cargo, afloat=True)[0].ship.hold_sizes()[0] + 150,
        "bulk logistics: a container module holds 150")
 research.unlock("chronopolitics")
 expect("segment_acoustics" not in research.open_options(game.story.done), "ring science waits for the expedition")
@@ -258,7 +258,7 @@ research.unlock("fast_turnaround")
 expect(game.needle_fare("middle") < fare, "fast turnaround lowers the fares")
 
 # ---- achievements ----------------------------------------------------------------------------------
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 game.trades_completed = 26
 game.ticked_turn = game.turn - 1
 with headless.quiet() as buf:
@@ -280,7 +280,7 @@ expect(back["achievements"] == [] and back["standing"] == {"hansa": 0, "mandate"
 expect(all(isinstance(t[2], dict) for t in cargo.ACHIEVEMENTS.values()), "every achievement is a story condition")
 
 # ---- needles from outposts wait at the buoy ---------------------------------------------------
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 game.ship.money = 10 ** 6
 outpost = cargo.DeepSpaceOutpost("DSO-Test", 7, 3, 20, "Stable")
 game.current_location = outpost
@@ -314,7 +314,7 @@ class Dice:
 
 
 def convoy(enemy_id, answers, rolls, needle=True, modules=()):
-    game, io = headless.new_game(cargo)
+    game, io = headless.new_game(cargo, afloat=True)
     game.ship.money, game.ship.attack, game.ship.defense = 50000, 6, 4
     game.ship.modules.extend({"kind": k, "condition": 100} for k in modules)
     game.in_needle = needle

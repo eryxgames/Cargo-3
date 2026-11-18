@@ -3,4 +3,7 @@ POOL = (["e"] * 10 + ["b", "s", "tech", "agri", "salt", "fuel", "max", "half", "
         "research", "scout", "geoscan", "status", "bl", "sm", "pc", "u", "attack", "defense", "speed",
         "r", "mine", "y", "n", "accept", "quests", "buy", "sell", "map", "fight", "flee", "f",
         "contracts", "passengers", "modules", "load", "unload", "v", "save", "captain", "export",
-        "alpha", "beta", "gamma", "delta", "epsilon", "navcomp", "scanner", "yes", "st", "style"])
+        "alpha", "beta", "gamma", "delta", "epsilon", "navcomp", "scanner", "yes", "st", "style"]
+        # the able hand (Cargo 3)
+        + ["w"] * 4 + ["bb"] * 4 + ["pa", "lo", "sk", "work", "berths", "locker", "skills", "lk", "th", "j",
+                                    "y", "1", "2", "1", "2"])

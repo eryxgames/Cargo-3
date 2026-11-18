@@ -18,7 +18,7 @@ cargo = headless.load(os.path.join(os.path.dirname(HERE), "game", "world.py"))
 from game import encounters  # noqa: E402
 
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 300
-game, io = headless.new_game(cargo)
+game, io = headless.new_game(cargo, afloat=True)
 io.default = "1"                                         # focus fire, every round
 enemy_of = {}
 for eid, enemy in cargo.ENEMIES.items():
