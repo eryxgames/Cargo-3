@@ -227,11 +227,11 @@ class HandMixin:
         return rows
 
     def display_hand_info(self):
-        self.clear_screen()
+        self.clear_screen(hold=True)
         print(self.create_box(self.hand_stats_rows(), 'double', narrow='flow'))
         print(self.create_box(self.market_rows(), 'single'))
         self.display_simple_message(
-            "Commands: " + ", ".join("%s/%s" % pair for pair in HAND_COMMANDS) + " - help/h for more", 1)
+            "Commands: " + ", ".join("%s/%s" % pair for pair in HAND_COMMANDS) + " - help/h for more", 0)
 
     def market_rows(self):
         loc = self.current_location
@@ -653,7 +653,7 @@ class HandMixin:
             names = [self.story.fill("{%s}" % k) if k in NAMED_SHIPS else k for k in good]
             rows.extend([[""], ["Would sign you again: " + ", ".join(names)]])
         print(self.create_box(rows, 'round'))
-        input("Press Enter to continue...")
+        ask("Press Enter to continue...")
 
     def show_hand_help(self):
         rows = [["How to play: without a ship"], [""],
@@ -672,7 +672,7 @@ class HandMixin:
                  "the story (log/l, journal/j). Plot points move it: earn them by working, sailing and going "
                  "places. Each shift, voyage or rest is a turn; the game saves itself after every one."]]
         print(self.create_box(rows, 'round'))
-        input("Press Enter to continue...")
+        ask("Press Enter to continue...")
 
 
 # The game's other modules, imported last so that the modules can refer to each other.
@@ -681,3 +681,4 @@ from .terminal import box_inner_width, short_logo  # noqa: E402
 from .commands import COMMODITIES, GLOBAL_COMMANDS, commodity_from  # noqa: E402
 from .encounters import odds_word  # noqa: E402
 from .person import LOCKER_UNITS, SKILL_WORDS, SKILLS, WOUNDS_DOWN  # noqa: E402
+from .terminal import ask  # noqa: E402

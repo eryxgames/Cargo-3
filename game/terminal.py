@@ -259,6 +259,27 @@ def say(text=""):
         print(line)
 
 
+# A screen is not cleared under news the player has not seen answered: messages that pause
+# mark it, and every answer the game reads (ask) clears it.
+_unread = [False]
+
+
+def note_unread():
+    _unread[0] = True
+
+
+def ask(prompt=""):
+    """Read the player's answer: every input the game asks for comes through here."""
+    _unread[0] = False
+    return input(prompt)
+
+
+def hold_unread():
+    """Before the screen is cleared: if a message has not been answered yet, wait for Enter."""
+    if _unread[0]:
+        ask("Press Enter to continue...")
+
+
 def short_logo():
     """The logo in the stats box: Cargo 3's CΔRGΩ]|[, or plain letters where Greek cannot show."""
     return "CARGO]|[" if plain_terminal() else "CΔRGΩ]|["

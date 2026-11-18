@@ -14,7 +14,7 @@ class TravelMixin:
                 print(f"{i}. {location}{hop}")
 
             self.display_simple_message("Enter the number or name of the location (or 'cancel'): ", 0)
-            choice = input(">>> ").strip()
+            choice = ask(">>> ").strip()
 
             if not choice or choice.lower() == 'cancel':
                 self.display_simple_message("Travel cancelled.")
@@ -31,7 +31,7 @@ class TravelMixin:
                 return self.travel_to_location(choice)
         else:
             self.display_simple_message("Enter location name (or 'cancel'): ", 0)
-            location_name = input(">>> ").strip()
+            location_name = ask(">>> ").strip()
 
             if not location_name or location_name.lower() == 'cancel':
                 self.display_simple_message("Travel cancelled.")
@@ -194,3 +194,4 @@ class TravelMixin:
 # The game's other modules, imported last so that the modules can refer to each other.
 from .story import story_data  # noqa: E402
 from .looking import CHARTS_RESEARCH  # noqa: E402
+from .terminal import ask  # noqa: E402

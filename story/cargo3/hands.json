@@ -35,8 +35,9 @@
    "name": "Brother Caboose",
    "short": "Caboose",
    "kind": "human",
-   "about": "rides the Clean Lading at the back of every needle and guards the tail; a Cargolyte, and hires anyone who will sign the lading",
-   "route": {"places": ["Beta", "Delta", "Alpha", "Epsilon", "Gamma"], "stay": 2, "start": 3}
+   "about": "rides the Clean Lading at the back of every needle and guards the tail; a Cargolyte, relabelled Caboose-237 from his scan code, once a deck officer called Deks; hires anyone who will sign the lading",
+   "route": {"places": ["Beta", "Delta", "Alpha", "Epsilon", "Gamma"], "stay": 2, "start": 3},
+   "full": "Caboose-237"
   }
  }
 }

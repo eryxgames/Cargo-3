@@ -32,11 +32,13 @@ it around: the captain begins on foot.
   `locker` of private trade; `skills` shows the captain. Work and duties can put a captain down;
   a fight can kill.
 - Act 1 (chapter I, The Hiring Hall): who the captain is now, by record, in a line or a pun;
-  why there is no ship, from the two reasons that fit the record best (never had one,
-  impounded by the Debacle's audits, taken by the Rockwardens, thrown out of a needle into a
-  pod, slept through it in a Kraal sarcophagus); the hiring hall; the hovertank plant, the deep
-  levels and the farm drums seen from the floor; the five berths captains; and the first old
-  friend, Adit, which ends the chapter. Chapters II and III are a frame still to be written.
+  the needle that shed them into a pod, asleep for years until a salvager found it, while the
+  ship flew on without them; the hiring hall; the hovertank plant, the deep levels and the farm
+  drums seen from the floor; the five berths captains; and the first old friend, Adit, whose
+  lists say the ship never came out of the needle. Finding Adit ends the chapter. Chapters II
+  and III are a frame still to be written.
+- What the game shows stays on screen until it is read: a turn's screen waits for Enter when
+  the last thing shown was a message the player has not answered.
 - **Next:** chapter II (old friends, centuries on), fights on foot, and the ways to a first ship.
 
 The plan (the shipless chapters, the ways to the first ship, fights on foot, investments

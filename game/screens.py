@@ -50,6 +50,7 @@ class ScreensMixin:
 
         print(self.create_simple_box(box_content, style, color=color))
         if pause > 0:
+            note_unread()
             time.sleep(pause)
 
 
@@ -69,7 +70,7 @@ class ScreensMixin:
                 self.display_simple_message(prompt or default_prompt, 0)
 
                 try:
-                    user_input = input(">>> ").strip().lower()
+                    user_input = ask(">>> ").strip().lower()
                     if not user_input:
                         if "Enter" not in (prompt or default_prompt):
                             self.display_simple_message("Command cancelled.")
@@ -79,7 +80,7 @@ class ScreensMixin:
                     self.display_simple_message(f"Invalid input, try: {', '.join(valid_options)}", 1)
                 except KeyboardInterrupt:
                     print("Do you want to exit? (yes/no):")
-                    confirm = input(">>> ").strip().lower()
+                    confirm = ask(">>> ").strip().lower()
                     if confirm == 'yes':
                         self.display_simple_message("Goodbye!", 1)
                         exit()
@@ -88,7 +89,7 @@ class ScreensMixin:
         while True:
             self.display_simple_message(prompt, 0)
             try:
-                user_input = input(">>> ").strip().lower()
+                user_input = ask(">>> ").strip().lower()
                 if not user_input:
                     self.display_simple_message("Command cancelled.")
                     return None
@@ -108,7 +109,7 @@ class ScreensMixin:
     def display_turn_info(self):
         if self.ship is None:
             return self.display_hand_info()      # without a ship (game/hand.py)
-        self.clear_screen()
+        self.clear_screen(hold=True)
 
         # Calculate passenger stats
         total_passengers = 0
@@ -299,7 +300,7 @@ class ScreensMixin:
             content.append([ship_line, location_line])
 
         print(self.create_box(content, 'double', narrow='stack'))
-        input("Press Enter to continue...")
+        ask("Press Enter to continue...")
 
     COMMAND_HELP = {
         'buy': "buy goods: then tech/t, agri/a, salt/s, fuel/f and an amount, max/m or half/h",
@@ -407,7 +408,7 @@ class ScreensMixin:
         for cmd, shortcut in self.here_commands():
             rows.append(["%s/%s" % (cmd, shortcut), self.COMMAND_HELP.get(cmd, "")])
         print(self.create_box(rows, 'double'))
-        input("Press Enter to continue...")
+        ask("Press Enter to continue...")
 
     def display_starting_info(self):
         """Display initial game information with location context"""
@@ -452,6 +453,7 @@ class ScreensMixin:
 
         print(self.create_simple_box(box_content, style, color=color))
         if pause > 0:
+            note_unread()
             time.sleep(pause)
 
     def display_story_status(self):
@@ -486,14 +488,20 @@ class ScreensMixin:
                 story_content.append([f"• {loc_type}: {count} discovered"])
 
         print(self.create_box(story_content, 'double'))
-        input("Press Enter to continue...")
+        ask("Press Enter to continue...")
 
 
-    def clear_screen(self):
+    def clear_screen(self, hold=False):
+        """A fresh screen. The turn's screen holds first (`hold`): what was just shown stays
+        until the player has read it."""
+        if hold:
+            hold_unread()
         os.system('clear' if os.name == 'posix' else 'cls')
 
 
 # The game's other modules, imported last so that the modules can refer to each other.
-from .terminal import RULE, box_inner_width, render_box, short_logo, terminal_columns, wrap_text  # noqa: E402
+from .terminal import (  # noqa: E402
+    RULE, box_inner_width, hold_unread, note_unread, render_box, short_logo, terminal_columns, wrap_text)
 from .commands import GLOBAL_COMMANDS  # noqa: E402
 from .modules import condition_word, module_name  # noqa: E402
+from .terminal import ask  # noqa: E402

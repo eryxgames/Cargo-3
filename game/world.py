@@ -362,7 +362,7 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
 
         while True:
             self.display_simple_message("Select difficulty (1-3):", 0)
-            choice = input(">>> ").strip()
+            choice = ask(">>> ").strip()
 
             if choice in ['1', '2', '3']:
                 difficulty_names = ['EASY', 'NORMAL', 'EXPERT']
@@ -382,7 +382,7 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             "3. Long haul: chapters ask for half as much again; more time for everything",
             "", "Enter for standard."], 0)
         for _ in range(3):
-            choice = input(">>> ").strip()
+            choice = ask(">>> ").strip()
             if choice in ("1", "2", "3", ""):
                 voyage = {"1": "short", "3": "long"}.get(choice, "standard")
                 self.display_simple_message("Voyage: %s." % voyage)
@@ -417,7 +417,7 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             "Press Enter for random"
         ], 0)
 
-        name = input(">>> ").strip()
+        name = ask(">>> ").strip()
 
         if not name:
             titles = ["Captain", "Commander", "Pilot", "Hauler", "Trucker", "Starfarer", "Operator", "Rigger","Freerunner","Navigator", "Doc", "Docker" ]
@@ -1046,3 +1046,4 @@ from .achievements import ACHIEVEMENTS  # noqa: E402,F401
 from .research import BRANCHES  # noqa: E402,F401
 from .start import (  # noqa: E402,F401
     choose_captain, choose_saved_game, main, new_game, start_game)
+from .terminal import ask  # noqa: E402

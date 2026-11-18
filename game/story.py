@@ -575,7 +575,7 @@ class StoryRuntime:
             system = place.get("system")
             rows.append(["- %s%s" % (name, " (%s%s)" % (system, ", %s ly" % place["ly"] if place.get("ly") else "") if system else "")])
         print(game.create_box(rows, 'double', narrow='flow'))
-        input("Press Enter to continue...")
+        ask("Press Enter to continue...")
 
 
 def play_cue(name):
@@ -764,3 +764,4 @@ def route_place(route, turn):
     stay = max(1, int(route.get("stay", 1)))
     return places[((turn + int(route.get("start", 0))) // stay) % len(places)]
 from .person import SKILL_TOP, WOUNDS_DEAD  # noqa: E402
+from .terminal import ask  # noqa: E402

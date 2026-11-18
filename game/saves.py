@@ -405,7 +405,7 @@ class SavingMixin:
     def handle_save(self):
         self.display_simple_message(
             f"Save as (Enter for '{safe_name(self.player_name)}', or type a name):", 0)
-        slot = input(">>> ").strip()
+        slot = ask(">>> ").strip()
         if slot.lower() in ("cancel", "back", "none"):
             self.display_simple_message("Not saved.")
             return
@@ -428,3 +428,4 @@ class SavingMixin:
 
 # The game's other modules, imported last so that the modules can refer to each other.
 from .start import choose_saved_game  # noqa: E402
+from .terminal import ask  # noqa: E402

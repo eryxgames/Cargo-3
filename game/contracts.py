@@ -174,7 +174,7 @@ class ContractManager:
             print(self.game.create_box(content, 'double'))
             print()  # Add space between contracts
 
-        input("Press Enter to continue...")
+        ask("Press Enter to continue...")
 
     def refresh_available_contracts(self):
         """Refresh available contracts every 5 turns"""
@@ -669,3 +669,4 @@ class Contract:
                     self.requirements.get("passenger_count", 0))
             )
         return False
+from .terminal import ask  # noqa: E402

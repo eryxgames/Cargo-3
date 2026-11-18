@@ -274,7 +274,7 @@ class CaptainMixin:
             lines.append("Or carry this code (copy all of it):")
             self.display_simple_message(lines, 0)
             print(code)                 # unboxed and unwrapped, so it copies cleanly
-            input("Press Enter to continue...")
+            ask("Press Enter to continue...")
         elif action in ('import', 'i'):
             self.handle_captain_import()
 
@@ -289,7 +289,7 @@ class CaptainMixin:
             print(self.create_box(content, 'single'))
         self.display_simple_message(
             "Type a number from the list, paste a captain code, or press Enter to cancel:", 0)
-        answer = input(">>> ").strip()
+        answer = ask(">>> ").strip()
         if not answer:
             self.display_simple_message("Nobody crossed over.")
             return
@@ -307,3 +307,4 @@ class CaptainMixin:
 from .terminal import _ANSI_RE  # noqa: E402
 from .saves import GAME_ID, SaveError, captain_folder, safe_name, write_json  # noqa: E402
 from .story import story_data  # noqa: E402
+from .terminal import ask  # noqa: E402

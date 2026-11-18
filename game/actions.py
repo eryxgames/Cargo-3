@@ -438,7 +438,7 @@ class ActionsMixin:
                         map_content.append(["└─ Features: " + ", ".join(features), "", "", "", ""])
 
                 print(self.create_box(map_content, 'double'))
-                input("Press Enter to continue...")
+                ask("Press Enter to continue...")
             else:
                 self.ship.money += 200  # Refund if no new locations
                 self.display_simple_message("No new locations to discover!")
@@ -489,7 +489,7 @@ class ActionsMixin:
 
             if has_data:
                 print(self.create_box(market_content, 'double'))
-                input("Press Enter to continue...")
+                ask("Press Enter to continue...")
             else:
                 self.ship.money += 350  # Refund if no data to show
                 self.display_simple_message("No new information available!")
@@ -541,3 +541,4 @@ class ActionsMixin:
 
         print(self.create_box(content, 'double'))
 from .research import BRANCHES  # noqa: E402
+from .terminal import ask  # noqa: E402

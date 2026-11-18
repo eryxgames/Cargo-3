@@ -146,7 +146,7 @@ class LookMixin:
         if len(rows) == 2:
             rows.append(["Nothing in particular. Fly, trade, look around."])
         print(self.create_box(rows, 'round'))
-        input("Press Enter to continue...")
+        ask("Press Enter to continue...")
 
     def equipment_rows(self):
         return [["  %s: %s" % EQUIPMENT[f]] for f in EQUIPMENT if self.has_equipment(f)]
@@ -154,3 +154,4 @@ class LookMixin:
 
 # The game's other modules, imported last so that the modules can refer to each other.
 from .story import story_data  # noqa: E402
+from .terminal import ask  # noqa: E402

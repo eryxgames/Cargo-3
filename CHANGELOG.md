@@ -37,21 +37,27 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
 - **Act 1, chapter I: The Hiring Hall** (`story/cargo3/act1.json`):
   - who the captain is now: a fresh captain, a Hansa founder, Serac's colonel, a Cargo 1
     captain, a Cargo 2 captain or a Cargo 3 captain again, each in a line or a pun;
-  - why there is no ship: the game offers the two reasons that fit the record best. Never had
-    one; impounded by the Debacle's audits; taken by the Rockwardens; thrown out of a needle
-    into a pod; slept through it in a Kraal sarcophagus. Each starts with its own money and its
-    own thought on what to do;
+  - why there is no ship: a needle shed the captain like a bad link, and a pod kept them cold
+    and asleep for years (nineteen for a fresh captain, seventy-three for a Cargo 2 one, decades
+    on decades for Cargo 1) until a salvager found it and paid a finder's tenth. The ship did not
+    come with them. Told for each record: a Rockwarden prospector for a cooperative member,
+    needle-talk heard on the way out for a Cargo 2 captain who learned it;
   - the hiring hall, and the old hands' talk of people who should be dead;
   - the hovertank plant, the deep levels and the farm drums seen from the floor, remembering
     what a Cargo 1 captain did there;
-  - the five berths captains, to talk to at the docks;
+  - the five berths captains, to talk to at the docks (Brother Caboose's papers say
+    Caboose-237; the old hands remember him as Officer Deks);
   - the first old friend: Adit, the loader agrobot, still on the cargo rings. A captain with a
     record is known at once; a fresh one works the ring first. Adit asks you to ask: about your
-    ship, about who else is alive, or for a shift beside it. Finding Adit ends chapter I.
+    ship (its lists say it never came out of the needle, and Korai would know where needles
+    go), about who else is alive, or for a shift beside it. Finding Adit ends chapter I.
 - Story effects can train a skill (`skill.loader`) and wound (`wounds`).
+- Messages stay until read: every answer goes through one place (`terminal.ask`), and a turn's
+  screen waits for Enter before clearing when a message since the last answer is still unread
+  (a talk at the docks, a shift's result, a voyage's pay).
 - A story frame of three chapters: The Hiring Hall, Old Friends, A Bridge Again (II and III are
   placeholders until their story is written).
-- Checks: `tools/act1.py` plays act 1 for nine kinds of captain; the scene player plays every
+- Checks: `tools/act1.py` plays act 1 for eight kinds of captain; the scene player plays every
   scene on foot and with a ship; a curious bot run measures when chapter I ends (about turn 10
   to 25).
 - The checks (`tools/check.sh`) from the start: story, systems, sound, fights, looks, hostile

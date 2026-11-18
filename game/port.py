@@ -324,7 +324,7 @@ class Port:
                 "Enter numbers to select passengers, 'refresh/r' to refresh list, 'autoboard/a' for auto boarding, or Enter to cancel:", 0
             )
 
-            selection = input(">>> ").strip().lower()
+            selection = ask(">>> ").strip().lower()
 
             if not selection:  # Empty Enter
                 return
@@ -493,7 +493,7 @@ class Port:
         # Get destination choice
         self.game.display_simple_message("Choose destination number:", 0)
         try:
-            choice = int(input(">>> "))
+            choice = int(ask(">>> "))
             if 1 <= choice <= len(destinations):
                 target_dest = destinations[choice-1]
 
@@ -579,7 +579,7 @@ class Port:
             self.game.display_simple_message(
                 "Choose module number, 'auto/a' for automatic assignment, or 'back':", 0
             )
-            choice = input(">>> ").strip().lower()
+            choice = ask(">>> ").strip().lower()
 
             if choice == 'back':
                 break
@@ -1100,3 +1100,4 @@ class PortMixin:
 from .contracts import ContractManager  # noqa: E402
 from .passengers import Passenger, PassengerModule  # noqa: E402
 from .places import Planet  # noqa: E402
+from .terminal import ask  # noqa: E402

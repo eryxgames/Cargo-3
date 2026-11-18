@@ -277,7 +277,7 @@ class QuestSystem:
         else:
             self.game.display_simple_message("No active quests.")
 
-        input("Press Enter to continue...")
+        ask("Press Enter to continue...")
 
     def update_from_trade(self, trade_data):
         """Update quests based on trade actions"""
@@ -782,3 +782,4 @@ class ResourceTransportQuest:
 # The game's other modules, imported last so that the modules can refer to each other.
 from .captain import STORY_PLACE_TYPES  # noqa: E402
 from .passengers import Passenger  # noqa: E402
+from .terminal import ask  # noqa: E402

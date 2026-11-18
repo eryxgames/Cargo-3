@@ -238,6 +238,29 @@ for name, show, answers in (("work", game.handle_work, [""]), ("passage", game.h
 expect("Would sign you again: Ola Plumb" in " ".join(screen(game, 80, lambda: (io.feed([""]), game.show_person())).split()),
        "the skills screen names captains who would sign you again")
 
+# ---- what was just shown stays until it is read ---------------------------------------------------------
+game, io = headless.new_game(cargo)
+at(game, "Alpha")
+io.asked.clear(); io.queue.clear()
+with headless.quiet():
+    game.display_hand_info()
+expect(io.asked == ["Press Enter to continue..."], "the opening's text waits to be read: %s" % io.asked)
+io.asked.clear()
+with headless.quiet():
+    game.display_hand_info()
+expect(not io.asked, "a turn with nothing new to read does not wait")
+with headless.quiet():
+    game.work_shift(cargo.SITES[0], cargo.SITES[0]["jobs"][0], roll=0.5)
+    game.display_hand_info()
+expect(io.asked == ["Press Enter to continue..."], "after a shift the result waits for Enter before the screen clears: %s" % io.asked)
+io.asked.clear()
+io.feed(["1"])
+with headless.quiet():
+    game.display_simple_message("Prompt", 0)
+    game.validate_input("Pick: ", ["1"])
+    game.display_hand_info()
+expect(io.asked == [">>> "], "an answered prompt needs no extra Enter: %s" % io.asked)
+
 # ---- saved on foot, and given a ship ----------------------------------------------------------------------
 game, io = headless.new_game(cargo)
 game.person.skills["broker"] = 2

@@ -65,7 +65,7 @@ class MarketMixin:
             "Fresh news is close; old news drifts; places you never saw are guesses. Big loads move prices, "
             "and prices take a few weeks to recover."))
         print(self.create_box(rows, 'double'))
-        input("Press Enter to continue...")
+        ask("Press Enter to continue...")
 
     # Add trade tracking to buy/sell methods
     def handle_trade(self, action_type, commodity=None, quantity=None, price=None):
@@ -178,3 +178,4 @@ class MarketMixin:
         # Possible quest generation
         if event_data["severity"] == "major" and random.random() < 0.3:
             self.quest_system.generate_quest("trade", 1.5)
+from .terminal import ask  # noqa: E402

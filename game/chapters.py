@@ -887,7 +887,7 @@ class StoryManager:
                     content.append([f"  └─ {milestone.title} (Turn {completion_turn})"])
 
         print(self.game.create_box(content, 'double'))
-        input("Press Enter to continue...")
+        ask("Press Enter to continue...")
 
         # A captain who chose to wait can take an open path from the log
         if current_chapter_obj and current_chapter_obj.completed and len(current_chapter_obj.next_chapters) > 1:
@@ -899,3 +899,4 @@ class StoryManager:
 
 # The game's other modules, imported last so that the modules can refer to each other.
 from .story import _as_list, story_data, voyage_condition, voyage_value  # noqa: E402
+from .terminal import ask  # noqa: E402

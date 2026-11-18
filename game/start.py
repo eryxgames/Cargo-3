@@ -11,7 +11,7 @@ def choose_saved_game(saves, game=None):
         rows.append([f"{number}. {describe_save(entry)}"])
     print(render_box(rows, 'single'))
     tell("Type a number to load it, or press Enter to go back:")
-    answer = input(">>> ").strip()
+    answer = ask(">>> ").strip()
     if not (answer.isdigit() and 1 <= int(answer) <= len(saves[:9])):
         return None
     try:
@@ -33,7 +33,7 @@ def start_game():
                           ["c - continue the latest"],
                           ["l - choose a save"],
                           ["n - new game"]], 'round'))
-        answer = input(">>> ").strip().lower()
+        answer = ask(">>> ").strip().lower()
         try:
             if answer in ("c", "continue", ""):
                 return load_game(saves[0]["path"])
@@ -63,7 +63,7 @@ def choose_captain():
             ", " + ending_title(record) if story.get("ending") else "")])
     rows.extend([[""], ["Type a number to play as that captain, or press Enter for a new one."]])
     print(render_box(rows, 'round'))
-    answer = input(">>> ").strip()
+    answer = ask(">>> ").strip()
     if answer.isdigit() and 1 <= int(answer) <= len(found):
         return found[int(answer) - 1][1]
     return None
@@ -98,3 +98,4 @@ from .terminal import display_logo, logo_data, render_box, safe_output  # noqa: 
 from .saves import SaveError, SwitchGame, describe_save, list_saves, load_game  # noqa: E402
 from .captain import list_captain_files  # noqa: E402
 from .story import GAME_TITLES, ending_title  # noqa: E402
+from .terminal import ask  # noqa: E402
