@@ -5,6 +5,8 @@ In Cargo 1 and 2 the money and the equipment were the ship's. In Cargo 3 the cap
 without a ship, so they are the person's; a ship the captain owns spends and earns through
 its owner (Ship.money and Ship.items are the owner's, game/ship.py)."""
 
+import random
+
 # The six things an able hand is hired for, and what a captain is good at
 SKILLS = ("loader", "mechanic", "gunner", "navigator", "steward", "broker")
 SKILL_WORDS = {
@@ -16,6 +18,12 @@ SKILL_WORDS = {
     "broker": "prices and papers",
 }
 SKILL_TOP = 5              # a skill runs from 0 (never done it) to 5 (better than anyone aboard)
+SKILL_LEVELS = ("untried", "green", "able", "handy", "skilled", "master")
+# The practice the next level takes, on a curve: 3, 12, 27, 48 and 75 (a master has about 165
+# behind them). Each captain's way up differs: the practice a level really takes is drawn from
+# half the curve's to half again, most often near it, and is not shown. So every try at a job
+# brings the next level a little likelier, and some get there sooner than others.
+SKILL_SPREAD = (0.5, 1.5)
 WOUNDS_DEAD = 100          # wounds run from 0 (whole) to 100 (dead: the game is over)
 WOUNDS_DOWN = 90           # work and duties put a captain down here, never further: only a fight kills
 LOCKER_UNITS = 10          # an able hand's locker: room for this many units of private trade
@@ -28,6 +36,7 @@ class Person:
         self.research_points = 0
         self.skills = {skill: 0 for skill in SKILLS}
         self.practice = {skill: 0 for skill in SKILLS}  # toward the next level
+        self.next_at = {}               # the practice each skill's next level takes (drawn, unseen)
         self.wounds = 0
         self.gear = []                  # what the captain fights with on foot
         self.locker = {}                # private trade carried as an able hand: {good: units}
@@ -40,25 +49,60 @@ class Person:
     def best_skill(self):
         return max(SKILLS, key=lambda s: (self.skills.get(s, 0), -SKILLS.index(s)))
 
+    def threshold(self, name):
+        """The practice this skill's next level takes: drawn once per level (SKILL_SPREAD)."""
+        drawn = self.__dict__.setdefault("next_at", {})
+        at = drawn.get(name)
+        if not isinstance(at, int) or at < 1:
+            need = skill_need(self.skills.get(name, 0))
+            low, high = need * SKILL_SPREAD[0], need * SKILL_SPREAD[1]
+            at = drawn[name] = max(1, int(round(random.triangular(low, high, need))))
+        return at
+
     def train(self, name, amount=1):
-        """Practice at a skill; enough of it raises the level, and each level asks for more
-        (3, 12, 27, 48, 75: a master has 165 behind them). Returns the new level when it rose,
-        else None."""
+        """Practice at a skill. Once it reaches the level's drawn threshold the level rises and
+        what is left over counts toward the next. Returns the new level when it rose, else None."""
         if name not in SKILLS or self.skills.get(name, 0) >= SKILL_TOP:
             return None
         self.practice[name] = self.practice.get(name, 0) + amount
-        need = 3 * (self.skills.get(name, 0) + 1) ** 2
-        if self.practice[name] >= need:
-            self.practice[name] -= need
+        at = self.threshold(name)
+        if self.practice[name] >= at:
+            self.practice[name] -= at
             self.skills[name] = self.skills.get(name, 0) + 1
+            self.next_at.pop(name, None)
             return self.skills[name]
         return None
+
+    def progress(self, name):
+        """How far toward the next level, against the curve (not the hidden draw): 0 to 1 and
+        on, or None at the top."""
+        level = self.skills.get(name, 0)
+        if level >= SKILL_TOP:
+            return None
+        return self.practice.get(name, 0) / float(skill_need(level))
 
     def locker_units(self):
         return sum(self.locker.values())
 
     def acquire_item(self, item_name):
         self.items[item_name] = self.items.get(item_name, 0) + 1
+
+
+def skill_need(level):
+    """The curve: the practice a level takes on average (3, 12, 27, 48, 75)."""
+    return 3 * (level + 1) ** 2
+
+
+def skill_word(level):
+    return SKILL_LEVELS[max(0, min(len(SKILL_LEVELS) - 1, level))]
+
+
+def progress_word(share):
+    """The way to the next level, in words (Person.progress)."""
+    if share is None:
+        return "as good as it gets"
+    return ("just begun" if share < 0.25 else "on the way" if share < 0.6 else "getting close" if share < 0.9
+            else "any shift now")
 
 
 def person_from_ship(ship):

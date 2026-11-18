@@ -1,37 +1,57 @@
 {
  "format": "storykit",
  "version": 1,
- "about": "The places of 2533: the star systems are Cargo 1's and Cargo 2's (the real nearby stars); their texts for 2533 come with the story.",
+ "about": "The places of 2533: the star systems are Cargo 1's and Cargo 2's (the real nearby stars); their texts for 2533 come with the story. \"quiet\" lines are what look shows at a place when there is nothing to note (lines for any dock are in game/looking.py).",
  "places": {
   "Alpha": {
    "kind": "location",
    "type": "Planet",
    "system": "Alpha Centauri",
-   "ly": 4.4
+   "ly": 4.4,
+   "quiet": [
+    "The Hansa's old hall at Alpha has a museum wing now. Its queue is shorter than the hiring hall's.",
+    "Alpha's ring traffic never stops. The controllers sleep in shifts, and so do the ships."
+   ]
   },
   "Beta": {
    "kind": "location",
    "type": "Planet",
    "system": "Barnard's Star",
-   "ly": 6.0
+   "ly": 6.0,
+   "quiet": [
+    "Beta's farm drums turn overhead, slow as a held breath. Somewhere up there a trading house is burning a surplus.",
+    "The cargo ring smells of wet soil from the drums. Even the steel here is a little green."
+   ]
   },
   "Gamma": {
    "kind": "location",
    "type": "Planet",
    "system": "Ross 154",
-   "ly": 9.7
+   "ly": 9.7,
+   "quiet": [
+    "Lift cages rattle up from the deep levels with a shift's worth of tired faces. Nobody looks at the button for level nine.",
+    "Gamma's company store still prints its prices on paper, so nobody can say they changed overnight."
+   ]
   },
   "Delta": {
    "kind": "location",
    "type": "Planet",
    "system": "Teegarden's Star",
-   "ly": 12.5
+   "ly": 12.5,
+   "quiet": [
+    "A hovertank skims the test strip past the plant, its skirt hissing on the dust. Then another. Then the first one back.",
+    "Geod's Row runs green to the horizon. The land next to it is fenced, and the fence is very well kept."
+   ]
   },
   "Epsilon": {
    "kind": "location",
    "type": "Planet",
    "system": "Epsilon Eridani",
-   "ly": 10.5
+   "ly": 10.5,
+   "quiet": [
+    "Epsilon's promenade still flies the banners of a gala nobody remembers. The holograms on them have faded to ghosts of ghosts.",
+    "The needle office at Epsilon posts its timetable in three calendars: dock time, ship time and 'other'."
+   ]
   },
   "Omega XIV": {
    "kind": "location",

@@ -7,7 +7,7 @@ from . import look
 
 # Define your logo data ONCE, at the module level:
 logo_data = [
-    "╔══════ C Δ R G Ω ]|[ ══════╗",
+    "╔═══════ C Δ R G Ω ≡ ═══════╗",
     "║     Space Trading Saga    ║",
     "╚═══════════════════════════╝"
 ]
@@ -84,8 +84,11 @@ def pad_to(text, width):
 
 def wrap_text(text, width):
     """Word-wrap to `width` columns; words longer than a line are split. Leading spaces
-    are kept, on every line the text wraps to (an indented line stays indented)."""
+    are kept, on every line the text wraps to (an indented line stays indented). A line that
+    fits is kept as written, so columns lined up with spaces stay lined up."""
     text = str(text)
+    if "\n" not in text and visible_len(text.rstrip()) <= int(width):
+        return [text.rstrip()]
     indent = len(text) - len(text.lstrip(" "))
     if indent and indent < int(width) // 2:
         return [" " * indent + line for line in wrap_text(text.lstrip(" "), int(width) - indent)]
@@ -282,8 +285,8 @@ def hold_unread():
 
 def short_logo():
     """The logo in the stats box: CΔRGΩ≡, the triple bar standing for ]|[ (more compact in a
-    box), or plain letters where Greek cannot show. The intro and the README keep the full
-    C Δ R G Ω ]|[."""
+    box), or plain letters where Greek cannot show. The intro and the README spell it out:
+    C Δ R G Ω ≡."""
     return "CARGO]|[" if plain_terminal() else "CΔRGΩ≡"
 
 
@@ -292,7 +295,8 @@ def display_logo(logo, centered=True):
     terminal_width = terminal_columns()
     shown = []
     for line in logo:
-        if plain_terminal():
+        if plain_terminal():         # C A R G O ]|[ in plain letters, the frame as wide
+            line = line.replace("═ C Δ R G Ω ≡ ═", " C Δ R G Ω ]|[ ")
             line = line.translate(str.maketrans("╔╗╚╝═║Δ", "++++-|A")).replace("Ω", "O")
         if centered:
             padding = max(0, (terminal_width - visible_len(line)) // 2)

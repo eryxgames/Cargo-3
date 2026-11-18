@@ -70,6 +70,7 @@ expect(sites == {"Alpha": ["ring"], "Beta": ["ring", "biomass"], "Gamma": ["ring
 at(game, "Delta")
 expect(game.site_name(cargo.SITES[3]) == "Geod's Row", "Delta's farm drums are Geod's Row")
 plant = cargo.SITES[1]
+game.person.next_at["mechanic"] = 50            # no level yet: this test counts practice
 money, turn, points = game.person.money, game.turn, game.story_manager.plot_points
 with headless.quiet():
     outcome = game.work_shift(plant, plant["jobs"][0], roll=0.0)
@@ -237,8 +238,42 @@ for name, show, answers in (("work", game.handle_work, [""]), ("passage", game.h
     io.queue.clear()
     text = screen(game, 36, lambda: (io.feed(answers), show()))
     expect(widest(text) <= 36, "the %s screen fits 36 columns (%d)" % (name, widest(text)))
+game.person.skills["loader"], game.person.practice["loader"] = 1, 10
+game.person.next_at.pop("loader", None)
+text = " ".join(screen(game, 80, lambda: (io.feed([""]), game.show_person())).split())
+bar = cargo.meter(10 / 12.0)
+expect(("Loader green %s" % bar) in text and ("Mechanic untried %s" % cargo.meter(0)) in text,
+       "the skills screen names each level and shows the way to the next: %s" % text[:300])
+expect(cargo.meter(0.83) in ("████░", "####-") and cargo.meter(None) in ("█████", "#####"),
+       "the bar fills with practice and is full at the top")
 expect("Would sign you again: Ola Plumb" in " ".join(screen(game, 80, lambda: (io.feed([""]), game.show_person())).split()),
        "the skills screen names captains who would sign you again")
+
+# ---- look, where there is nothing to note -----------------------------------------------------------------
+game, io = headless.new_game(cargo)
+at(game, "Gamma")
+own = cargo.story_data()["places"]["Gamma"]["quiet"]
+seen = set()
+for turn in range(40):
+    game.turn = turn
+    if game.sights_here():
+        continue
+    line = game.quiet_line()
+    expect(line == game.quiet_line(), "a quiet look shows the same line all turn")
+    expect(line in own or line in cargo.QUIET, "a quiet line is Gamma's own or one for any dock: %r" % line)
+    seen.add(line)
+expect(len(seen) >= 4 and seen & set(own), "quiet looks vary from turn to turn, Gamma's own among them: %d" % len(seen))
+for name in ("Alpha", "Beta", "Gamma", "Delta", "Epsilon"):
+    expect(len(cargo.story_data()["places"][name].get("quiet", [])) >= 2, "%s has quiet lines of its own" % name)
+game.turn = next(t for t in range(40) if not (setattr(game, "turn", t) or game.sights_here()))
+io.queue.clear()
+text = " ".join(screen(game, 36, lambda: (io.feed([""]), game.handle_look())).replace("║", " ").replace("|", " ").split())
+expect(" ".join(game.quiet_line().split()) in text and widest(screen(game, 36, lambda: (io.feed([""]), game.handle_look()))) <= 36,
+       "look shows the quiet line, within 36 columns")
+
+# ---- the logo -----------------------------------------------------------------------------------------------
+expect(len({len(line) for line in cargo.logo_data}) == 1 and "═ C Δ R G Ω ≡ ═" in cargo.logo_data[0],
+       "the intro frame spells out C Δ R G Ω ≡, every line as wide")
 
 # ---- what was just shown stays until it is read ---------------------------------------------------------
 game, io = headless.new_game(cargo)

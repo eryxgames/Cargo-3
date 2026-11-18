@@ -5,7 +5,7 @@ story and the records touch still works when there is no ship at all.
 
     python3 tools/person.py
 """
-import os, sys, tempfile
+import os, random, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -40,13 +40,40 @@ expect(loose.money == 1000 and loose.items == {} and loose.research_points == 0,
 # ---- skills -------------------------------------------------------------------------------------
 fresh = cargo.Person()
 expect(set(fresh.skills) == set(cargo.SKILLS) and not any(fresh.skills.values()), "six skills, all at 0")
-rose = [fresh.train("loader") for _ in range(3)]
-expect(rose == [None, None, 1] and fresh.skill("loader") == 1, "three turns of practice make a level: %s" % rose)
-for _ in range(200):
-    fresh.train("loader")
-expect(fresh.skill("loader") == cargo.SKILL_TOP, "a skill stops at the top")
-expect(fresh.train("knitting") is None, "there is no such skill as knitting")
-expect(fresh.best_skill() == "loader", "the best skill is the highest")
+expect([cargo.skill_need(level) for level in range(5)] == [3, 12, 27, 48, 75], "the curve: 3, 12, 27, 48, 75")
+expect(cargo.SKILL_LEVELS == ("untried", "green", "able", "handy", "skilled", "master"), "the levels' names")
+random.seed(7)
+for level in range(5):
+    need = cargo.skill_need(level)
+    tries = []
+    for _ in range(300):                        # many captains, each trained one practice at a time
+        person = cargo.Person()
+        person.skills["loader"] = level
+        done = 0
+        while person.train("loader") is None:
+            done += 1
+        tries.append(done + 1)
+    low, high = min(tries), max(tries)
+    mean = sum(tries) / float(len(tries))
+    expect(need * 0.5 - 1 <= low and high <= need * 1.5 + 1, "level %d comes between half and half again "
+           "the curve's %d practice: %d-%d" % (level + 1, need, low, high))
+    expect(abs(mean - need) <= max(0.6, need * 0.08), "level %d comes after about %d practice: %.1f" % (level + 1, need, mean))
+    if level >= 1:
+        expect(high - low >= need * 0.4, "some captains get to level %d sooner than others: %d-%d" % (level + 1, low, high))
+person = cargo.Person()
+person.next_at["loader"] = 4
+rose = [person.train("loader", 3), person.train("loader", 3)]
+expect(rose == [None, 1] and person.practice["loader"] == 2 and "loader" not in person.next_at,
+       "the level rises at the drawn threshold, and what is left over counts on: %s %s" % (rose, person.practice))
+expect(person.progress("loader") == 2 / 12.0 and cargo.progress_word(person.progress("loader")) == "just begun",
+       "progress is shown against the curve, in words")
+for _ in range(400):
+    person.train("loader")
+expect(person.skill("loader") == cargo.SKILL_TOP and person.progress("loader") is None, "a skill stops at the top")
+expect(person.train("knitting") is None, "there is no such skill as knitting")
+expect(person.best_skill() == "loader", "the best skill is the highest")
+person.next_at["mechanic"] = "lots"             # a damaged save
+expect(isinstance(person.threshold("mechanic"), int), "a damaged threshold is drawn again")
 
 # ---- the story and the records without a ship ------------------------------------------------------
 game, io = headless.new_game(cargo)

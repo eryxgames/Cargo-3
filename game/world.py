@@ -1010,12 +1010,14 @@ from .actions import (  # noqa: E402,F401
 from .ship import (  # noqa: E402,F401
     Ship)
 from .person import (  # noqa: E402,F401
-    LOCKER_UNITS, SKILL_TOP, SKILL_WORDS, SKILLS, WOUNDS_DEAD, WOUNDS_DOWN, Person, person_from_ship)
+    LOCKER_UNITS, SKILL_LEVELS, SKILL_SPREAD, SKILL_TOP, SKILL_WORDS, SKILLS, WOUNDS_DEAD, WOUNDS_DOWN, Person,
+    person_from_ship, progress_word, skill_need, skill_word)
 from .commands import (  # noqa: E402,F401
     COMMODITIES, GLOBAL_COMMANDS, GLOBAL_WORDS, LocationCommands, commodity_from)
+from .looking import QUIET  # noqa: E402,F401
 from .hand import (  # noqa: E402,F401
     CLEAN_VOYAGE_POINTS, DUTIES, FIRST_SHIFT_POINTS, HAND_COMMANDS, KINDS, LEG_WAGE, NAMED_SHIPS,
-    PASSAGE_FARE, SHIP_NAMES, SITES, STARTING_PURSE, TROUBLE, VOYAGE_POINTS, skill_word, wound_word)
+    PASSAGE_FARE, SHIP_NAMES, SITES, STARTING_PURSE, TROUBLE, VOYAGE_POINTS, meter, wound_word)
 from .encounters import (  # noqa: E402,F401
     ENEMIES, FIGHT_TRICKS, SITUATIONS, odds_word)
 from .events import (  # noqa: E402,F401

@@ -6,7 +6,7 @@ until they are trusted with a bridge again.
 
 ```console
 >>>
-        ╔══════ C Δ R G Ω ]|[ ══════╗
+        ╔═══════ C Δ R G Ω ≡ ═══════╗
         ║     Space Trading Saga    ║
         ╚═══════════════════════════╝
                Version 3.0.0-dev

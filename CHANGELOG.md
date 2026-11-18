@@ -9,8 +9,8 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
   styles, every screen from 36 columns.
 - CLIo 2.2.1's layer in `kit/`, now with banners, pictures (pixels, blocks, braille, LED,
   ASCII) and animation effects.
-- The logo reads C Δ R G Ω ]|[ in the intro and the README; the stats box shows the more
-  compact CΔRGΩ≡, the triple bar standing for ]|[ (CARGO]|[ on plain terminals).
+- The logo: C Δ R G Ω ≡ in the intro and the README, CΔRGΩ≡ in the stats box; the triple bar
+  stands for Cargo 1 and 2's ]|[. Plain terminals show C A R G O ]|[ and CARGO]|[.
 - The captain is a person apart from the ship (`game/person.py`): money, equipment and
   research points are the captain's, with six skills, wounds, gear for fights on foot, a locker
   and a berth. A ship the captain owns spends and earns through them. The story, the chapters'
@@ -27,8 +27,16 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
     the way a duty comes up, handled boldly or carefully at odds given in words, and riskier
     ships find trouble. Pay is on arrival; a voyage left half-way changes nothing;
   - `passage` (pa), `locker` (lo): ten units of private trade, `skills` (sk);
-  - skills rise with practice (3, 12, 27, 48 and 75 for the five levels); wounds heal with time
-    and faster with rest; work and duties can put a captain down but not kill.
+  - skills rise with practice through six levels: untried, green, able, handy, skilled, master.
+    Each level takes more practice, on a curve (3, 12, 27, 48 and 75 on average), and each
+    captain's way up differs: the practice a level really takes is drawn from half the curve's to
+    half again and not shown, so every try makes the next level likelier and some get there
+    sooner. `skills` shows each level with a bar toward the next. A hand playing steadily is
+    able at a skill or two by turn 40, handy by turn 120;
+  - wounds heal with time and faster with rest; work and duties can put a captain down but not
+    kill;
+  - `look` where there is nothing to note shows a line of the dock: each planet has its own,
+    and there are more for any dock, one a turn.
 - The stats box without a ship: CΔRGΩ≡, turn, money, the place, the chapter and plot
   points, with wounds and the locker when there are any. `help` explains the hand's game.
 - The story sees `afloat`, `wounds`, `voyages`, `shifts` (and by site), the six skills, each
@@ -53,6 +61,7 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
     ship (its lists say it never came out of the needle, and Korai would know where needles
     go), about who else is alive, or for a shift beside it. Finding Adit ends chapter I.
 - Story effects can train a skill (`skill.loader`) and wound (`wounds`).
+- A line that fits its box is kept as written (columns lined up with spaces stay lined up).
 - Messages stay until read: every answer goes through one place (`terminal.ask`), and a turn's
   screen waits for Enter before clearing when a message since the last answer is still unread
   (a talk at the docks, a shift's result, a voyage's pay).

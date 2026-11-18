@@ -91,7 +91,6 @@ VOYAGE_POINTS = 2           # plot points for a voyage worked to its end
 CLEAN_VOYAGE_POINTS = 1     # and one more when every duty went well
 HEAL_PER_TURN = 2           # wounds heal this much a turn
 HEAL_RESTING = 10           # and this much on a turn of rest
-SKILL_LEVELS = ("untried", "green", "able", "handy", "skilled", "master")
 
 # Duties on the way, by skill: what happens, and two ways to handle it:
 # (what you do, the base chance it goes well, bold or careful)
@@ -150,8 +149,11 @@ TROUBLE = {
 TROUBLE_CHANCE = 0.25       # a turn's chance of trouble, times the kind's risk
 
 
-def skill_word(level):
-    return SKILL_LEVELS[max(0, min(len(SKILL_LEVELS) - 1, level))]
+def meter(share, width=5):
+    """The way to the next level as a bar (full at the top): CLIo's bar glyphs, or # and -."""
+    filled = width if share is None else max(0, min(width, int(share * width)))
+    full, empty = ("#", "-") if plain_terminal() else ("█", "░")
+    return full * filled + empty * (width - filled)
 
 
 def wound_word(wounds):
@@ -636,9 +638,12 @@ class HandMixin:
         rows = [[self.player_name], [""],
                 ["Wounds: %d%% (%s)" % (person.wounds, wound_word(person.wounds))],
                 ["Money: %s" % self.format_money(int(person.money))], [""], ["Skills"]]
+        rows.extend([line] for line in self.word_wrap(
+            "The bar fills with practice. The next level comes near its end: sooner for some, later for others."))
+        rows.append([""])
         for skill in SKILLS:
             level = person.skill(skill)
-            rows.append(["%s: %s" % (skill.capitalize(), skill_word(level))])
+            rows.append(["%-9s %-7s %s" % (skill.capitalize(), skill_word(level), meter(person.progress(skill)))])
             rows.extend([["  " + line] for line in self.word_wrap(SKILL_WORDS[skill], box_inner_width() - 4)])
         if person.gear:
             rows.extend([[""], ["Gear: " + ", ".join(person.gear)]])
@@ -677,8 +682,8 @@ class HandMixin:
 
 # The game's other modules, imported last so that the modules can refer to each other.
 from .story import story_data  # noqa: E402
-from .terminal import box_inner_width, short_logo  # noqa: E402
+from .terminal import box_inner_width, plain_terminal, short_logo  # noqa: E402
 from .commands import COMMODITIES, GLOBAL_COMMANDS, commodity_from  # noqa: E402
 from .encounters import odds_word  # noqa: E402
-from .person import LOCKER_UNITS, SKILL_WORDS, SKILLS, WOUNDS_DOWN  # noqa: E402
+from .person import LOCKER_UNITS, SKILL_WORDS, SKILLS, WOUNDS_DOWN, skill_word  # noqa: E402
 from .terminal import ask  # noqa: E402

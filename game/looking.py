@@ -26,6 +26,23 @@ LOADER_WEAR = 0.5           # modules wear this much with Adit's patch routine
 NEEDLE_TALK_RISK = 0.7      # trouble on a needle with needle-talk
 CHARTS_RESEARCH = 1.15      # research on the way with the Institute's charts
 
+# What `look` shows when there is nothing to note: one line a turn, the place's own lines
+# (story places, "quiet") twice as often as these, which suit any dock
+QUIET = [
+    "Nothing here needs you. The dock goes on without you, as docks do.",
+    "A loader crane swings past overhead, carrying somebody else's luck.",
+    "The departures board flickers through arrivals and departures. None of them are yours.",
+    "Somebody has scratched a date into the bulkhead: 2461. Under it, smaller: still waiting.",
+    "A vending machine sells coffee at Debacle prices and apologises in four languages.",
+    "Two dock hands argue over a crate nobody wants to sign for. Nobody asks you.",
+    "The air smells of coolant and someone's lunch. Nothing else is happening, loudly.",
+    "A cleaning drone circles your boots twice, decides you are not litter, and moves on.",
+]
+
+
+import random  # noqa: E402
+import zlib  # noqa: E402
+
 
 class LookMixin:
     """The Game's look and think commands. Game inherits it (game/world.py)."""
@@ -87,7 +104,8 @@ class LookMixin:
             for number, nid in enumerate(sights, 1):
                 rows.extend([line] for line in self.option_lines(number, self.sight_label(nid)))
         else:
-            rows.extend([[""], ["Nothing else here catches your eye."]])
+            rows.append([""])
+            rows.extend([line] for line in self.word_wrap(self.quiet_line()))
         print(self.create_box(rows, 'double'))
         if not sights:
             return
@@ -96,6 +114,14 @@ class LookMixin:
         if answer is None:
             return
         self.story.play(sights[int(answer) - 1])
+
+    def quiet_line(self):
+        """A line for a look that finds nothing: the same all turn, another the next."""
+        place = self.current_location.name
+        own = [line for line in (story_data()["places"].get(place) or {}).get("quiet") or []
+               if isinstance(line, str)]
+        pick = random.Random(zlib.crc32(("%s:%d" % (place, self.turn)).encode("utf-8")))
+        return self.story.fill(pick.choice(own * 2 + QUIET))
 
     def sight_label(self, nid):
         node = story_data()["nodes"][nid]

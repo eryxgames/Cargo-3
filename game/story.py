@@ -447,6 +447,7 @@ class StoryRuntime:
                 ship.attack = max(1, ship.attack + value)
             elif key.startswith("skill.") and key[6:] in person.skills:
                 person.skills[key[6:]] = max(0, min(SKILL_TOP, person.skills[key[6:]] + value))
+                person.__dict__.setdefault("next_at", {}).pop(key[6:], None)   # a new level, a new draw
             elif key == "wounds":
                 person.wounds = max(0, min(WOUNDS_DEAD, person.wounds + value))
             elif key.startswith("standing.") or key == "dawn_trust":
