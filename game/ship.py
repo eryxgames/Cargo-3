@@ -1,14 +1,36 @@
-"""The ship: hold, money, crew, items, hull and damage."""
+"""The ship: hold, crew, hull, modules and damage. Its money, items and research points are
+its owner's (game/person.py): the captain's, when the captain owns the ship."""
 
-# Define the Ship class
+
+def _owners(name):
+    """An attribute the ship's owner holds: read and written through the owner when there is
+    one (a ship without an owner, as in a test, keeps its own)."""
+    def get(self):
+        owner = self.__dict__.get("owner")
+        return getattr(owner, name) if owner is not None else self.__dict__.get(name)
+
+    def put(self, value):
+        owner = self.__dict__.get("owner")
+        if owner is not None:
+            setattr(owner, name, value)
+        else:
+            self.__dict__[name] = value
+    return property(get, put)
+
+
 class Ship:
+    money = _owners("money")
+    items = _owners("items")
+    research_points = _owners("research_points")
+
     # Passenger reputation runs from 0 to 100 (it multiplies fares and VIP rewards)
     passenger_reputation = property(
         lambda self: self.__dict__.get("passenger_reputation", 0),
         lambda self, value: self.__dict__.__setitem__("passenger_reputation", max(0, min(100, value))))
 
-    def __init__(self, game=None):
+    def __init__(self, game=None, owner=None):
         self.game = game
+        self.owner = owner
         # Basic cargo and resources
         self.cargo = {
             'tech': 0,
@@ -18,9 +40,11 @@ class Ship:
         }
         self.special_cargo = {}     # what the story puts aboard: {name: units of hold}
         self.special_labels = {}    # and what to call it: {name: words}
-        self.money = 1000
+        if owner is None:
+            self.money = 1000
+            self.research_points = 0
+            self.items = {}
         self.damage = 0
-        self.research_points = 0
 
         # Ship stats
         self.attack = 1
@@ -29,7 +53,6 @@ class Ship:
 
         # Equipment and upgrades
         self.upgrades = []
-        self.items = {}
 
         # Upgrade costs
         self.upgrade_costs = {

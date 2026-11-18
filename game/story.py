@@ -244,10 +244,10 @@ class StoryRuntime:
         origin = self.origin or {}
         values = {
             "player_name": game.player_name, "rank": game.rank,
-            "money": game.format_money(game.ship.money),
+            "money": game.format_money(game.person.money),
             "trades_completed": game.trades_completed,
-            "combat_victories": game.ship.combat_victories.get("total", 0),
-            "research_points": game.ship.research_points,
+            "combat_victories": game.ship.combat_victories.get("total", 0) if game.ship is not None else 0,
+            "research_points": game.person.research_points,
             "discoveries": len(game.discovered_locations),
             "place": game.current_location.name, "turn": game.turn,
         }
@@ -393,9 +393,19 @@ class StoryRuntime:
 
     # -- effects -----------------------------------------------------------------
     def apply(self, effects):
+        """Do what a story node does. Money, items and research are the captain's; what only a
+        ship can take (crew, cargo, passenger reputation, guns) waits for nobody when there is
+        no ship: it is noted in `shipless` for the checks, and nothing happens."""
         game = self.game
         ship = game.ship
+        person = game.person
         for key, value in (effects or {}).items():
+            if ship is None and (key in SHIP_EFFECTS or key.startswith("cargo.") or (
+                    key == "give" and isinstance(value, dict) and "crew" in value)):
+                self.note_shipless(key)
+                if key != "give":
+                    continue
+                value = {k: v for k, v in value.items() if k != "crew"}
             if key == "set":
                 for flag in _as_list(value):
                     game.story_manager.story_states[flag] = True
@@ -406,8 +416,8 @@ class StoryRuntime:
                 for name, members in value.items():
                     for member in _as_list(members):
                         if name == "items":
-                            held = ship.items.get(member, 0)
-                            ship.items[member] = (held if isinstance(held, int) else 0) + 1
+                            held = person.items.get(member, 0)
+                            person.items[member] = (held if isinstance(held, int) else 0) + 1
                         elif name == "researched":
                             game.research.unlocked_options.add(member)
                         elif name == "unlocked_types":
@@ -424,11 +434,11 @@ class StoryRuntime:
             elif key == "code":
                 story_hook(game, value)
             elif key == "money":
-                ship.money += value
+                person.money += value
             elif key == "plot_points":
                 game.story_manager.plot_points += value
             elif key == "research_points":
-                ship.research_points += value
+                person.research_points += value
             elif key == "passenger_reputation":
                 ship.passenger_reputation += value
             elif key == "passengers_transported":
@@ -440,6 +450,12 @@ class StoryRuntime:
             elif key.startswith("cargo.") and key[6:] in ship.cargo:
                 good = key[6:]
                 ship.cargo[good] = max(0, ship.cargo[good] + (min(value, ship.hold_room(good)) if value > 0 else value))
+
+    def note_shipless(self, what):
+        """A story effect that needs a ship came while the captain has none (for the checks)."""
+        noted = self.__dict__.setdefault("shipless", [])
+        if what not in noted:
+            noted.append(what)
 
     def cue(self, name):
         if name:
@@ -522,7 +538,7 @@ class StoryRuntime:
         game = self.game
         chars = data["characters"]
         rows = [["Captain's log"], [""]]
-        aboard = getattr(game.ship, "special_cargo", {})
+        aboard = getattr(game.ship, "special_cargo", {}) if game.ship is not None else {}
         if aboard:
             labels = getattr(game.ship, "special_labels", {})
             rows.append(["Aboard"])
@@ -564,9 +580,12 @@ def play_cue(name):
 
 
 def _repair_at_cost(game):
+    if game.ship is None:
+        game.story.note_shipless("hull repaired at cost")
+        return
     cost = int(game.ship.damage * game.ship.repair_rate() * 2)
-    if game.ship.damage and game.ship.money >= cost:
-        game.ship.money -= cost
+    if game.ship.damage and game.person.money >= cost:
+        game.person.money -= cost
         game.ship.damage = 0
         game.display_simple_message("Hull repaired for %s credits." % game.format_money(cost))
 
@@ -574,6 +593,11 @@ def _repair_at_cost(game):
 def _open_portal(game):
     game.open_portal()
 
+
+# what only a ship can take: story effects, and the first word of story hooks ('crew joins' and
+# 'crew leaves' too). Without a ship they do nothing (StoryRuntime.note_shipless).
+SHIP_EFFECTS = ("passenger_reputation", "combat_rating")
+SHIP_HOOKS = ("fight", "stow", "unstow", "damage", "repair")
 
 STORY_HOOKS = {
     "hull repaired at cost": _repair_at_cost,
@@ -600,6 +624,10 @@ def story_hook(game, value):
         return hook(game)
     words = str(value).split()
     ship = game.ship
+    person = game.person
+    if ship is None and words and (words[0] in SHIP_HOOKS or words[:2] in (["crew", "joins"], ["crew", "leaves"])):
+        game.story.note_shipless(" ".join(words[:2]))
+        return None
     if len(words) in (2, 4) and words[0] == "fight" and words[1] in ENEMIES:
         help_ = int(words[3]) if len(words) == 4 and words[2] == "edge" else 0
         outcome = game.encounter(words[1], hunted=True, edge=help_)
@@ -609,12 +637,12 @@ def story_hook(game, value):
     elif words[:2] == ["lose", "money"]:
         share = float(words[2])
         floor_ = int(words[4]) if len(words) > 4 and words[3] == "min" else 0
-        loss = min(int(ship.money), max(floor_, int(ship.money * share)))
-        ship.money -= loss
+        loss = min(int(person.money), max(floor_, int(person.money * share)))
+        person.money -= loss
         game.display_simple_message("It costs you %s." % game.format_money(loss), 2, color='31')
     elif words[:2] == ["lose", "research"]:
-        loss = int(ship.research_points * float(words[2]))
-        ship.research_points -= loss
+        loss = int(person.research_points * float(words[2]))
+        person.research_points -= loss
         game.display_simple_message("%d research points are gone with the logs." % loss, 2, color='31')
     elif words[:2] == ["buy", "bonds"]:
         game.buy_bonds(int(words[2]))
@@ -645,16 +673,19 @@ def story_hook(game, value):
             label = getattr(ship, "special_labels", {}).pop(words[1], words[1])
             game.display_simple_message("Unloaded: %s (%d units of hold free again)." % (label, units), 2)
     elif words[0] == "take" and len(words) == 2:
-        if isinstance(ship.items.get(words[1]), int) and ship.items[words[1]] > 1:
-            ship.items[words[1]] -= 1
+        if isinstance(person.items.get(words[1]), int) and person.items[words[1]] > 1:
+            person.items[words[1]] -= 1
         else:
-            ship.items.pop(words[1], None)
+            person.items.pop(words[1], None)
     elif words[:2] == ["front", "berths"] and len(words) == 3:
         game.front_berths = getattr(game, "front_berths", 0) + int(words[2])
         game.display_simple_message("The needle office owes you %d berth%s at the front, at the middle's fare."
                                     % (game.front_berths, "" if game.front_berths == 1 else "s"), 2, color='32')
+    elif words[0] == "profit" and len(words) == 2 and ship is None:   # pay, with no ship to count it
+        person.money += int(words[1])
+        game.display_simple_message("Paid: %s credits." % format(int(words[1]), ","), 2)
     elif words[0] == "profit" and len(words) == 2:      # contract pay that counts as trade profit
-        ship.money += int(words[1])
+        person.money += int(words[1])
         ship.trade_profits["contracts"] = ship.trade_profits.get("contracts", 0) + int(words[1])
         game.display_simple_message("Contract paid: %s credits (counts as trade profit)." % format(int(words[1]), ","), 2)
     elif words[0] == "damage" and len(words) == 2:

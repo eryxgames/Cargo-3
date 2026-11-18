@@ -23,6 +23,9 @@ grep -E "CRASH|unfilled|FAIL" /tmp/cargo3-scenes.txt | head; tail -1 /tmp/cargo3
 echo "== the engine's systems, one by one"
 $PY $T/systems.py || fail=1
 
+echo "== the captain as a person, apart from the ship"
+$PY $T/person.py || fail=1
+
 echo "== sound: songs composed and rendered, places, fights, effects, sound off (into a recorder)"
 $PY $T/sound.py || fail=1
 

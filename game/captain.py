@@ -161,6 +161,8 @@ class CaptainMixin:
     def captain_record(self, event="export"):
         """This captain as a record the other Cargo games can read."""
         story = self.story_manager
+        ship = self.ship
+        person = self.person
         entry = {"game": GAME_ID, "event": event, "turn": self.turn,
                  "at": time.strftime("%Y-%m-%d")}
         record = {
@@ -172,16 +174,18 @@ class CaptainMixin:
             "rank": self.rank,
             "career": {
                 "turns": self.turn,
-                "money": int(self.ship.money),
+                "money": int(person.money),
                 "trades": self.trades_completed,
-                "victories": self.ship.combat_victories.get("total", 0),
+                "victories": ship.combat_victories.get("total", 0) if ship is not None else 0,
                 "passengers": self.reputation_manager.total_passengers,
-                "reputation": self.ship.passenger_reputation,
+                "reputation": ship.passenger_reputation if ship is not None else 0,
                 "locations": len(self.known_locations),
-                "research_points": self.ship.research_points,
+                "research_points": person.research_points,
             },
             "research": sorted(self.research.unlocked_options),
-            "ship": {"attack": self.ship.attack, "defense": self.ship.defense, "speed": self.ship.speed},
+            # (a captain without a ship carries no ship's numbers)
+            "ship": ({"attack": ship.attack, "defense": ship.defense, "speed": ship.speed}
+                     if ship is not None else {"attack": 0, "defense": 0, "speed": 0}),
             "story": {
                 "chapter": story.current_chapter or "",
                 "completed": sorted(story.completed_chapters),
@@ -189,7 +193,7 @@ class CaptainMixin:
                 "flags": self.record_flags(),
                 "plot_points": story.plot_points,
             },
-            "hold": {str(item): int(count) for item, count in self.ship.items.items()
+            "hold": {str(item): int(count) for item, count in person.items.items()
                      if isinstance(count, int) and count > 0},
             "achievements": sorted(getattr(self, "achievements", {})),
             "standing": {faction: self.standing_of(faction) for faction in ("hansa", "mandate", "concord")},

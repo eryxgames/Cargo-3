@@ -45,8 +45,8 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         self.locations = self.generate_initial_locations()  # Generate all locations
         self.current_location = random.choice([loc for loc in self.locations if isinstance(loc, Planet)])  # Start at a planet
         self.shop = Shop()  # Initialize the shop system
-        self.ship = Ship()
-        self.ship.game = self  # connect ship to game
+        self.person = Person()      # the captain: money, things carried, skills (game/person.py)
+        self.ship = Ship(game=self, owner=self.person)
         self.turn = 0
         self.known_locations = [self.current_location.name]
         self.event_log = []
@@ -114,19 +114,22 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
     # The story's view of the game
     # ------------------------------------------------------------------
     def story_snapshot(self):
-        """This moment of play, as the story's conditions see it (storykit State)."""
+        """This moment of play, as the story's conditions see it (storykit State). Without a
+        ship, the ship's own numbers are 0."""
         ship = self.ship
+        person = self.person
         sm = self.story_manager
+        afloat = ship is not None
         stats = {
-            "money": int(ship.money),
+            "money": int(person.money),
             "plot_points": sm.plot_points,
-            "research_points": ship.research_points,
+            "research_points": person.research_points,
             "trades_completed": self.trades_completed,
-            "trade_profit": int(sum(ship.trade_profits.values())),
+            "trade_profit": int(sum(ship.trade_profits.values())) if afloat else 0,
             "passengers_transported": self.reputation_manager.total_passengers,
-            "passenger_reputation": ship.passenger_reputation,
-            "combat_rating": ship.attack + ship.defense + ship.speed,
-            "combat_victories": ship.combat_victories.get("total", 0),
+            "passenger_reputation": ship.passenger_reputation if afloat else 0,
+            "combat_rating": ship.attack + ship.defense + ship.speed if afloat else 0,
+            "combat_victories": ship.combat_victories.get("total", 0) if afloat else 0,
             "discovered": len(set(self.discovered_locations)),
             "mining_platforms": sum(len(loc.mining_platforms) for loc in self.locations),
             "controlled_locations": sum(1 for loc in self.locations if hasattr(loc, "controlled_by_player")),
@@ -134,20 +137,20 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             "turns_since_vip": self.turn - self.reputation_manager.last_vip_spawn,
             "best_cabin": max([m.comfort_level for m in getattr(ship, "passenger_modules", [])
                                if hasattr(m, "comfort_level")] or [0]),
-            "crew_size": len(ship.crew),
+            "crew_size": len(ship.crew) if afloat else 0,
             "hansa_bonds": getattr(self, "hansa_bonds", 0),
-            "hull_class": ship.hull,
-            "modules_fitted": len(ship.modules),
-            "hold_free": ship.hold_room("tech"),
+            "hull_class": ship.hull if afloat else 0,
+            "modules_fitted": len(ship.modules) if afloat else 0,
+            "hold_free": ship.hold_room("tech") if afloat else 0,
             "dues_arrears": getattr(self, "dues_arrears", 0),
             "dawn_trust": getattr(self, "dawn_trust", 0),
         }
         for good in ('tech', 'agri', 'salt', 'fuel'):
-            stats["cargo." + good] = ship.cargo[good]
+            stats["cargo." + good] = ship.cargo[good] if afloat else 0
         for faction in FACTIONS:
             stats["standing." + faction] = self.standing_of(faction)
         for kind in STORY_VICTORY_TYPES[1:]:
-            stats["combat_victories." + kind] = ship.combat_victories.get(kind, 0)
+            stats["combat_victories." + kind] = ship.combat_victories.get(kind, 0) if afloat else 0
         for building in STORY_BUILDINGS:
             stats["buildings." + building] = sum(loc.buildings.count(building) for loc in self.locations)
         for place_type in STORY_PLACE_TYPES:
@@ -169,9 +172,9 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             "stats": stats,
             "sets": {
                 "researched": sorted(self.research.unlocked_options),
-                "items": sorted(k for k, v in ship.items.items() if isinstance(v, int) and v > 0),
+                "items": sorted(k for k, v in person.items.items() if isinstance(v, int) and v > 0),
                 "unlocked_types": sorted(getattr(self, "unlocked_location_types", set())),
-                "crew": sorted(ship.crew),
+                "crew": sorted(ship.crew) if afloat else [],
             },
             "flags": sorted(f for f, on in sm.story_states.items() if on),
             "done": sorted(done),
@@ -230,7 +233,15 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         self.front_berths = getattr(self, "front_berths", 0)
         if not isinstance(getattr(self, "achievements", None), dict):
             self.achievements = {}
-        if not isinstance(self.ship.__dict__.get("modules"), list):
+        if not isinstance(getattr(self, "person", None), Person):
+            self.person = Person()
+        ship = self.ship
+        if ship is not None and ship.__dict__.get("owner") is not self.person:
+            if "money" in ship.__dict__:
+                # a save from before the captain was a person: the ship's money and items are theirs
+                self.person = person_from_ship(ship)
+            ship.owner = self.person
+        if self.ship is not None and not isinstance(self.ship.__dict__.get("modules"), list):
             self.ship.__dict__["modules"] = []      # a save from before the ship had modules
         sm = getattr(self, "story_manager", None)
         if sm is not None and isinstance(getattr(sm, "chapters", None), dict):
@@ -837,7 +848,7 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             self.update_rank()
 
             # Check game over conditions
-            if self.ship.money <= 0 and self.ship.is_empty_cargo():
+            if self.person.money <= 0 and self.ship.is_empty_cargo():
                 self.display_simple_message("Game Over: No money and no cargo left.", 2)
                 self.display_score()
                 break
@@ -875,8 +886,8 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
                     self.close_record("tycoon")
                     break
                 elif answer == '3':
-                    if self.ship.money >= 1500:
-                        self.ship.money -= 1500
+                    if self.person.money >= 1500:
+                        self.person.money -= 1500
                         self.open_portal()
                     else:
                         self.display_simple_message("Not enough money for the coordinate.")
@@ -924,8 +935,8 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             discovery_reward = 1000 * (self.story_manager.get_chapter_number() + 1)
             research_reward = 20 * (self.story_manager.get_chapter_number() + 1)
 
-            self.ship.money += discovery_reward
-            self.ship.research_points += research_reward
+            self.person.money += discovery_reward
+            self.person.research_points += research_reward
 
             # Check for story progression
             self.story_manager.check_discovery_milestone(location)
@@ -976,6 +987,8 @@ from .actions import (  # noqa: E402,F401
     Action)
 from .ship import (  # noqa: E402,F401
     Ship)
+from .person import (  # noqa: E402,F401
+    LOCKER_UNITS, SKILL_TOP, SKILL_WORDS, SKILLS, WOUNDS_DEAD, Person, person_from_ship)
 from .commands import (  # noqa: E402,F401
     COMMODITIES, GLOBAL_COMMANDS, LocationCommands, commodity_from)
 from .encounters import (  # noqa: E402,F401

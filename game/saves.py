@@ -371,7 +371,7 @@ class SavingMixin:
             "player": self.player_name,
             "difficulty": self.difficulty,
             "turn": self.turn,
-            "money": int(self.ship.money),
+            "money": int(self.person.money),
             "location": self.current_location.name,
             "chapter": self.story_manager.current_chapter,
         }

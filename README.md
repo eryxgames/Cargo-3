@@ -20,9 +20,11 @@ it around: the captain begins on foot.
 - **Now:** Cargo 2.2's engine running as Cargo 3, with CLIo 2.2.1's screen and sound layer
   (banners, pictures in pixels, blocks or braille, animation effects) beside it, and a story
   frame of three chapters to be written into: the hiring hall, old friends, a bridge again.
-- **Next in M0:** the person and the ship apart (money, kit and skills belong to the captain);
-  a shipless start with its own stats box; dock jobs, the berths board and voyages as an able
-  hand; the openings (why the captain has no ship); act 1's first scenes.
+- The person and the ship apart: money, equipment, research points and six skills (loader,
+  mechanic, gunner, navigator, steward, broker) are the captain's; a ship the captain owns
+  spends and earns through them, and the story and the records work without a ship.
+- **Next in M0:** a shipless start with its own stats box; dock jobs, the berths board and
+  voyages as an able hand; the openings (why the captain has no ship); act 1's first scenes.
 
 The plan (the shipless chapters, the ways to the first ship, fights on foot, investments
 matured from Cargo 2) is in the project's design document.
@@ -55,6 +57,7 @@ game/           the game, Cargo 2.2's engine:
   start.py        continue a save, or a new game (fresh or as a recorded captain)
   terminal.py     width, narrow layouts, wrapping, boxes;  screens.py: the Game's screens
   look.py         CLIo's terminal detection and themes, applied to the boxes
+  person.py       the captain as a person: money, things carried, skills, wounds, locker, berth
   saves.py  captain.py      saves; the captain's record carried between the parts
   story.py  chapters.py     the storykit runtime; chapters, milestones, endings
   ship.py  travel.py  market.py  hansa.py  encounters.py  events.py  research.py
@@ -68,7 +71,7 @@ story/          the story: cargo3.story.json and the files in story/cargo3/, bui
 storykit/       the trilogy's story tools (format, validator, map), copied
 themes/         the game's own styles (CLIo theme files), beside CLIo's in kit/style/
 tools/          checks: smoke, bot, fuzzing, save round trips, hostile files, kit, story,
-                systems, fights, sound
+                systems, the person, fights, sound
 .github/        the release workflow: tag vX.Y.Z to build, release and push to itch.io
 ```
 

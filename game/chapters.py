@@ -21,9 +21,13 @@ class MilestoneRequirements:
         if req_type == "plot_points":
             return game.story_manager.plot_points >= req_value
         elif req_type == "money":
-            return game.ship.money >= req_value
+            return game.person.money >= req_value
         elif req_type == "research_points":
-            return game.ship.research_points >= req_value
+            return game.person.research_points >= req_value
+        # what only a ship has: not met without one
+        elif game.ship is None and req_type in ("combat_victories", "combat_rating", "trade_profit",
+                                                "trade_specific", "passenger_reputation"):
+            return False
 
         # Combat requirements
         elif req_type == "combat_victories":
@@ -124,7 +128,7 @@ class MilestoneRequirements:
 
         # Item requirements
         elif req_type == "items":
-            return all(item in game.ship.items for item in req_value)
+            return all(item in game.person.items for item in req_value)
 
         # Story progression requirements
         elif req_type == "chapters_completed":
@@ -185,14 +189,14 @@ class StoryMilestone:
             # Handle rewards
             if self.rewards:
                 if "money" in self.rewards:
-                    game.ship.money += self.rewards["money"]
+                    game.person.money += self.rewards["money"]
                 if "research_points" in self.rewards:
-                    game.ship.research_points += self.rewards["research_points"]
+                    game.person.research_points += self.rewards["research_points"]
                 if "plot_points" in self.rewards:
                     game.story_manager.plot_points += self.rewards["plot_points"]
                 if "items" in self.rewards:
                     for item in self.rewards["items"]:
-                        game.ship.acquire_item(item)
+                        game.person.acquire_item(item)
 
             # Handle unlocks
             unlock_messages = []
@@ -201,7 +205,7 @@ class StoryMilestone:
                 unlock_id = unlock.get("id")
 
                 if unlock_type == "item":
-                    game.ship.acquire_item(unlock_id)
+                    game.person.acquire_item(unlock_id)
                     unlock_messages.append(f"Unlocked item: {unlock_id}")
 
                 elif unlock_type == "location_type":
