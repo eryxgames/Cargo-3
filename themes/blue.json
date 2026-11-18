@@ -1,0 +1,50 @@
+{
+  "description": "Blue text and blue double frames, cyan headings. From Cargo 2 0.1.0-a.",
+  "text_speed": 0.0,
+  "colors": {
+    "default": "94",
+    "description": "94",
+    "story": "94",
+    "reading": "94",
+    "list_content": "94",
+    "dialogue": "94",
+    "menu": "94",
+    "list_title": "1;96",
+    "title": "1;96",
+    "key": "1;96",
+    "character": "96",
+    "item": "96",
+    "quest": "96",
+    "list_category": "96",
+    "success": "96",
+    "heal": "96",
+    "error": "91",
+    "damage": "91",
+    "combat": "91",
+    "warning": "93",
+    "system": "34",
+    "hud": "34",
+    "prompt": "1;34",
+    "ambient": "2;94",
+    "hint": "2;94"
+  },
+  "styles": {
+    "description": {
+      "frame": "DOUBLE"
+    },
+    "story": {
+      "frame": "DOUBLE"
+    },
+    "dialogue": {
+      "frame": "DOUBLE"
+    }
+  },
+  "ui": {
+    "frame_color": "34",
+    "title_gradient": [
+      51,
+      51,
+      51
+    ]
+  }
+}

@@ -1,0 +1,1304 @@
+{
+ "format": "storykit",
+ "version": 1,
+ "game": {
+  "id": "cargo1",
+  "title": "CARGO: Space Trading Saga",
+  "part": 1
+ },
+ "about": "Chapters, milestones and the frontier are read out of cargo.py by tools/cargo_story.py; everything else is written in the files listed under include. tools/build_story.py puts the whole story into cargo.py, which plays it.",
+ "saga": "saga.json",
+ "placeholders": [
+  "player_name",
+  "rank",
+  "money",
+  "trades_completed",
+  "combat_victories",
+  "research_points",
+  "discoveries",
+  "place",
+  "turn",
+  "visitor.name",
+  "visitor.rank",
+  "visitor.game",
+  "visitor.ending",
+  "origin.name",
+  "origin.rank",
+  "origin.game",
+  "origin.ending",
+  "origin.turns"
+ ],
+ "include": [
+  "cargo1/legacy.json",
+  "cargo1/places.json",
+  "cargo1/main.json",
+  "cargo1/captain.json",
+  "cargo1/synthetics.json",
+  "cargo1/pirates.json",
+  "cargo1/passengers.json",
+  "cargo1/houses.json",
+  "cargo1/frontier.json",
+  "cargo1/enclaves.json",
+  "cargo1/neons.json",
+  "cargo1/crew.json",
+  "cargo1/hansa.json",
+  "cargo1/science.json",
+  "cargo1/recurring.json",
+  "cargo1/serac.json",
+  "cargo1/people.json",
+  "cargo1/cargolytes.json",
+  "cargo1/legion_freight.json",
+  "cargo1/rootstock.json",
+  "cargo1/contracts.json",
+  "cargo1/odds.json",
+  "cargo1/drama.json",
+  "cargo1/rumours.json",
+  "cargo1/gossip.json",
+  "cargo1/epilogue.json"
+ ],
+ "stats": {
+  "money": {
+   "about": "credits on hand"
+  },
+  "plot_points": {
+   "about": "story points (StoryManager.plot_points)"
+  },
+  "research_points": {
+   "about": "research points on hand"
+  },
+  "trades_completed": {
+   "about": "buy and sell actions completed"
+  },
+  "trade_profit": {
+   "about": "total trade profit, all goods"
+  },
+  "passengers_transported": {
+   "about": "passengers delivered"
+  },
+  "passenger_reputation": {
+   "about": "passenger reputation"
+  },
+  "combat_rating": {
+   "about": "attack + defence + speed"
+  },
+  "combat_victories": {
+   "about": "battles won (all kinds)"
+  },
+  "discovered": {
+   "about": "locations visited at least once"
+  },
+  "mining_platforms": {
+   "about": "mining platforms built, all locations"
+  },
+  "stockmarket_everywhere": {
+   "about": "1 when every planet, asteroid base and outpost has a stock market"
+  },
+  "controlled_locations": {
+   "about": "locations marked controlled_by_player (nothing in the game sets this)",
+   "produced": false
+  },
+  "milestones_done": {
+   "about": "story milestones completed (StoryManager.completed_story_beats)"
+  },
+  "best_cabin": {
+   "about": "comfort level of the best passenger cabin aboard"
+  },
+  "turns_since_vip": {
+   "about": "turns since the last VIP passenger appeared"
+  },
+  "crew_size": {
+   "about": "helpers hired (the ship has bunks for four)"
+  },
+  "hansa_bonds": {
+   "about": "Hansa bonds held (each lowers the convoy dues)"
+  },
+  "dues_arrears": {
+   "about": "convoy dues owed and not yet paid"
+  },
+  "hull_class": {
+   "about": "the ship's hull: 0 the old hauler, 1 Ironback, 2 Farstrider"
+  },
+  "hold_free": {
+   "about": "free room in the hold for dry goods, after special cargo"
+  },
+  "cargo.tech": {
+   "about": "tech in the hold (an effect adds or takes it)"
+  },
+  "cargo.agri": {
+   "about": "agri in the hold (an effect adds or takes it)"
+  },
+  "cargo.salt": {
+   "about": "salt in the hold (an effect adds or takes it)"
+  },
+  "cargo.fuel": {
+   "about": "fuel in the hold (an effect adds or takes it)"
+  },
+  "combat_victories.pirate": {
+   "about": "battles won against pirate"
+  },
+  "combat_victories.militia": {
+   "about": "battles won against militia"
+  },
+  "combat_victories.raider": {
+   "about": "battles won against raider"
+  },
+  "combat_victories.machine": {
+   "about": "battles won against machine"
+  },
+  "combat_victories.rogue_captain": {
+   "about": "battles won against rogue_captain"
+  },
+  "combat_victories.uprising": {
+   "about": "battles won against uprising"
+  },
+  "buildings.stockmarket": {
+   "about": "stockmarket buildings, all locations"
+  },
+  "buildings.Neuroengineering Guild": {
+   "about": "Neuroengineering Guild buildings, all locations"
+  },
+  "buildings.Agrobot Assembly Line": {
+   "about": "Agrobot Assembly Line buildings, all locations"
+  },
+  "buildings.mining_platform": {
+   "about": "mining_platform buildings, all locations"
+  },
+  "discovered.Planet": {
+   "about": "Planet locations visited"
+  },
+  "discovered.AsteroidBase": {
+   "about": "AsteroidBase locations visited"
+  },
+  "discovered.DeepSpaceOutpost": {
+   "about": "DeepSpaceOutpost locations visited"
+  },
+  "discovered.ResearchColony": {
+   "about": "ResearchColony locations visited"
+  }
+ },
+ "sets": {
+  "researched": {
+   "about": "research unlocked",
+   "members": [
+    "chronopolitics",
+    "exogeology",
+    "geophysics",
+    "psychodynamics",
+    "telemetry",
+    "xenoeconomy"
+   ]
+  },
+  "items": {
+   "about": "items carried"
+  },
+  "crew": {
+   "about": "helpers aboard",
+   "members": [
+    "loader",
+    "steward",
+    "mechanic",
+    "gunner",
+    "navigator",
+    "broker"
+   ]
+  },
+  "unlocked_types": {
+   "about": "hidden location types revealed",
+   "members": [
+    "Planet",
+    "AsteroidBase",
+    "DeepSpaceOutpost",
+    "ResearchColony"
+   ]
+  }
+ },
+ "effects": {
+  "code": {
+   "about": "game code the tools cannot read"
+  }
+ },
+ "flags": {
+  "pirate_threat": {
+   "about": "",
+   "set_by_game": [
+    "a battle against pirates (process_event)",
+    "a combat quest done with 25+ victories"
+   ]
+  },
+  "alien_discovery": {
+   "about": "",
+   "set_by_game": [
+    "an exploration event with an artifact"
+   ]
+  },
+  "trade_empire": {
+   "about": "",
+   "set_by_game": [
+    "a trade quest done with 50+ trades"
+   ]
+  },
+  "resource_empire": {
+   "about": "",
+   "set_by_game": []
+  },
+  "ancient_mystery": {
+   "about": "",
+   "set_by_game": [
+    "an exploration quest done with 5+ locations discovered"
+   ]
+  },
+  "galactic_crisis": {
+   "about": "",
+   "set_by_game": []
+  },
+  "tech_breakthrough": {
+   "about": "",
+   "set_by_game": [
+    "a research quest done with 3+ research unlocked"
+   ],
+   "notes": [
+    "set by the game but missing from StoryManager.story_states"
+   ]
+  },
+  "stellar_portal": {
+   "about": "the captain paid for the secret quest",
+   "set_by_game": [],
+   "carries_to": [
+    "cargo2"
+   ]
+  }
+ },
+ "places": {
+  "Planet": {
+   "kind": "location type",
+   "hidden": false
+  },
+  "AsteroidBase": {
+   "kind": "location type",
+   "hidden": true
+  },
+  "DeepSpaceOutpost": {
+   "kind": "location type",
+   "hidden": true
+  },
+  "ResearchColony": {
+   "kind": "location type",
+   "hidden": true
+  },
+  "Space": {
+   "kind": "between locations"
+  }
+ },
+ "characters": {
+  "agrobot": {
+   "name": "Agrobots",
+   "kind": "synthetic",
+   "generated": true,
+   "about": "synthetic workers that gain awareness"
+  },
+  "merchant": {
+   "name": "Merchant",
+   "kind": "human",
+   "generated": true,
+   "about": "met by chance"
+  },
+  "neurodroid": {
+   "name": "Neurodroids",
+   "kind": "synthetic",
+   "generated": true,
+   "about": "synthetic workers that gain awareness"
+  },
+  "researcher": {
+   "name": "Researcher",
+   "kind": "human",
+   "generated": true,
+   "about": "met by chance"
+  },
+  "rogue_captain": {
+   "name": "Rogue Captain",
+   "kind": "human",
+   "generated": true,
+   "about": "met by chance"
+  }
+ },
+ "arcs": {
+  "main": {
+   "title": "Main story",
+   "order": 0
+  },
+  "frontier": {
+   "title": "Frontier: hidden locations",
+   "order": 1
+  },
+  "passengers": {
+   "title": "Passengers and envoys",
+   "order": 2
+  },
+  "pirates": {
+   "title": "Pirates",
+   "order": 3
+  },
+  "synthetics": {
+   "title": "Synthetics",
+   "order": 4
+  },
+  "chance meetings": {
+   "title": "Chance meetings",
+   "order": 5
+  },
+  "characters": {
+   "title": "Other character chains",
+   "order": 6
+  },
+  "quest lines": {
+   "title": "Quest lines",
+   "order": 7
+  }
+ },
+ "nodes": {
+  "ch1": {
+   "kind": "chapter",
+   "arc": "main",
+   "act": 1,
+   "title": "Deadhead",
+   "text": "One ship, one loan, one empty hold. Haulers call that flying deadhead. Five systems are close enough to reach before you retire: Alpha, Beta, Gamma, Delta, Epsilon. Buy where it is cheap, sell where it is not, and keep up the payments.",
+   "requires": {},
+   "next": [
+    "ch2a",
+    "ch2b"
+   ],
+   "source": "cargo.py StoryManager.__init__ (chapters)",
+   "choose": true,
+   "start": true,
+   "completes_when": "requirements and all milestones"
+  },
+  "ch1.first_trade": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch1",
+   "title": "First Trade",
+   "text": "Complete your first trade",
+   "requires": {
+    "trades_completed": 1
+   },
+   "effects": {
+    "money": 500,
+    "plot_points": 5
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "ch1.first_combat": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch1",
+   "title": "Combat Initiation",
+   "text": "Win your first space battle",
+   "requires": {
+    "combat_victories": 1
+   },
+   "effects": {
+    "money": 1000,
+    "plot_points": 5
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "ch1.basic_license": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch1",
+   "title": "Extended Trading License",
+   "text": "Prove your trading capabilities",
+   "requires": {
+    "trades_completed": 5,
+    "money": 20000
+   },
+   "effects": {
+    "money": 10000,
+    "plot_points": 10,
+    "give": {
+     "items": [
+      "navcomp"
+     ]
+    }
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "ch2a": {
+   "kind": "chapter",
+   "arc": "main",
+   "act": 2,
+   "title": "Routes",
+   "text": "Your name is on manifests in five systems now. Every dock charges its own fee and every dock master has a cousin in customs. The older captains have started talking about pooling cargo and setting their own rates. They need someone with routes.",
+   "requires": {
+    "done": [
+     "ch1"
+    ],
+    "plot_points": 15,
+    "trades_completed": 10
+   },
+   "next": [
+    "ch3a",
+    "ch3c"
+   ],
+   "source": "cargo.py StoryManager.__init__ (chapters)",
+   "choose": true,
+   "completes_when": "requirements and all milestones"
+  },
+  "ch2a.establish_route": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch2a",
+   "title": "Trade Route Network",
+   "text": "Establish profitable trade routes",
+   "requires": {
+    "trades_completed": 20,
+    "buildings.stockmarket": 2
+   },
+   "effects": {
+    "money": 50000,
+    "plot_points": 15
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "ch2a.passenger_business": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch2a",
+   "title": "Passenger Services",
+   "text": "Start passenger transport business",
+   "requires": {
+    "passengers_transported": 10,
+    "passenger_reputation": 20
+   },
+   "effects": {
+    "money": 30000,
+    "plot_points": 10
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "ch2b": {
+   "kind": "chapter",
+   "arc": "main",
+   "act": 2,
+   "title": "Contract Iron",
+   "text": "The corporations noticed that you shoot straight. OmniCorp, Stellar Dynamics and the Xylo Consortium each keep a security legion, and each legion is short of pilots. The contracts pay well. Read them twice.",
+   "requires": {
+    "done": [
+     "ch1"
+    ],
+    "plot_points": 15,
+    "combat_victories": 5
+   },
+   "next": [
+    "ch3b",
+    "ch3c"
+   ],
+   "source": "cargo.py StoryManager.__init__ (chapters)",
+   "choose": true,
+   "completes_when": "requirements and all milestones"
+  },
+  "ch2b.defeat_pirates": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch2b",
+   "title": "Pirate Hunter",
+   "text": "Clear the sector of pirates",
+   "requires": {
+    "combat_victories.pirate": 10
+   },
+   "effects": {
+    "money": 40000,
+    "plot_points": 20
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "ch2b.defend_stations": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch2b",
+   "title": "Station Defender",
+   "text": "Successfully defend space stations",
+   "requires": {
+    "combat_victories": 15,
+    "buildings.Neuroengineering Guild": 1
+   },
+   "effects": {
+    "money": 30000,
+    "plot_points": 15
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "ch3a": {
+   "kind": "chapter",
+   "arc": "main",
+   "act": 3,
+   "title": "The Mark",
+   "text": "Money in the near systems is whatever the nearest bank says it is this week. Haulers want something heavier: a coin that is also a receipt for mass carried. Somebody has to mint the first one and make every dock accept it.",
+   "requires": {
+    "done": [
+     "ch2a"
+    ],
+    "plot_points": 40,
+    "trade_profit": 150000
+   },
+   "next": [
+    "ending_trade"
+   ],
+   "source": "cargo.py StoryManager.__init__ (chapters)",
+   "completes_when": "requirements and all milestones"
+  },
+  "ch3a.market_control": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch3a",
+   "title": "Market Controller",
+   "text": "Control multiple market centers",
+   "requires": {
+    "buildings.stockmarket": 4,
+    "has": {
+     "researched": [
+      "xenoeconomy"
+     ]
+    }
+   },
+   "effects": {
+    "money": 100000,
+    "plot_points": 25
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "ch3b": {
+   "kind": "chapter",
+   "arc": "main",
+   "act": 3,
+   "title": "Legion",
+   "text": "Three corporate legions, one pilot shortage, and you. The corporations are talking about merging their security forces under one command. Everyone wants to know whose side your guns are on before the merger, not after.",
+   "requires": {
+    "done": [
+     "ch2b"
+    ],
+    "plot_points": 40,
+    "combat_victories": 25
+   },
+   "next": [
+    "ending_combat"
+   ],
+   "source": "cargo.py StoryManager.__init__ (chapters)",
+   "completes_when": "requirements and all milestones"
+  },
+  "ch3b.fleet_commander": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch3b",
+   "title": "Fleet Commander",
+   "text": "Lead successful fleet operations",
+   "requires": {
+    "combat_victories": 35,
+    "combat_rating": 15
+   },
+   "effects": {
+    "money": 100000,
+    "plot_points": 25
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "ch3c": {
+   "kind": "chapter",
+   "arc": "main",
+   "act": 3,
+   "title": "Builders' Metal",
+   "text": "The research colonies keep finding the same grey alloy where nothing should have been made: comet ice, collision dust, mine tailings. It was machined, and it is very old. The scholars who study it cannot afford careful haulers, so they are hoping for you.",
+   "requires": {
+    "done_any": [
+     "ch2a",
+     "ch2b"
+    ],
+    "plot_points": 50,
+    "research_points": 300
+   },
+   "next": [
+    "ending_discovery"
+   ],
+   "source": "cargo.py StoryManager.__init__ (chapters)",
+   "completes_when": "requirements and all milestones"
+  },
+  "ch3c.alien_artifacts": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch3c",
+   "title": "Find the builders' metal",
+   "text": "Discover alien artifacts",
+   "requires": {
+    "discovered.ResearchColony": 2,
+    "has": {
+     "researched": [
+      "xenoeconomy",
+      "telemetry"
+     ]
+    }
+   },
+   "effects": {
+    "money": 150000,
+    "plot_points": 30
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "ending_trade": {
+   "kind": "ending",
+   "arc": "main",
+   "act": 4,
+   "title": "The Hauler Hansa",
+   "text": [
+    "You've become a legendary trade mogul"
+   ],
+   "requires": {
+    "done": [
+     "ch3a"
+    ],
+    "plot_points": 100,
+    "trade_profit": 400000
+   },
+   "next": [],
+   "source": "cargo.py StoryManager.__init__ (chapters)",
+   "effects": {
+    "code": "ending screen, score, epilogue, captain record exported"
+   },
+   "completes_when": "requirements and all milestones"
+  },
+  "ending_trade.trade_ending": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ending_trade",
+   "title": "Economic Victory",
+   "text": "Complete economic domination achieved",
+   "requires": {
+    "buildings.stockmarket": 5,
+    "passenger_reputation": 80,
+    "trade_profit": 400000
+   },
+   "effects": {
+    "money": 1000000,
+    "plot_points": 100
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "ending_combat": {
+   "kind": "ending",
+   "arc": "main",
+   "act": 4,
+   "title": "The First Legion",
+   "text": [
+    "You've become a legendary military leader"
+   ],
+   "requires": {
+    "done": [
+     "ch3b"
+    ],
+    "plot_points": 100,
+    "combat_victories": 50
+   },
+   "next": [],
+   "source": "cargo.py StoryManager.__init__ (chapters)",
+   "effects": {
+    "code": "ending screen, score, epilogue, captain record exported"
+   },
+   "completes_when": "requirements and all milestones"
+  },
+  "ending_combat.combat_ending": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ending_combat",
+   "title": "Military Victory",
+   "text": "Complete military dominance achieved",
+   "requires": {
+    "combat_victories": 75,
+    "combat_rating": 25
+   },
+   "effects": {
+    "money": 1000000,
+    "plot_points": 100
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "ending_discovery": {
+   "kind": "ending",
+   "arc": "main",
+   "act": 4,
+   "title": "The Heading",
+   "text": [
+    "You've uncovered the sector's greatest mysteries"
+   ],
+   "requires": {
+    "done": [
+     "ch3c"
+    ],
+    "plot_points": 100,
+    "research_points": 1500
+   },
+   "next": [],
+   "source": "cargo.py StoryManager.__init__ (chapters)",
+   "effects": {
+    "code": "ending screen, score, epilogue, captain record exported"
+   },
+   "completes_when": "requirements and all milestones"
+  },
+  "ending_discovery.discovery_ending": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ending_discovery",
+   "title": "Trace the ring",
+   "text": "Ancient mysteries solved",
+   "requires": {
+    "has": {
+     "researched": [
+      "xenoeconomy",
+      "telemetry",
+      "geophysics",
+      "chronopolitics"
+     ]
+    },
+    "discovered.ResearchColony": 3,
+    "discovered.AsteroidBase": 2
+   },
+   "effects": {
+    "money": 1000000,
+    "plot_points": 100
+   },
+   "source": "cargo.py StoryManager.__init__ (milestones)"
+  },
+  "tycoon_offer": {
+   "kind": "event",
+   "arc": "main",
+   "title": "The galaxy's markets are yours",
+   "text": "Every planet, asteroid base and outpost has a stock market. Resign as Galactic Tycoon, or pay for the secret quest and continue into the unknown.",
+   "requires": {
+    "stockmarket_everywhere": 1
+   },
+   "repeat": {
+    "cooldown": 10
+   },
+   "choices": [
+    {
+     "id": "resign",
+     "say": "Resign",
+     "next": "ending_tycoon"
+    },
+    {
+     "id": "continue",
+     "say": "Continue into the unknown",
+     "requires": {
+      "money": 1500
+     },
+     "effects": {
+      "money": -1500,
+      "set": [
+       "stellar_portal"
+      ],
+      "code": "new set of locations; jump there"
+     },
+     "next": "stellar_portal"
+    }
+   ],
+   "notes": [
+    "offered every 10 turns while the condition holds: keep trading, retire, or the portal"
+   ],
+   "handled_by": "Game.play (text from the story)",
+   "source": "cargo.py Game.play (secret quest)"
+  },
+  "ending_tycoon": {
+   "kind": "ending",
+   "arc": "main",
+   "act": 4,
+   "title": "Galactic Tycoon",
+   "text": [
+    "You are the Galactic Tycoon!",
+    "Congratulations, {player_name}! You have achieved the rank of {rank}.",
+    "Your story will be remembered throughout the galaxy."
+   ],
+   "requires": {
+    "done": "tycoon_offer"
+   },
+   "effects": {
+    "code": "score screen, epilogue, captain record exported"
+   },
+   "handled_by": "Game.play (text from the story)",
+   "source": "cargo.py Game.play (secret quest)"
+  },
+  "stellar_portal": {
+   "kind": "event",
+   "arc": "main",
+   "title": "The Stellar Portal",
+   "text": "A Stellar Portal appears. You travel to a new set of locations with more volatile price movements.",
+   "requires": {
+    "flag": "stellar_portal"
+   },
+   "source": "cargo.py Game.play (secret quest), Game.open_portal",
+   "handled_by": "Game.open_portal (text from the story)"
+  },
+  "chance.Planet.merchant": {
+   "kind": "encounter",
+   "arc": "chance meetings",
+   "title": "Merchant (Planet)",
+   "who": [
+    "merchant"
+   ],
+   "chance": 0.045,
+   "repeat": true,
+   "handled_by": "SpecialCharacterEncounters.handle_merchant_encounter",
+   "source": "cargo.py SpecialCharacterEncounters.encounter_chances + Game.random_event",
+   "status": "unused",
+   "notes": [
+    "random_event only rolls the 'Space' table"
+   ]
+  },
+  "chance.Planet.researcher": {
+   "kind": "encounter",
+   "arc": "chance meetings",
+   "title": "Researcher (Planet)",
+   "who": [
+    "researcher"
+   ],
+   "chance": 0.06,
+   "repeat": true,
+   "handled_by": "SpecialCharacterEncounters.handle_researcher_encounter",
+   "source": "cargo.py SpecialCharacterEncounters.encounter_chances + Game.random_event",
+   "status": "unused",
+   "notes": [
+    "random_event only rolls the 'Space' table"
+   ]
+  },
+  "chance.Planet.rogue_captain": {
+   "kind": "encounter",
+   "arc": "chance meetings",
+   "title": "Rogue Captain (Planet)",
+   "who": [
+    "rogue_captain"
+   ],
+   "chance": 0.0,
+   "repeat": true,
+   "handled_by": "SpecialCharacterEncounters.handle_rogue_captain_encounter",
+   "source": "cargo.py SpecialCharacterEncounters.encounter_chances + Game.random_event",
+   "status": "unused",
+   "notes": [
+    "random_event only rolls the 'Space' table",
+    "demands money or fights; does not start the 'rogue_captain' event chain"
+   ]
+  },
+  "chance.ResearchColony.merchant": {
+   "kind": "encounter",
+   "arc": "chance meetings",
+   "title": "Merchant (ResearchColony)",
+   "who": [
+    "merchant"
+   ],
+   "chance": 0.03,
+   "repeat": true,
+   "handled_by": "SpecialCharacterEncounters.handle_merchant_encounter",
+   "source": "cargo.py SpecialCharacterEncounters.encounter_chances + Game.random_event",
+   "status": "unused",
+   "notes": [
+    "random_event only rolls the 'Space' table"
+   ]
+  },
+  "chance.ResearchColony.researcher": {
+   "kind": "encounter",
+   "arc": "chance meetings",
+   "title": "Researcher (ResearchColony)",
+   "who": [
+    "researcher"
+   ],
+   "chance": 0.09,
+   "repeat": true,
+   "handled_by": "SpecialCharacterEncounters.handle_researcher_encounter",
+   "source": "cargo.py SpecialCharacterEncounters.encounter_chances + Game.random_event",
+   "status": "unused",
+   "notes": [
+    "random_event only rolls the 'Space' table"
+   ]
+  },
+  "chance.ResearchColony.rogue_captain": {
+   "kind": "encounter",
+   "arc": "chance meetings",
+   "title": "Rogue Captain (ResearchColony)",
+   "who": [
+    "rogue_captain"
+   ],
+   "chance": 0.0,
+   "repeat": true,
+   "handled_by": "SpecialCharacterEncounters.handle_rogue_captain_encounter",
+   "source": "cargo.py SpecialCharacterEncounters.encounter_chances + Game.random_event",
+   "status": "unused",
+   "notes": [
+    "random_event only rolls the 'Space' table",
+    "demands money or fights; does not start the 'rogue_captain' event chain"
+   ]
+  },
+  "chance.Space.merchant": {
+   "kind": "encounter",
+   "arc": "chance meetings",
+   "title": "Merchant (Space)",
+   "who": [
+    "merchant"
+   ],
+   "chance": 0.03,
+   "repeat": true,
+   "handled_by": "SpecialCharacterEncounters.handle_merchant_encounter",
+   "source": "cargo.py SpecialCharacterEncounters.encounter_chances + Game.random_event"
+  },
+  "chance.Space.researcher": {
+   "kind": "encounter",
+   "arc": "chance meetings",
+   "title": "Researcher (Space)",
+   "who": [
+    "researcher"
+   ],
+   "chance": 0.015,
+   "repeat": true,
+   "handled_by": "SpecialCharacterEncounters.handle_researcher_encounter",
+   "source": "cargo.py SpecialCharacterEncounters.encounter_chances + Game.random_event"
+  },
+  "chance.Space.rogue_captain": {
+   "kind": "encounter",
+   "arc": "chance meetings",
+   "title": "Rogue Captain (Space)",
+   "who": [
+    "rogue_captain"
+   ],
+   "chance": 0.06,
+   "repeat": true,
+   "handled_by": "SpecialCharacterEncounters.handle_rogue_captain_encounter",
+   "source": "cargo.py SpecialCharacterEncounters.encounter_chances + Game.random_event",
+   "notes": [
+    "demands money or fights; does not start the 'rogue_captain' event chain"
+   ]
+  },
+  "unlock.AsteroidBase": {
+   "kind": "quest",
+   "arc": "frontier",
+   "title": "Mysterious Mining Signals",
+   "text": "Investigate unusual mining activity signals",
+   "requires": {
+    "mining_platforms": 1,
+    "research_points": 50
+   },
+   "effects": {
+    "money": 10000,
+    "research_points": 100,
+    "give": {
+     "unlocked_types": [
+      "AsteroidBase"
+     ]
+    }
+   },
+   "notes": [
+    "offered when the requirements hold; completes on the next journey and reveals the locations"
+   ],
+   "handled_by": "LocationManager.trigger_location_unlock_quest (text from the story)",
+   "source": "cargo.py LocationManager.location_quests"
+  },
+  "unlock.DeepSpaceOutpost": {
+   "kind": "quest",
+   "arc": "frontier",
+   "title": "Frontier Defense",
+   "text": "Help establish a secure trading route",
+   "requires": {
+    "combat_victories": 5,
+    "research_points": 75
+   },
+   "effects": {
+    "money": 15000,
+    "research_points": 150,
+    "give": {
+     "unlocked_types": [
+      "DeepSpaceOutpost"
+     ]
+    }
+   },
+   "notes": [
+    "offered when the requirements hold; completes on the next journey and reveals the locations"
+   ],
+   "handled_by": "LocationManager.trigger_location_unlock_quest (text from the story)",
+   "source": "cargo.py LocationManager.location_quests"
+  },
+  "unlock.ResearchColony": {
+   "kind": "quest",
+   "arc": "frontier",
+   "title": "Scientific Breakthrough",
+   "text": "Assist in a major research project",
+   "requires": {
+    "research_points": 100,
+    "milestones_done": 3
+   },
+   "effects": {
+    "money": 20000,
+    "research_points": 200,
+    "give": {
+     "unlocked_types": [
+      "ResearchColony"
+     ]
+    }
+   },
+   "notes": [
+    "offered when the requirements hold; completes on the next journey and reveals the locations"
+   ],
+   "handled_by": "LocationManager.trigger_location_unlock_quest (text from the story)",
+   "source": "cargo.py LocationManager.location_quests"
+  },
+  "beat.AsteroidBase.mineral_discovery": {
+   "kind": "beat",
+   "arc": "frontier",
+   "title": "Mineral discovery",
+   "where": "AsteroidBase",
+   "requires": {
+    "at_type": "AsteroidBase",
+    "has": {
+     "unlocked_types": [
+      "AsteroidBase"
+     ]
+    }
+   },
+   "chance": 0.1,
+   "effects": {
+    "plot_points": 10
+   },
+   "notes": [
+    "names from LocationManager.location_story_events; the story plays them"
+   ],
+   "source": "cargo.py LocationManager.location_story_events"
+  },
+  "beat.AsteroidBase.pirate_hideout": {
+   "kind": "beat",
+   "arc": "frontier",
+   "title": "Pirate hideout",
+   "where": "AsteroidBase",
+   "requires": {
+    "at_type": "AsteroidBase",
+    "has": {
+     "unlocked_types": [
+      "AsteroidBase"
+     ]
+    }
+   },
+   "chance": 0.1,
+   "effects": {
+    "plot_points": 10
+   },
+   "notes": [
+    "names from LocationManager.location_story_events; the story plays them"
+   ],
+   "source": "cargo.py LocationManager.location_story_events"
+  },
+  "beat.AsteroidBase.ancient_technology": {
+   "kind": "beat",
+   "arc": "frontier",
+   "title": "Ancient technology",
+   "where": "AsteroidBase",
+   "requires": {
+    "at_type": "AsteroidBase",
+    "has": {
+     "unlocked_types": [
+      "AsteroidBase"
+     ]
+    }
+   },
+   "chance": 0.1,
+   "effects": {
+    "plot_points": 10
+   },
+   "notes": [
+    "names from LocationManager.location_story_events; the story plays them"
+   ],
+   "source": "cargo.py LocationManager.location_story_events"
+  },
+  "beat.DeepSpaceOutpost.smuggler_network": {
+   "kind": "beat",
+   "arc": "frontier",
+   "title": "Smuggler network",
+   "where": "DeepSpaceOutpost",
+   "requires": {
+    "at_type": "DeepSpaceOutpost",
+    "has": {
+     "unlocked_types": [
+      "DeepSpaceOutpost"
+     ]
+    }
+   },
+   "chance": 0.1,
+   "effects": {
+    "plot_points": 10
+   },
+   "notes": [
+    "names from LocationManager.location_story_events; the story plays them"
+   ],
+   "source": "cargo.py LocationManager.location_story_events"
+  },
+  "beat.DeepSpaceOutpost.alien_contact": {
+   "kind": "beat",
+   "arc": "frontier",
+   "title": "Alien contact",
+   "where": "DeepSpaceOutpost",
+   "requires": {
+    "at_type": "DeepSpaceOutpost",
+    "has": {
+     "unlocked_types": [
+      "DeepSpaceOutpost"
+     ]
+    }
+   },
+   "chance": 0.1,
+   "effects": {
+    "plot_points": 10
+   },
+   "notes": [
+    "names from LocationManager.location_story_events; the story plays them"
+   ],
+   "source": "cargo.py LocationManager.location_story_events"
+  },
+  "beat.DeepSpaceOutpost.trade_revolution": {
+   "kind": "beat",
+   "arc": "frontier",
+   "title": "Trade revolution",
+   "where": "DeepSpaceOutpost",
+   "requires": {
+    "at_type": "DeepSpaceOutpost",
+    "has": {
+     "unlocked_types": [
+      "DeepSpaceOutpost"
+     ]
+    }
+   },
+   "chance": 0.1,
+   "effects": {
+    "plot_points": 10
+   },
+   "notes": [
+    "names from LocationManager.location_story_events; the story plays them"
+   ],
+   "source": "cargo.py LocationManager.location_story_events"
+  },
+  "beat.ResearchColony.breakthrough_discovery": {
+   "kind": "beat",
+   "arc": "frontier",
+   "title": "Breakthrough discovery",
+   "where": "ResearchColony",
+   "requires": {
+    "at_type": "ResearchColony",
+    "has": {
+     "unlocked_types": [
+      "ResearchColony"
+     ]
+    }
+   },
+   "chance": 0.1,
+   "effects": {
+    "plot_points": 10
+   },
+   "notes": [
+    "names from LocationManager.location_story_events; the story plays them"
+   ],
+   "source": "cargo.py LocationManager.location_story_events"
+  },
+  "beat.ResearchColony.experiment_crisis": {
+   "kind": "beat",
+   "arc": "frontier",
+   "title": "Experiment crisis",
+   "where": "ResearchColony",
+   "requires": {
+    "at_type": "ResearchColony",
+    "has": {
+     "unlocked_types": [
+      "ResearchColony"
+     ]
+    }
+   },
+   "chance": 0.1,
+   "effects": {
+    "plot_points": 10
+   },
+   "notes": [
+    "names from LocationManager.location_story_events; the story plays them"
+   ],
+   "source": "cargo.py LocationManager.location_story_events"
+  },
+  "beat.ResearchColony.alien_artifacts": {
+   "kind": "beat",
+   "arc": "frontier",
+   "title": "Alien artifacts",
+   "where": "ResearchColony",
+   "requires": {
+    "at_type": "ResearchColony",
+    "has": {
+     "unlocked_types": [
+      "ResearchColony"
+     ]
+    }
+   },
+   "chance": 0.1,
+   "effects": {
+    "plot_points": 10
+   },
+   "notes": [
+    "names from LocationManager.location_story_events; the story plays them"
+   ],
+   "source": "cargo.py LocationManager.location_story_events"
+  },
+  "uprising.Neurodroid.local": {
+   "kind": "event",
+   "arc": "synthetics",
+   "title": "Neurodroid demands (one location)",
+   "who": [
+    "neurodroid"
+   ],
+   "handled_by": "SyntheticEventManager.handle_synthetic_uprising",
+   "requires": {
+    "code": "4 or more Neuroengineering Guild at one location",
+    "buildings.Neuroengineering Guild": 4
+   },
+   "repeat": true,
+   "source": "cargo.py SyntheticEventManager.check_synthetic_awareness"
+  },
+  "uprising.Neurodroid.global": {
+   "kind": "event",
+   "arc": "synthetics",
+   "title": "Neurodroid uprising (sector)",
+   "who": [
+    "neurodroid"
+   ],
+   "handled_by": "SyntheticEventManager.start_uprising",
+   "requires": {
+    "buildings.Neuroengineering Guild": 8
+   },
+   "repeat": true,
+   "source": "cargo.py SyntheticEventManager.check_synthetic_awareness"
+  },
+  "uprising.Agrobot.local": {
+   "kind": "event",
+   "arc": "synthetics",
+   "title": "Agrobot demands (one location)",
+   "who": [
+    "agrobot"
+   ],
+   "handled_by": "SyntheticEventManager.handle_synthetic_uprising",
+   "requires": {
+    "code": "4 or more Agrobot Assembly Line at one location",
+    "buildings.Agrobot Assembly Line": 4
+   },
+   "repeat": true,
+   "source": "cargo.py SyntheticEventManager.check_synthetic_awareness"
+  },
+  "uprising.Agrobot.global": {
+   "kind": "event",
+   "arc": "synthetics",
+   "title": "Agrobot uprising (sector)",
+   "who": [
+    "agrobot"
+   ],
+   "handled_by": "SyntheticEventManager.start_uprising",
+   "requires": {
+    "buildings.Agrobot Assembly Line": 8
+   },
+   "repeat": true,
+   "source": "cargo.py SyntheticEventManager.check_synthetic_awareness"
+  }
+ }
+}

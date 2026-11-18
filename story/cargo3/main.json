@@ -1,0 +1,66 @@
+{
+ "format": "storykit",
+ "version": 1,
+ "about": "Cargo 3's frame: chapters, milestones and endings, with their conditions (the game builds its chapters from these). A chapter's \"requires\" opens it and must still hold for it to end, with its milestones. Placeholder conditions until the story is written.",
+ "nodes": {
+  "ch1": {
+   "kind": "chapter",
+   "arc": "main",
+   "act": 1,
+   "title": "The Hiring Hall",
+   "text": [
+    "2533. The Debacle is over, and so is everything it paid for: the research houses are broke, the ring is a joke, and the hulls that touched it sit in impound yards.",
+    "You have a licence, a kit bag and no ship. The hiring hall opens at the start of every shift."
+   ],
+   "requires": {
+    "plot_points": 30
+   },
+   "next": [
+    "ch2"
+   ],
+   "start": true
+  },
+  "ch2": {
+   "kind": "chapter",
+   "arc": "main",
+   "act": 2,
+   "title": "Old Friends",
+   "text": [
+    "Some of the people you knew are still alive, a century and more later: machines, sleepers, the ones who rode the long legs. Find them."
+   ],
+   "requires": {
+    "done": [
+     "ch1"
+    ]
+   },
+   "next": [
+    "ch3"
+   ]
+  },
+  "ch2.friends": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch2",
+   "title": "Old friends found",
+   "text": "Find the people who outlived their century.",
+   "requires": {
+    "plot_points": 80
+   }
+  },
+  "ch3": {
+   "kind": "chapter",
+   "arc": "main",
+   "act": 3,
+   "title": "A Bridge Again",
+   "text": [
+    "Someone has found you, and they have a ship and a job that nobody else will take."
+   ],
+   "requires": {
+    "done": [
+     "ch2"
+    ]
+   },
+   "next": []
+  }
+ }
+}

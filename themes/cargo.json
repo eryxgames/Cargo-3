@@ -1,0 +1,50 @@
+{
+  "description": "Cargo 2's own look: white text, amber headings, plain single frames. From Cargo 2 0.1.0-a.",
+  "text_speed": 0.0,
+  "colors": {
+    "default": "37",
+    "description": "37",
+    "story": "37",
+    "reading": "37",
+    "list_content": "37",
+    "dialogue": "37",
+    "menu": "37",
+    "list_title": "1;33",
+    "title": "1;33",
+    "key": "1;33",
+    "character": "33",
+    "item": "33",
+    "quest": "33",
+    "list_category": "33",
+    "success": "32",
+    "heal": "32",
+    "error": "31",
+    "damage": "31",
+    "combat": "31",
+    "warning": "33",
+    "system": "33",
+    "hud": "33",
+    "prompt": "1;33",
+    "ambient": "2;37",
+    "hint": "2;37"
+  },
+  "styles": {
+    "description": {
+      "frame": "SINGLE"
+    },
+    "story": {
+      "frame": "DOUBLE"
+    },
+    "dialogue": {
+      "frame": "ROUNDED"
+    }
+  },
+  "ui": {
+    "frame_color": "",
+    "title_gradient": [
+      178,
+      178,
+      178
+    ]
+  }
+}

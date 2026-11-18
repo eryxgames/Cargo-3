@@ -1,0 +1,119 @@
+{
+  "description": "Neon cyan and magenta with glitching panels.",
+  "text_speed": 0.008,
+  "horizontal_padding": 2,
+  "vertical_padding": 0,
+  "colors": {
+    "default": "38;5;159",
+    "description": "38;5;123",
+    "story": "38;5;51",
+    "dialogue": "38;5;213",
+    "greeting": "38;5;177",
+    "character": "38;5;201",
+    "item": "38;5;226",
+    "exit": "38;5;48",
+    "ambient": "38;5;61",
+    "system": "38;5;33",
+    "error": "38;5;196",
+    "warning": "38;5;202",
+    "success": "38;5;48",
+    "menu": "38;5;141",
+    "reading": "38;5;159",
+    "combat": "38;5;196",
+    "list_title": "1;38;5;201",
+    "list_category": "1;38;5;51",
+    "list_content": "38;5;159",
+    "hud": "38;5;33",
+    "prompt": "1;38;5;201",
+    "quest": "1;38;5;226",
+    "hint": "38;5;61",
+    "key": "1;38;5;51"
+  },
+  "styles": {
+    "description": {
+      "frame": "DOUBLE",
+      "padding": 2,
+      "character_delay": 0.008,
+      "glitch": true
+    },
+    "story": {
+      "frame": "DOUBLE",
+      "padding": 2,
+      "character_delay": 0.012,
+      "paragraph_delay": 0.4
+    },
+    "dialogue": {
+      "frame": "SINGLE",
+      "padding": 2,
+      "character_delay": 0.0096
+    },
+    "reading": {
+      "frame": "SINGLE",
+      "padding": 2,
+      "character_delay": 0.008
+    },
+    "list_title": {
+      "frame": "DOUBLE",
+      "padding": 1,
+      "alignment": "center",
+      "gradient": true
+    },
+    "list_category": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "list_content": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "greeting": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "ambient": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "system": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "error": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "warning": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "success": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "menu": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "combat": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "default": {
+      "frame": "NONE",
+      "padding": 1
+    }
+  },
+  "ui": {
+    "banner": {"style": "glitch", "palette": "mono"},
+    "prompt": "≫ ",
+    "title_gradient": [
+      201,
+      165,
+      129,
+      93,
+      57,
+      51
+    ],
+    "frame_color": "38;5;61"
+  }
+}

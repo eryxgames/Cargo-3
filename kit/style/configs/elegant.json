@@ -1,0 +1,117 @@
+{
+  "description": "Soft pastels and unhurried text.",
+  "text_speed": 0.018,
+  "horizontal_padding": 2,
+  "vertical_padding": 0,
+  "colors": {
+    "default": "38;5;252",
+    "description": "38;5;146",
+    "story": "38;5;189",
+    "dialogue": "38;5;180",
+    "greeting": "38;5;175",
+    "character": "38;5;182",
+    "item": "38;5;179",
+    "exit": "38;5;151",
+    "ambient": "38;5;103",
+    "system": "38;5;153",
+    "error": "38;5;174",
+    "warning": "38;5;179",
+    "success": "38;5;114",
+    "menu": "38;5;146",
+    "reading": "38;5;251",
+    "combat": "38;5;174",
+    "list_title": "38;5;75",
+    "list_category": "38;5;147",
+    "list_content": "38;5;252",
+    "hud": "38;5;103",
+    "prompt": "38;5;189",
+    "quest": "38;5;222",
+    "hint": "3;38;5;103",
+    "key": "1;38;5;189"
+  },
+  "styles": {
+    "description": {
+      "frame": "ROUNDED",
+      "padding": 2,
+      "character_delay": 0.018,
+      "fade_in": true
+    },
+    "story": {
+      "frame": "DOUBLE",
+      "padding": 2,
+      "character_delay": 0.026999999999999996,
+      "paragraph_delay": 0.4
+    },
+    "dialogue": {
+      "frame": "SINGLE",
+      "padding": 2,
+      "character_delay": 0.021599999999999998
+    },
+    "reading": {
+      "frame": "SINGLE",
+      "padding": 2,
+      "character_delay": 0.018
+    },
+    "list_title": {
+      "frame": "DOUBLE",
+      "padding": 1,
+      "alignment": "center",
+      "gradient": true
+    },
+    "list_category": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "list_content": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "greeting": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "ambient": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "system": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "error": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "warning": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "success": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "menu": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "combat": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "default": {
+      "frame": "NONE",
+      "padding": 1
+    }
+  },
+  "ui": {
+    "banner": {"style": "shadow", "palette": "royal"},
+    "prompt": "» ",
+    "title_gradient": [
+      146,
+      147,
+      183,
+      189,
+      225
+    ]
+  }
+}

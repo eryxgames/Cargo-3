@@ -1,0 +1,117 @@
+{
+  "description": "Green phosphor monitor. Plain ASCII frames and a steady typewriter.",
+  "text_speed": 0.02,
+  "horizontal_padding": 2,
+  "vertical_padding": 0,
+  "colors": {
+    "default": "38;5;34",
+    "description": "38;5;40",
+    "story": "38;5;46",
+    "dialogue": "38;5;82",
+    "greeting": "38;5;40",
+    "character": "1;38;5;46",
+    "item": "1;38;5;82",
+    "exit": "38;5;118",
+    "ambient": "38;5;28",
+    "system": "38;5;28",
+    "error": "1;38;5;46",
+    "warning": "1;38;5;82",
+    "success": "38;5;46",
+    "menu": "38;5;40",
+    "reading": "38;5;40",
+    "combat": "1;38;5;82",
+    "list_title": "1;38;5;46",
+    "list_category": "1;38;5;40",
+    "list_content": "38;5;34",
+    "hud": "38;5;28",
+    "prompt": "1;38;5;46",
+    "quest": "1;38;5;118",
+    "hint": "38;5;28",
+    "key": "1;38;5;46"
+  },
+  "styles": {
+    "description": {
+      "frame": "ASCII",
+      "padding": 2,
+      "character_delay": 0.02
+    },
+    "story": {
+      "frame": "ASCII",
+      "padding": 2,
+      "character_delay": 0.03,
+      "paragraph_delay": 0.4
+    },
+    "dialogue": {
+      "frame": "ASCII",
+      "padding": 2,
+      "character_delay": 0.024
+    },
+    "reading": {
+      "frame": "ASCII",
+      "padding": 2,
+      "character_delay": 0.02
+    },
+    "list_title": {
+      "frame": "ASCII",
+      "padding": 1,
+      "alignment": "center",
+      "gradient": true
+    },
+    "list_category": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "list_content": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "greeting": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "ambient": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "system": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "error": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "warning": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "success": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "menu": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "combat": {
+      "frame": "NONE",
+      "padding": 1
+    },
+    "default": {
+      "frame": "NONE",
+      "padding": 1
+    }
+  },
+  "ui": {
+    "banner": {"style": "led", "palette": "phosphor"},
+    "prompt": "] ",
+    "title_gradient": [
+      22,
+      28,
+      34,
+      40,
+      46
+    ],
+    "frame_color": "38;5;28"
+  }
+}

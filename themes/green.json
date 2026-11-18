@@ -1,0 +1,50 @@
+{
+  "description": "Green phosphor with rounded frames and yellow headings. From Cargo 2 0.1.0-a.",
+  "text_speed": 0.0,
+  "colors": {
+    "default": "92",
+    "description": "92",
+    "story": "92",
+    "reading": "92",
+    "list_content": "92",
+    "dialogue": "92",
+    "menu": "92",
+    "list_title": "1;93",
+    "title": "1;93",
+    "key": "1;93",
+    "character": "93",
+    "item": "93",
+    "quest": "93",
+    "list_category": "93",
+    "success": "92",
+    "heal": "92",
+    "error": "91",
+    "damage": "91",
+    "combat": "91",
+    "warning": "93",
+    "system": "32",
+    "hud": "32",
+    "prompt": "1;32",
+    "ambient": "2;92",
+    "hint": "2;92"
+  },
+  "styles": {
+    "description": {
+      "frame": "ROUNDED"
+    },
+    "story": {
+      "frame": "ROUNDED"
+    },
+    "dialogue": {
+      "frame": "ROUNDED"
+    }
+  },
+  "ui": {
+    "frame_color": "32",
+    "title_gradient": [
+      227,
+      227,
+      227
+    ]
+  }
+}

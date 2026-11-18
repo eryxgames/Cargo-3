@@ -1,0 +1,188 @@
+{
+ "format": "storykit",
+ "version": 1,
+ "about": "The places of 2533: the star systems are Cargo 1's and Cargo 2's (the real nearby stars); their texts for 2533 come with the story.",
+ "places": {
+  "Alpha": {
+   "kind": "location",
+   "type": "Planet",
+   "system": "Alpha Centauri",
+   "ly": 4.4
+  },
+  "Beta": {
+   "kind": "location",
+   "type": "Planet",
+   "system": "Barnard's Star",
+   "ly": 6.0
+  },
+  "Gamma": {
+   "kind": "location",
+   "type": "Planet",
+   "system": "Ross 154",
+   "ly": 9.7
+  },
+  "Delta": {
+   "kind": "location",
+   "type": "Planet",
+   "system": "Teegarden's Star",
+   "ly": 12.5
+  },
+  "Epsilon": {
+   "kind": "location",
+   "type": "Planet",
+   "system": "Epsilon Eridani",
+   "ly": 10.5
+  },
+  "Omega XIV": {
+   "kind": "location",
+   "type": "AsteroidBase",
+   "system": "Tau Ceti",
+   "ly": 11.9
+  },
+  "Sigma VII": {
+   "kind": "location",
+   "type": "AsteroidBase",
+   "system": "Epsilon Indi",
+   "ly": 11.9
+  },
+  "Theta III": {
+   "kind": "location",
+   "type": "AsteroidBase",
+   "system": "Fomalhaut",
+   "ly": 25
+  },
+  "DSO-Alpha": {
+   "kind": "location",
+   "type": "DeepSpaceOutpost",
+   "system": "Luhman 16",
+   "ly": 6.5
+  },
+  "DSO-Beta": {
+   "kind": "location",
+   "type": "DeepSpaceOutpost",
+   "system": "WISE 0855-0714",
+   "ly": 7.4
+  },
+  "DSO-Gamma": {
+   "kind": "location",
+   "type": "DeepSpaceOutpost",
+   "system": "Scholz's Star",
+   "ly": 20
+  },
+  "Nova Labs": {
+   "kind": "location",
+   "type": "ResearchColony",
+   "system": "Wolf 359",
+   "ly": 7.9
+  },
+  "Quantum Center": {
+   "kind": "location",
+   "type": "ResearchColony",
+   "system": "YZ Ceti",
+   "ly": 12
+  },
+  "Stellar Institute": {
+   "kind": "location",
+   "type": "ResearchColony",
+   "system": "TRAPPIST-1",
+   "ly": 40
+  },
+  "Ancient Ruins Alpha": {
+   "kind": "location",
+   "type": "Ancient Ruins",
+   "system": "Tau Ceti, in the debris disk"
+  },
+  "Ancient Ruins Beta": {
+   "kind": "location",
+   "type": "Ancient Ruins",
+   "system": "Epsilon Indi, a moon of the cold giant Ab"
+  },
+  "Alien Signal Research Outpost X": {
+   "kind": "location",
+   "type": "Alien Signal Research Outpost",
+   "system": "Sol, far outer system"
+  },
+  "Alien Signal Research Outpost Y": {
+   "kind": "location",
+   "type": "Alien Signal Research Outpost",
+   "system": "Sol, the outer system: a dish pointed at Lyra, past HD 178911"
+  },
+  "Zeta": {
+   "kind": "location",
+   "type": "Planet",
+   "system": "Zeta Reticuli",
+   "ly": 39
+  },
+  "Eta": {
+   "kind": "location",
+   "type": "Planet",
+   "system": "Eta Corvi",
+   "ly": 59
+  },
+  "Theta": {
+   "kind": "location",
+   "type": "Planet",
+   "system": "Gliese 667 C",
+   "ly": 23.6
+  },
+  "Omega-1": {
+   "kind": "location",
+   "type": "AsteroidBase",
+   "system": "Vega",
+   "ly": 25
+  },
+  "DSO-Delta": {
+   "kind": "location",
+   "type": "DeepSpaceOutpost",
+   "system": "Gliese 229 B",
+   "ly": 19
+  },
+  "Stator Field Megastructure": {
+   "kind": "location",
+   "type": "Megastructure",
+   "system": "Sol, near Sedna's orbit",
+   "made": {
+    "tech": 15,
+    "agri": 1,
+    "research": 80,
+    "economy": "Mysterious"
+   }
+  },
+  "Builder Site": {
+   "kind": "location",
+   "type": "Builder Site",
+   "system": "Scholz's Star's wake",
+   "made": {
+    "tech": 18,
+    "agri": 1,
+    "research": 90,
+    "economy": "Mysterious"
+   }
+  },
+  "Planet": {
+   "kind": "location type",
+   "hidden": false
+  },
+  "AsteroidBase": {
+   "kind": "location type",
+   "hidden": true
+  },
+  "DeepSpaceOutpost": {
+   "kind": "location type",
+   "hidden": true
+  },
+  "ResearchColony": {
+   "kind": "location type",
+   "hidden": true
+  },
+  "Space": {
+   "kind": "between locations"
+  },
+  "port": {
+   "kind": "venue"
+  },
+  "cantina": {
+   "kind": "venue"
+  }
+ }
+}

@@ -1,0 +1,50 @@
+{
+  "description": "Amber on black, like a Hercules monitor: orange text, gold frames. From Cargo 2 0.1.0-a.",
+  "text_speed": 0.0,
+  "colors": {
+    "default": "38;5;208",
+    "description": "38;5;208",
+    "story": "38;5;208",
+    "reading": "38;5;208",
+    "list_content": "38;5;208",
+    "dialogue": "38;5;208",
+    "menu": "38;5;208",
+    "list_title": "1;38;5;214",
+    "title": "1;38;5;214",
+    "key": "1;38;5;214",
+    "character": "38;5;214",
+    "item": "38;5;214",
+    "quest": "38;5;214",
+    "list_category": "38;5;214",
+    "success": "38;5;178",
+    "heal": "38;5;178",
+    "error": "38;5;160",
+    "damage": "38;5;160",
+    "combat": "38;5;160",
+    "warning": "38;5;208",
+    "system": "38;5;214",
+    "hud": "38;5;214",
+    "prompt": "1;38;5;214",
+    "ambient": "2;38;5;208",
+    "hint": "2;38;5;208"
+  },
+  "styles": {
+    "description": {
+      "frame": "SINGLE"
+    },
+    "story": {
+      "frame": "DOUBLE"
+    },
+    "dialogue": {
+      "frame": "ROUNDED"
+    }
+  },
+  "ui": {
+    "frame_color": "38;5;214",
+    "title_gradient": [
+      214,
+      214,
+      214
+    ]
+  }
+}

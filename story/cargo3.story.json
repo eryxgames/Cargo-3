@@ -1,0 +1,221 @@
+{
+ "format": "storykit",
+ "version": 1,
+ "game": {
+  "id": "cargo3",
+  "title": "Cargo 3",
+  "part": 3
+ },
+ "about": "Cargo 3's story: from 2533, just after the Great Debacle, over several centuries of external time. Written in the files under cargo3/; tools/build_story.py builds them, with the names from saga.json, into cargo3.game.json, which the game reads.",
+ "saga": "saga.json",
+ "placeholders": [
+  "player_name",
+  "rank",
+  "money",
+  "trades_completed",
+  "combat_victories",
+  "research_points",
+  "discoveries",
+  "place",
+  "turn",
+  "visitor.name",
+  "visitor.rank",
+  "visitor.game",
+  "visitor.ending",
+  "origin.name",
+  "origin.rank",
+  "origin.game",
+  "origin.ending",
+  "origin.turns"
+ ],
+ "include": [
+  "cargo3/places.json",
+  "cargo3/main.json"
+ ],
+ "stats": {
+  "money": {
+   "about": "credits on hand"
+  },
+  "plot_points": {
+   "about": "story points (StoryManager.plot_points)"
+  },
+  "research_points": {
+   "about": "research points on hand"
+  },
+  "trades_completed": {
+   "about": "buy and sell actions completed"
+  },
+  "trade_profit": {
+   "about": "total trade profit, all goods"
+  },
+  "passengers_transported": {
+   "about": "passengers delivered"
+  },
+  "passenger_reputation": {
+   "about": "passenger reputation"
+  },
+  "combat_rating": {
+   "about": "attack + defence + speed"
+  },
+  "combat_victories": {
+   "about": "battles won (all kinds)"
+  },
+  "discovered": {
+   "about": "locations visited at least once"
+  },
+  "mining_platforms": {
+   "about": "mining platforms built, all locations"
+  },
+  "stockmarket_everywhere": {
+   "about": "1 when every planet, asteroid base and outpost has a stock market"
+  },
+  "controlled_locations": {
+   "about": "locations marked controlled_by_player (nothing in the game sets this)",
+   "produced": false
+  },
+  "milestones_done": {
+   "about": "story milestones completed (StoryManager.completed_story_beats)"
+  },
+  "best_cabin": {
+   "about": "comfort level of the best passenger cabin aboard"
+  },
+  "turns_since_vip": {
+   "about": "turns since the last VIP passenger appeared"
+  },
+  "crew_size": {
+   "about": "helpers hired (the ship has bunks for four)"
+  },
+  "hansa_bonds": {
+   "about": "Hansa bonds held (each lowers the convoy dues)"
+  },
+  "dues_arrears": {
+   "about": "convoy dues owed and not yet paid"
+  },
+  "hull_class": {
+   "about": "the ship's hull: 0 the old hauler, 1 Ironback, 2 Farstrider"
+  },
+  "hold_free": {
+   "about": "free room in the hold for dry goods, after special cargo"
+  },
+  "cargo.tech": {
+   "about": "tech in the hold (an effect adds or takes it)"
+  },
+  "cargo.agri": {
+   "about": "agri in the hold (an effect adds or takes it)"
+  },
+  "cargo.salt": {
+   "about": "salt in the hold (an effect adds or takes it)"
+  },
+  "cargo.fuel": {
+   "about": "fuel in the hold (an effect adds or takes it)"
+  },
+  "combat_victories.pirate": {
+   "about": "battles won against pirate"
+  },
+  "combat_victories.militia": {
+   "about": "battles won against militia"
+  },
+  "combat_victories.raider": {
+   "about": "battles won against raider"
+  },
+  "combat_victories.machine": {
+   "about": "battles won against machine"
+  },
+  "combat_victories.rogue_captain": {
+   "about": "battles won against rogue_captain"
+  },
+  "combat_victories.uprising": {
+   "about": "battles won against uprising"
+  },
+  "buildings.stockmarket": {
+   "about": "stockmarket buildings, all locations"
+  },
+  "buildings.Neuroengineering Guild": {
+   "about": "Neuroengineering Guild buildings, all locations"
+  },
+  "buildings.Agrobot Assembly Line": {
+   "about": "Agrobot Assembly Line buildings, all locations"
+  },
+  "buildings.mining_platform": {
+   "about": "mining_platform buildings, all locations"
+  },
+  "discovered.Planet": {
+   "about": "Planet locations visited"
+  },
+  "discovered.AsteroidBase": {
+   "about": "AsteroidBase locations visited"
+  },
+  "discovered.DeepSpaceOutpost": {
+   "about": "DeepSpaceOutpost locations visited"
+  },
+  "discovered.ResearchColony": {
+   "about": "ResearchColony locations visited"
+  },
+  "standing.hansa": {
+   "about": "standing with the Hauler Hansa, -100 to 100 (an effect moves it)"
+  },
+  "standing.mandate": {
+   "about": "standing with the Terran Mandate, -100 to 100 (an effect moves it)"
+  },
+  "standing.concord": {
+   "about": "standing with the Stellar Concord, -100 to 100 (an effect moves it)"
+  },
+  "dawn_trust": {
+   "about": "the Binary Dawn's trust, -100 to 100, hidden from the player (an effect moves it)"
+  },
+  "modules_fitted": {
+   "about": "modules on the ship's grips (game/modules.py)"
+  }
+ },
+ "sets": {
+  "researched": {
+   "about": "research unlocked",
+   "members": [
+    "chronopolitics",
+    "exogeology",
+    "geophysics",
+    "psychodynamics",
+    "telemetry",
+    "xenoeconomy"
+   ]
+  },
+  "items": {
+   "about": "items carried"
+  },
+  "crew": {
+   "about": "helpers aboard",
+   "members": [
+    "loader",
+    "steward",
+    "mechanic",
+    "gunner",
+    "navigator",
+    "broker"
+   ]
+  },
+  "unlocked_types": {
+   "about": "hidden location types revealed",
+   "members": [
+    "Planet",
+    "AsteroidBase",
+    "DeepSpaceOutpost",
+    "ResearchColony"
+   ]
+  }
+ },
+ "effects": {
+  "code": {
+   "about": "game code the tools cannot read"
+  }
+ },
+ "arcs": {
+  "main": {
+   "title": "Main story",
+   "order": 0
+  }
+ },
+ "flags": {},
+ "places": {},
+ "characters": {},
+ "nodes": {}
+}

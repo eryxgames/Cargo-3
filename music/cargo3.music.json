@@ -1,0 +1,65 @@
+{
+ "about": "Cargo 2's music: songs composed by CLIo's synthesizer from a mood and a seed (no audio files). places: the song for each kind of place; acts: songs that take over from act 3; battle: convoy fights.",
+ "songs": {
+  "calm": {
+   "generate": {
+    "mood": "calm",
+    "seed": 2460,
+    "bars": 16
+   }
+  },
+  "space": {
+   "generate": {
+    "mood": "space",
+    "seed": 40,
+    "bars": 16
+   }
+  },
+  "mystery": {
+   "generate": {
+    "mood": "mystery",
+    "seed": 1187,
+    "bars": 16
+   }
+  },
+  "dark": {
+   "generate": {
+    "mood": "dark",
+    "seed": 11,
+    "bars": 16
+   }
+  },
+  "tense": {
+   "generate": {
+    "mood": "tense",
+    "seed": 3,
+    "bars": 16
+   }
+  },
+  "battle": {
+   "generate": {
+    "mood": "battle",
+    "seed": 2,
+    "bars": 16
+   }
+  },
+  "shop": {
+   "generate": {
+    "mood": "shop",
+    "seed": 9,
+    "bars": 16
+   }
+  }
+ },
+ "places": {
+  "Planet": "calm",
+  "AsteroidBase": "space",
+  "DeepSpaceOutpost": "mystery",
+  "ResearchColony": "mystery",
+  "Megastructure": "dark",
+  "default": "space"
+ },
+ "acts": {
+  "3": "tense"
+ }
+}

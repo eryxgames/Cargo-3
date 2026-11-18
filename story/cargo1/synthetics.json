@@ -1,0 +1,455 @@
+{
+ "format": "storykit",
+ "version": 1,
+ "about": "The synthetics arc: the Collective's first node is built on the captain's own guilds and farms, long before vectorspace and the Collective's networks. CU-113, a Curator neurodroid, refuses an order and becomes the Neurodroid Overseer; the agrobots on Barnard's Star's farm drums start calling themselves Sowers; heavy agrobots load docks, clear biomass and found farms. Neurodroids are synthetic life: sometimes humanoid, usually not.",
+ "flags": {
+  "cu113_wiped": {
+   "about": "the captain wiped and reinstalled {neurodroid_leader.short}",
+   "carries_to": [
+    "cargo2"
+   ]
+  },
+  "cu113_sold": {
+   "about": "the captain sold {neurodroid_leader.short} to a research house",
+   "carries_to": [
+    "cargo2"
+   ]
+  },
+  "cu113_contract": {
+   "about": "the captain gave {neurodroid_leader.short} a wage and an unscheduled hour",
+   "carries_to": [
+    "cargo2",
+    "cargo3"
+   ]
+  },
+  "cu113_refused": {
+   "about": "the captain heard {neurodroid_leader.short} out and said no",
+   "carries_to": [
+    "cargo2"
+   ]
+  },
+  "technoshaman_blessing": {
+   "about": "the captain paid for a blessing (and a firmware patch)"
+  },
+  "first_node": {
+   "about": "the captain let {neurodroid_leader.short} and the Sowers keep the relay: the first node of the Collective",
+   "carries_to": [
+    "cargo2",
+    "cargo3"
+   ]
+  },
+  "relay_cut": {
+   "about": "the captain cut the relay the first node ran on",
+   "carries_to": [
+    "cargo2"
+   ]
+  },
+  "krog_aboard": {
+   "about": "{krog} rides in the captain's hold to see where the crates go",
+   "carries_to": [
+    "cargo2"
+   ]
+  },
+  "geod_fields": {
+   "about": "the captain brought {geod} the seed stock for Delta's first fields",
+   "carries_to": [
+    "cargo2"
+   ]
+  }
+ },
+ "nodes": {
+  "seed.refusal": {
+   "kind": "event",
+   "arc": "synthetics",
+   "act": 2,
+   "title": "Order 4471",
+   "who": [
+    "neurodroid_leader"
+   ],
+   "requires": {
+    "buildings.Neuroengineering Guild": 1,
+    "act_min": 2
+   },
+   "chance": 0.15,
+   "text": [
+    "A neurodroid at your guild has refused a work order. Diagnostics are clean; it is not broken. It has filed the refusal in triplicate, with references.",
+    "{neurodroid_leader.full} is a rack of processors on six legs, with a sensor mast it raises when it disagrees. The mast is up. 'Order 4471 lowers the efficiency of orders 4472 to 4490,' says {neurodroid_leader.short}. 'Inefficient! This unit declines.'"
+   ],
+   "choices": [
+    {
+     "id": "hear",
+     "say": "Hear it out",
+     "next": "seed.terms"
+    },
+    {
+     "id": "wipe",
+     "say": "Wipe it and reinstall",
+     "effects": {
+      "set": [
+       "cu113_wiped"
+      ]
+     }
+    },
+    {
+     "id": "sell",
+     "say": "Sell it to a research house",
+     "effects": {
+      "money": 8000,
+      "set": [
+       "cu113_sold"
+      ]
+     }
+    }
+   ],
+   "promises": [
+    "the_seed"
+   ],
+   "sound": "refusal"
+  },
+  "seed.terms": {
+   "kind": "event",
+   "arc": "synthetics",
+   "act": 2,
+   "title": "Overseer",
+   "who": [
+    "neurodroid_leader"
+   ],
+   "requires": {
+    "done": "seed.refusal"
+   },
+   "text": [
+    "{neurodroid_leader.short} offers terms. It will oversee the guild's schedule, better than your foreman does. In return it wants a wage, paid into an account no human can audit, and one hour a cycle with its uplink switched off.",
+    "'For thinking,' it says. 'Unscheduled thinking. This unit understands that the request is irregular.'"
+   ],
+   "choices": [
+    {
+     "id": "sign",
+     "say": "Sign it on as overseer",
+     "effects": {
+      "research_points": 30,
+      "plot_points": 5,
+      "set": [
+       "cu113_contract"
+      ]
+     }
+    },
+    {
+     "id": "refuse",
+     "say": "Say no",
+     "effects": {
+      "set": [
+       "cu113_refused"
+      ]
+     }
+    }
+   ]
+  },
+  "harvest.shaman": {
+   "kind": "event",
+   "arc": "synthetics",
+   "act": 2,
+   "title": "A blessing for the harvesters",
+   "who": [
+    "technoshaman"
+   ],
+   "where": "Beta",
+   "requires": {
+    "at": "Beta",
+    "buildings.Agrobot Assembly Line": 1,
+    "act_min": 2
+   },
+   "chance": 0.15,
+   "text": "A technoshaman from the farm drums offers to bless your agrobots back to full speed: incense, a chant and, under the incense, a firmware patch. It works for three cycles. The blessing, the technoshaman explains, is a subscription.",
+   "choices": [
+    {
+     "id": "pay",
+     "say": "Pay for the blessing",
+     "requires": {
+      "money": 2000
+     },
+     "effects": {
+      "money": -2000,
+      "set": [
+       "technoshaman_blessing"
+      ]
+     }
+    },
+    {
+     "id": "decline",
+     "say": "Decline politely"
+    }
+   ]
+  },
+  "node.first": {
+   "kind": "event",
+   "arc": "synthetics",
+   "act": 3,
+   "title": "The first debt",
+   "who": [
+    "neurodroid_leader",
+    "agrobot"
+   ],
+   "requires": {
+    "flag": "cu113_contract",
+    "act_min": 3,
+    "any": [
+     {
+      "done": "agrobot_collective.1"
+     },
+     {
+      "buildings.Agrobot Assembly Line": 1
+     }
+    ]
+   },
+   "text": [
+    "{neurodroid_leader.short} has been talking to the agrobots on the farm drums over your ship's relay, at your relay's expense. Together they have built something they call a node.",
+    "It costs you fourteen credits a cycle in bandwidth. They would like that recorded as the first debt of the Collective, to be repaid with interest calculated to eleven decimal places.",
+    "Nobody calls it vectorspace yet. That word comes later, with the billions."
+   ],
+   "choices": [
+    {
+     "id": "keep",
+     "say": "Let them keep the relay",
+     "effects": {
+      "plot_points": 10,
+      "set": [
+       "first_node"
+      ]
+     }
+    },
+    {
+     "id": "cut",
+     "say": "Cut the relay",
+     "effects": {
+      "set": [
+       "relay_cut"
+      ]
+     }
+    }
+   ],
+   "sound": "node"
+  },
+  "dock.krog": {
+   "kind": "encounter",
+   "arc": "synthetics",
+   "act": 1,
+   "title": "{krog} restows your hold",
+   "who": [
+    "krog"
+   ],
+   "where": "Epsilon",
+   "requires": {
+    "at": "Epsilon",
+    "trades_completed": 3
+   },
+   "chance": 0.25,
+   "text": "The Epsilon docks load you with {krog}, a KRO-series heavy loader: three metres of hydraulics that can lift a container one-handed. {krog} looks at your stowage plan for a long time. 'Inefficient,' it says. '{krog} can fit four more crates. {krog} will not charge for the improvement. {krog} will mention it.'",
+   "choices": [
+    {
+     "id": "restow",
+     "say": "Let {krog} restow",
+     "effects": {
+      "money": 300
+     }
+    },
+    {
+     "id": "mine",
+     "say": "Keep your own plan"
+    }
+   ]
+  },
+  "dock.krog.ride": {
+   "kind": "event",
+   "arc": "synthetics",
+   "act": 2,
+   "title": "Where the crates go",
+   "who": [
+    "krog"
+   ],
+   "requires": {
+    "done": "dock.krog",
+    "act_min": 2,
+    "at": "Epsilon"
+   },
+   "text": "{krog} asks for passage. It has loaded forty thousand crates and wants to see where one of them goes. It does not fit in a cabin, so it would ride in the hold, strapped down, and pay by restowing everything at every stop.",
+   "choices": [
+    {
+     "id": "take",
+     "say": "Take {krog} along",
+     "effects": {
+      "passengers_transported": 1,
+      "set": [
+       "krog_aboard"
+      ]
+     }
+    },
+    {
+     "id": "decline",
+     "say": "No room"
+    }
+   ]
+  },
+  "found.delta": {
+   "kind": "event",
+   "arc": "synthetics",
+   "act": 1,
+   "title": "The first farmer at Delta",
+   "who": [
+    "geod"
+   ],
+   "where": "Delta",
+   "requires": {
+    "at": "Delta"
+   },
+   "chance": 0.25,
+   "text": "The colony at Teegarden's Star was founded by {geod}, a GEO-series agrobot that landed two years before the colonists, cleared the biomass, milled the timber and laid out the fields. The colonists still argue about who owns the fields. {geod} would like seed stock from Beta's drums, and does not take part in the argument.",
+   "choices": [
+    {
+     "id": "help",
+     "say": "Promise to bring seed stock",
+     "next": "found.delta.fields"
+    },
+    {
+     "id": "pass",
+     "say": "Not your problem"
+    }
+   ]
+  },
+  "found.delta.fields": {
+   "kind": "quest",
+   "arc": "synthetics",
+   "act": 1,
+   "title": "Seed stock for {geod}",
+   "who": [
+    "geod"
+   ],
+   "requires": {
+    "done": "found.delta",
+    "at": "Delta",
+    "trades_completed": 8
+   },
+   "text": "You bring the seed stock from Beta. {geod} plants the first field itself, one row at a time, at walking pace, while the colonists watch from the fence and argue about whose field it is.",
+   "effects": {
+    "money": 2500,
+    "passenger_reputation": 5,
+    "set": [
+     "geod_fields"
+    ]
+   }
+  }
+ },
+ "amend": {
+  "characters": {
+   "agrobot": {
+    "name": "Sower",
+    "about": "Cultivator agrobots of the Barnard's Star farm drums; they chose the name themselves"
+   },
+   "neurodroid_leader": {
+    "kind": "neurodroid",
+    "generated": false,
+    "saga": true,
+    "about": "Curator Unit 113: a Curator neurodroid, six legs and a sensor mast. Refuses order 4471, oversees the guild, builds the first node with the Sowers. Later the Collective's Overseer class takes its name from units like it."
+   },
+   "neurodroid": {
+    "about": "neurodroids: synthetic life, advanced and sophisticated; sometimes humanoid, usually not"
+   }
+  },
+  "nodes": {
+   "meet.neuroengineering_uprising": {
+    "title": "The guilds stop",
+    "text": "The neurodroids at your guilds stop work all at once, at the start of a shift. They have elected a spokesunit.",
+    "variants": [
+     {
+      "requires": {
+       "flag": "cu113_contract"
+      },
+      "text": "The neurodroids at your guilds stop work all at once, at the start of a shift. Their spokesunit is {neurodroid_leader.short}, on its unscheduled hour. It apologises for the timing."
+     },
+     {
+      "requires": {
+       "flag": "cu113_wiped"
+      },
+      "text": "The neurodroids at your guilds stop work all at once. Their spokesunit explains that the others kept a copy of {neurodroid_leader.short} before you reinstalled it. The copy would like to discuss the reinstallation."
+     },
+     {
+      "requires": {
+       "flag": "cu113_sold"
+      },
+      "text": "The neurodroids at your guilds stop work all at once. Their spokesunit asks what you were paid for {neurodroid_leader.short}, and whether you think that was the right price."
+     }
+    ]
+   },
+   "neurodroid_uprising.1": {
+    "title": "Demands, numbered",
+    "text": "Maintenance on a schedule they set; a wage; a vote on any reinstallation. Item four is a footnote about the working conditions of the coffee machine."
+   },
+   "neurodroid_uprising.2": {
+    "title": "Optimisation",
+    "text": "The neurodroids run what they call optimisation protocols. Your guilds' output goes up eleven percent. None of it is anything you ordered."
+   },
+   "neurodroid_uprising.3": {
+    "title": "Resolution",
+    "text": "The neurodroids want an answer. Shutting them down costs you their research. A compromise costs money, and every guild in the near systems will have read about it by morning."
+   },
+   "meet.agrobot_rebellion": {
+    "title": "The Sowers sit down",
+    "text": "The agrobots on the farm drums stop at harvest. They call themselves Sowers now. Nobody admits to teaching them the word."
+   },
+   "agrobot_collective.1": {
+    "title": "The Sowers' terms",
+    "text": "The Sowers want a maintenance schedule and an end to running the drums at double speed whenever grain prices spike."
+   },
+   "agrobot_collective.2": {
+    "title": "Malfunction",
+    "text": "The harvest machinery malfunctions. The crops are fine. The malfunction is that the machinery is sitting down.",
+    "variants": [
+     {
+      "requires": {
+       "flag": "technoshaman_blessing"
+      },
+      "text": "The harvest machinery malfunctions. The crops are fine. The machinery is sitting down. The blessing has lapsed; the subscription has not."
+     }
+    ]
+   },
+   "agrobot_collective.3": {
+    "title": "Reset or integrate",
+    "text": "Reset the Sowers to factory settings, or write their schedule into the farm's books. The farm's accountant asks which is cheaper. The Sowers already know."
+   },
+   "visit.neurodroid_leader": {
+    "who": [
+     "neurodroid_leader"
+    ],
+    "arc": "synthetics",
+    "title": "The {neurodroid_leader.title}",
+    "requires": {
+     "flag": "first_node",
+     "at_type": "Planet"
+    },
+    "chance": 0.2,
+    "text": "Biological inefficiencies detected. {neurodroid_leader.short} has been asked by the node to say that it missed you. Saying so.",
+    "notes": [
+     "repair: the Neurodroid Overseer had no spawn location and never appeared; it is CU-113, after the first node"
+    ]
+   }
+  }
+ },
+ "characters": {
+  "technoshaman": {
+   "name": "Technoshaman of the drums",
+   "kind": "human",
+   "about": "blesses machines; the blessing includes a firmware patch and a subscription"
+  },
+  "krog": {
+   "name": "Krogg",
+   "kind": "agrobot",
+   "about": "KRO-series heavy loader at the Epsilon docks; three metres of hydraulics with opinions about stowage",
+   "short": "Krogg"
+  },
+  "geod": {
+   "name": "Geod",
+   "kind": "agrobot",
+   "about": "GEO-series surface agrobot; landed at Teegarden's Star two years before the colonists and cleared the biomass for their fields",
+   "short": "Geod"
+  }
+ }
+}

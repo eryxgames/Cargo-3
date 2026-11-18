@@ -1,0 +1,29 @@
+{
+ "clio_commit": "f6f7776",
+ "clio_version": "2.2.1",
+ "files": {
+  "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+  "NOTICE": "c2441583ad70b1ea5eb2a03781da75bf4e8833e9c4e4111d04fa1a063f520a0b",
+  "__init__.py": "fd12cf71cde85f49f98a5fa656ba2ce42190fa9c1ca97dad87edb76592d96875",
+  "art.py": "b0d503426ec0cc9b4e2862565ab2642ebb5c05a35257c7723641e7d3243fed16",
+  "audio/__init__.py": "4b5d8278ecc1a821f47881f3efc4c631e10cc65b6840255df2162c145c2f3140",
+  "audio/backends.py": "bd0d338daa8db80f108d6637f4c75bfff8b9b919eacef23f2bebab1764d99b67",
+  "audio/compose.py": "ef760e5150e7e72d2b45a24c74ba24dc60c980c6235ad92ba3c1c516f37a1220",
+  "audio/sfx.py": "3fe19811962d112d1ec5434f3647b2f11768afbe8cdbad4b8cda10d2f7701c17",
+  "audio/synth.py": "e05bccf2761bc37a52eab92bc2f9e08967550e12c1a8a5cf941b1bc733fbf1da",
+  "banner.py": "cbc5dff61003c4225b34f94e4c5a056ce902941a93d613e6d827494afea74d6e",
+  "fx.py": "d5ed79de4f112e748c82d1709a3b14b3ae094f93f3b7a5ce1692f07c3114152c",
+  "pixels.py": "11b22ad6758075ebc5950f15aa2f3ef3dd699927fd641cc8c01be043631acc44",
+  "sprite.py": "242b42f3b98c172f40260a71040723ee192d46f87767111f3e2776c837ae2802",
+  "style/configs/console.json": "df90d29d3107815640358cdae362cb6104f789253757611463479567f3d7fdfd",
+  "style/configs/default.json": "4e45803c03b5156beb4faec3b22056b621973d3da96f7e2c0343c67175a9d4a8",
+  "style/configs/elegant.json": "a45e56a63bc67e231b026dfc1ea70f8bfaa869572de0caa7fe9474483a4f44db",
+  "style/configs/minimal.json": "9f13bbe171508e16be71fbcab74047d09515bf397d6d909240a7a21b71fb3e3b",
+  "style/configs/modern.json": "5927861016ca6313ab41c16b706b2aead7d76017270adc8e0ef3c98476ad3819",
+  "style/configs/retro.json": "8f8f9446fa998f0b317f4b171545b492aae5b2190db29645432cc7cdc3e199ed",
+  "style/configs/techno.json": "8f17af61f8020a56c1e91f45665d30d9b00a4e6bdc2c780bd09bffccea9b232b",
+  "term.py": "fe079caf5cf678f1b9be4981e1a8bf4e58d47f3448cd65861d622b644b86929f",
+  "theme.py": "d8b19696d38fc9956f38814527daf81676072a51c3bed28e77eb41ae8de9c547",
+  "ui.py": "a975e74e631c35225e788199c020654449276688e506d1e48735c45dd5dd60fd"
+ }
+}
