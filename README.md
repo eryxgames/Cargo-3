@@ -31,7 +31,13 @@ it around: the captain begins on foot.
   handle a duty on each turn of the way, paid at the destination; buy `passage`; keep a
   `locker` of private trade; `skills` shows the captain. Work and duties can put a captain down;
   a fight can kill.
-- **Next in M0:** the openings (why the captain has no ship) and act 1's first scenes.
+- Act 1 (chapter I, The Hiring Hall): who the captain is now, by record, in a line or a pun;
+  why there is no ship, from the two reasons that fit the record best (never had one,
+  impounded by the Debacle's audits, taken by the Rockwardens, thrown out of a needle into a
+  pod, slept through it in a Kraal sarcophagus); the hiring hall; the hovertank plant, the deep
+  levels and the farm drums seen from the floor; the five berths captains; and the first old
+  friend, Adit, which ends the chapter. Chapters II and III are a frame still to be written.
+- **Next:** chapter II (old friends, centuries on), fights on foot, and the ways to a first ship.
 
 The plan (the shipless chapters, the ways to the first ship, fights on foot, investments
 matured from Cargo 2) is in the project's design document.
@@ -79,7 +85,7 @@ story/          the story: cargo3.story.json and the files in story/cargo3/, bui
 storykit/       the trilogy's story tools (format, validator, map), copied
 themes/         the game's own styles (CLIo theme files), beside CLIo's in kit/style/
 tools/          checks: smoke, bot, fuzzing, save round trips, hostile files, kit, story,
-                systems, the person, the able hand, fights, sound
+                act 1, systems, the person, the able hand, fights, sound
 .github/        the release workflow: tag vX.Y.Z to build, release and push to itch.io
 ```
 
@@ -107,6 +113,7 @@ change:
 python3 tools/build_story.py                         # builds story/cargo3.game.json
 python3 storykit/validate.py story/cargo3.story.json # unknown names, broken links
 python3 tools/scenes.py                              # plays every scene with every choice
+python3 tools/act1.py                                # act 1 for every kind of captain
 ```
 
 `storykit/`, `story/saga.json` and Cargo 1's story are copies from the Cargo repository

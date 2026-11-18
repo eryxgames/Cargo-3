@@ -1,7 +1,7 @@
 {
  "format": "storykit",
  "version": 1,
- "about": "Cargo 3's frame: chapters, milestones and endings, with their conditions (the game builds its chapters from these). A chapter's \"requires\" opens it and must still hold for it to end, with its milestones. Placeholder conditions until the story is written.",
+ "about": "Cargo 3's frame: chapters, milestones and endings, with their conditions (the game builds its chapters from these). A chapter's \"requires\" opens it and must still hold for it to end, with its milestones. Chapter I is written (act1.json); chapters II and III keep placeholder conditions until their story is.",
  "nodes": {
   "ch1": {
    "kind": "chapter",
@@ -10,7 +10,7 @@
    "title": "The Hiring Hall",
    "text": [
     "2533. The Debacle is over, and so is everything it paid for: the research houses are broke, the ring is a joke, and the hulls that touched it sit in impound yards.",
-    "You have a licence, a kit bag and no ship. The hiring hall opens at the start of every shift."
+    "Whatever happened to your ship, you do not have it now. The hiring hall opens at the start of every shift."
    ],
    "requires": {
     "plot_points": 30
@@ -19,6 +19,16 @@
     "ch2"
    ],
    "start": true
+  },
+  "ch1.friend": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch1",
+   "title": "An old friend",
+   "text": "Find someone on the docks who remembers your century.",
+   "requires": {
+    "flag": "first_friend"
+   }
   },
   "ch2": {
    "kind": "chapter",

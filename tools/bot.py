@@ -706,11 +706,14 @@ class Bot:
         # a berth: the best pay for a duty the hand can do, somewhere new now and then
         offers = g.berths()
         if offers and "berth" not in self.flags:
+            lead = self.lead_place(g) if LEADS else None
+
             def worth(o):
                 skill = person.skill(o["duty"])
                 new = 1.3 if o["to"] not in g.known_locations else 1.0
                 named = 1.15 if o["who"] else 1.0
-                return o["wage"] / o["legs"] * (1 + 0.25 * skill) * new * named
+                follow = 2.0 if lead and o["to"] == lead else 1.0
+                return o["wage"] / o["legs"] * (1 + 0.25 * skill) * new * named * follow
             pick = max(range(len(offers)), key=lambda i: worth(offers[i]))
             if rng.random() < 0.75:
                 self.flags.add("berth")

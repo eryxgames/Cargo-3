@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Play every story scene the game plays on its own, with every choice, on a well-stocked
-ship: no crashes, and no {name} left unfilled in what the player reads. Also checks special
+"""Play every story scene the game plays on its own, with every choice, on foot and on a
+well-stocked ship: no crashes, and no {name} left unfilled in what the player reads. Also checks special
 cargo (story hooks 'stow' and 'unstow') and the enemies that wait for the story.
 Usage: python3 tools/scenes.py game/world.py"""
 import os, re, sys, random
@@ -15,13 +15,14 @@ problems = played = 0
 for nid, node in sorted(data["nodes"].items()):
     if node.get("kind") not in plays or node.get("handled_by") or node.get("status") == "unused":
         continue
-    for pick in range(1, 1 + max(1, len(node.get("choices", [])))):
+    for pick, afloat in [(p, a) for p in range(1, 1 + max(1, len(node.get("choices", [])))) for a in (False, True)]:
         random.seed(pick)
-        g, io = new_game(cargo)
-        g.ship.money = 500000
-        g.ship.cargo.update(tech=100, agri=100, fuel=100, salt=50)
-        g.ship.crew.extend(["loader", "steward", "mechanic", "gunner", "navigator", "broker"])
-        g.ship.items.update({"probe": 1, "scanner": 1, "data_analyzer": 1, "advanced_radar": 1})
+        g, io = new_game(cargo, afloat=afloat)
+        g.person.money = 500000
+        g.person.items.update({"probe": 1, "scanner": 1, "data_analyzer": 1, "advanced_radar": 1})
+        if afloat:
+            g.ship.cargo.update(tech=100, agri=100, fuel=100, salt=50)
+            g.ship.crew.extend(["loader", "steward", "mechanic", "gunner", "navigator", "broker"])
         for flag in FLAGS:
             g.story_manager.story_states[flag] = True
         io.feed([str(pick)] + [""] * 40)

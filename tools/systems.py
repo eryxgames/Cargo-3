@@ -106,9 +106,11 @@ omega, ruins = by_name["Omega XIV"], by_name["Ancient Ruins Alpha"]
 game.locations += [omega, ruins]
 game.current_location = omega
 game.ship.cargo["fuel"], game.ship.money = 10, 1000
+game.arrive_through_hazard = lambda place: None      # the rough lane's luck is checked elsewhere
 io.queue.clear(); io.feed([""] * 30)
 with headless.quiet():
     went = game.travel_to_location(ruins.name)
+del game.arrive_through_hazard
 expect(went and game.ship.cargo["fuel"] == 7, "a hop inside the system burns 3 fuel")
 game.ship.cargo["fuel"], money = 1, game.ship.money
 game.current_location = omega

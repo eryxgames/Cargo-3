@@ -445,6 +445,10 @@ class StoryRuntime:
                 game.reputation_manager.total_passengers += value
             elif key == "combat_rating":
                 ship.attack = max(1, ship.attack + value)
+            elif key.startswith("skill.") and key[6:] in person.skills:
+                person.skills[key[6:]] = max(0, min(SKILL_TOP, person.skills[key[6:]] + value))
+            elif key == "wounds":
+                person.wounds = max(0, min(WOUNDS_DEAD, person.wounds + value))
             elif key.startswith("standing.") or key == "dawn_trust":
                 game.change_standing("dawn" if key == "dawn_trust" else key[9:], value)
             elif key.startswith("cargo.") and key[6:] in ship.cargo:
@@ -759,3 +763,4 @@ def route_place(route, turn):
         return None
     stay = max(1, int(route.get("stay", 1)))
     return places[((turn + int(route.get("start", 0))) // stay) % len(places)]
+from .person import SKILL_TOP, WOUNDS_DEAD  # noqa: E402

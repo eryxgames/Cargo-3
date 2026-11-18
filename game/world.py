@@ -109,7 +109,6 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         if intro:
             self.story.introduce()
             self.story_manager.start_game()
-            self.display_starting_info()
         else:
             self.story_manager.current_chapter = "ch1"
 

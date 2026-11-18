@@ -20,6 +20,10 @@ grep -q "baseline: 0 new" /tmp/cargo3-validate.txt || fail=1
 $PY $T/scenes.py $G > /tmp/cargo3-scenes.txt || fail=1
 grep -E "CRASH|unfilled|FAIL" /tmp/cargo3-scenes.txt | head; tail -1 /tmp/cargo3-scenes.txt
 
+echo "== act 1 for every kind of captain: the intro, the reasons for no ship, the hall, the floor,"
+echo "   the berths captains, the first old friend"
+$PY $T/act1.py || fail=1
+
 echo "== the engine's systems, one by one"
 $PY $T/systems.py || fail=1
 
@@ -79,5 +83,14 @@ crash='traceback' in r
 hand = '' if r.get('afloat', True) else ', on foot: %s voyages, %s shifts' % (r.get('voyages'), sum((r.get('shifts') or {}).values()))
 print('  %-7s seed %s%s%s: %s at turn %s, chapter %s, %s loads%s %s' % (r['goal'], r['seed'], ' (Cargo 1 captain)' if r.get('captain') else '', ' (with a ship)' if r.get('afloat') else '', r.get('ending') or r.get('end') or 'playing', r.get('turn'), r.get('chapter'), r.get('loads'), hand, 'CRASH '+r['traceback'][-300:] if crash else ''))
 sys.exit(1 if crash else 0)" || fail=1; done; done
+
+echo "== a curious hand looks around every dock: when chapter I ends (the first old friend)"
+for s in $SEEDS; do $PY $T/bot.py $G trade $s 150 --cols=36 --curious | $PY -c "
+import json,sys
+r=json.load(sys.stdin)
+crash='traceback' in r
+ch=r.get('docks',{}).get('chapters',{})
+print('  seed %s: chapter I ends at turn %s, Adit met at turn %s %s' % (r['seed'], ch.get('ch1'), r.get('docks',{}).get('first',{}).get('dock_loader'), 'CRASH '+r['traceback'][-300:] if crash else ''))
+sys.exit(1 if crash or 'ch1' not in ch else 0)" || fail=1; done
 
 if [ $fail = 0 ]; then echo "ALL CHECKS PASSED"; else echo "SOME CHECKS FAILED"; exit 1; fi
