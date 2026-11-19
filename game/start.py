@@ -69,11 +69,33 @@ def choose_captain():
     return None
 
 
+def join_and_tell(record):
+    """A record about to be played: if an older game dropped this captain's history, offer to
+    join it with the captain's newer record; then say what waits here."""
+    def tell(lines):
+        if lines:
+            print(render_box([[line] for line in lines], 'round'))
+
+    features = story_data()["features"]
+    others = [r for _, r in list_captain_files()]
+    notes = []
+    for newer in history.join_candidates(record, others, features)[:1]:
+        print(render_box([["Is this the captain who left %s as %s (%s)?" % (
+            history.ERA_YEARS.get(newer["origin"]["game"], "?"), newer["rank"] or "no rank",
+            GAME_TITLES.get(newer["origin"]["game"], "?"))], ["yes / no"]], 'round'))
+        if ask(">>> ").strip().lower() in ("y", "yes"):
+            record = history.join(record, newer)
+            notes.append(history.joined_note(record, features))
+    tell(notes + history.import_notes(record, GAME_ID, VERSION, features))
+    return record
+
+
 def new_game():
     from .world import Game         # world.py imports this module: Game is fetched when needed
     record = choose_captain()
     if record is None:
         return Game()
+    record = join_and_tell(record)
     return Game(player_name=record["name"], origin=record)
 
 
@@ -95,7 +117,9 @@ def main():
 
 # The game's other modules, imported last so that the modules can refer to each other.
 from .terminal import display_logo, logo_data, render_box, safe_output  # noqa: E402
-from .saves import SaveError, SwitchGame, describe_save, list_saves, load_game  # noqa: E402
+from .saves import GAME_ID, SaveError, SwitchGame, describe_save, list_saves, load_game  # noqa: E402
 from .captain import list_captain_files  # noqa: E402
-from .story import GAME_TITLES, ending_title  # noqa: E402
+from .story import GAME_TITLES, ending_title, story_data  # noqa: E402
+from . import VERSION  # noqa: E402
+from . import record as history  # noqa: E402
 from .terminal import ask  # noqa: E402

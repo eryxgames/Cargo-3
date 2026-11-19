@@ -46,6 +46,9 @@ def build():
                   for fid, f in sorted(story["flags"].items())},
         "places": {pid: {k: p[k] for k in PLACE_FIELDS if k in p}
                    for pid, p in story["places"].items() if p.get("kind") == "location"},
+        "errands": story.get("errands", {}),
+        "aliases": story.get("aliases", {}),
+        "features": story.get("features", {}),
         "repaired": sorted(repaired),
         "order": list(nodes),
         "nodes": nodes,

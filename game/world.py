@@ -98,10 +98,10 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         self.story = StoryRuntime(self)
         self.story.origin = origin
 
-        # The captain's record: an identity that can travel between the games,
-        # and the records of captains who crossed over into this one
-        self.captain_id = "C1-%08X" % random.getrandbits(32)
-        self.captain_log = []
+        # The captain's record: an identity that travels between the games (the same captain
+        # keeps the same id and log from part to part), the line this game is and the history it
+        # carries (game/record.py), and the records of captains who crossed over into this one
+        self.start_history(origin)
         self.visiting_captains = []
         self.ending_reached = None
 
@@ -258,6 +258,7 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         self.front_berths = getattr(self, "front_berths", 0)
         if not isinstance(getattr(self, "achievements", None), dict):
             self.achievements = {}
+        self.mend_history()
         if not isinstance(getattr(self, "person", None), Person):
             self.person = Person()
         ship = self.ship

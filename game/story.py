@@ -40,7 +40,7 @@ def story_data():
                 data = None
         if not isinstance(data, dict) or "nodes" not in data:
             data = json.loads(STORY_JSON)
-        for key in ("nodes", "characters", "flags", "places", "repaired", "order"):
+        for key in ("nodes", "characters", "flags", "places", "repaired", "order", "errands", "aliases", "features"):
             data.setdefault(key, [] if key in ("repaired", "order") else {})
         if not data["order"]:
             data["order"] = list(data["nodes"])
@@ -138,6 +138,8 @@ class StoryRuntime:
         snap = self.game.story_snapshot()
         snap["venue"] = self.venue
         snap["origin"] = self.origin
+        snap["past"] = self.game.captain_start["ledger"]           # what the captain left in other parts
+        snap["errands"] = history.errand_states(self.game.errands)
         return snap
 
     def mark(self, nid):
@@ -214,6 +216,10 @@ class StoryRuntime:
             return False
         if key == "player_origin":
             return snap.get("origin") is not None and record_matches(snap["origin"], want)
+        if key == "past":
+            return history.past_holds(snap.get("past"), want)
+        if key == "errand":
+            return history.errands_hold(snap.get("errands"), want)
         if key == "code":
             return False            # the story should not lean on code the game cannot read
         value = snap["stats"].get(key, 0)
@@ -406,7 +412,14 @@ class StoryRuntime:
                 if key != "give":
                     continue
                 value = {k: v for k, v in value.items() if k != "crew"}
-            if key == "set":
+            if key == "errand":           # an errand for another part of the saga
+                for eid in _as_list(value):
+                    history.open_errand(game.errands, eid, story_data()["errands"], GAME_ID, game.captain_start["line"])
+            elif key == "errand_done":
+                for eid in _as_list(value):
+                    history.finish_errand(game.errands, eid, story_data()["errands"], GAME_ID,
+                                          game.captain_start["line"])
+            elif key == "set":
                 for flag in _as_list(value):
                     game.story_manager.story_states[flag] = True
             elif key == "clear":
@@ -753,6 +766,8 @@ def voyage_condition(cond, factor):
 
 # The game's other modules, imported last so that the modules can refer to each other.
 from .encounters import ENEMIES  # noqa: E402
+from . import record as history  # noqa: E402
+from .saves import GAME_ID  # noqa: E402
 from .sound import sfx  # noqa: E402
 
 

@@ -1,0 +1,223 @@
+{
+ "format": "storykit",
+ "version": 1,
+ "about": "Errands to the past (2533): level nine's plaque at Gamma, whose thirteenth line waits for a name from 2420 (Cargo 1), and the Kraal vault at Delta, whose word Conte Ottavine lost in stasis and chose in 2460 (Cargo 2). The captain carries an errand back in the record, does it in the earlier part, and finds the echo here in a new game begun as that captain.",
+ "arcs": {"errands": {"title": "Errands to the past", "order": 6}},
+ "flags": {"vault_opened": {"about": "the Kraal vault at Delta opened to the word the captain brought back from 2460"}},
+ "nodes": {
+  "sight.gamma.plaque": {
+   "kind": "sight",
+   "arc": "errands",
+   "act": 1,
+   "where": "Gamma",
+   "title": "Level nine's plaque",
+   "requires": {"done": ["hall.first"]},
+   "text": [
+    "Down on level nine, by the lift, hangs a plaque from 2420, cut with a borrowed laser: the twelve miners who came out, and under them a thirteenth line, blank, 'for the hauler who brought the air'.",
+    "Nobody alive knows who that was. The miners touch the blank line for luck on the way down."
+   ],
+   "variants": [
+    {
+     "requires": {"past": {"era": "cargo1", "flag": "thirteenth_name"}},
+     "text": [
+      "Down on level nine, by the lift, hangs a plaque from 2420, cut with a borrowed laser: the twelve miners who came out, and a thirteenth line for the hauler who brought the air. It says {player_name}.",
+      "The letters are worn smooth where a century of miners touched them for luck. A boy in a lift cage reads your name off the plaque, then off your tag, and decides it is a coincidence."
+     ]
+    },
+    {
+     "requires": {"past": {"era": "cargo1", "flag": "thirteenth_blank"}},
+     "text": [
+      "Down on level nine, by the lift, hangs a plaque from 2420, cut with a borrowed laser: the twelve miners who came out, and a thirteenth line, still blank. A man with a borrowed laser once asked you for a name, and you let it stay blank.",
+      "'Blank is honest,' he said. The miners touch it for luck on the way down, and wonder."
+     ]
+    },
+    {
+     "requires": {"errand": {"thirteenth_line": "open"}},
+     "text": [
+      "Down on level nine, by the lift, hangs a plaque from 2420, cut with a borrowed laser: the twelve miners who came out, and a thirteenth line, blank, 'for the hauler who brought the air'. You have promised it a name.",
+      "2420 is a needle and a Gyrotron turn away. Your record carries the errand."
+     ]
+    },
+    {
+     "requires": {"past": {"era": "cargo1", "flag": "saved_level_nine"}},
+     "text": [
+      "Down on level nine, by the lift, hangs a plaque from 2420, cut with a borrowed laser: the twelve miners who came out, and a thirteenth line, blank, 'for the hauler who brought the air'.",
+      "That was you, in 2420. You left Gamma before the plaque was cut, and nobody wrote the name down."
+     ]
+    }
+   ],
+   "choices": [
+    {
+     "id": "errand",
+     "say": "Promise the line a name (an errand to 2420)",
+     "requires": {
+      "errand": {"thirteenth_line": "none"},
+      "not": {
+       "any": [
+        {"past": {"era": "cargo1", "flag": "thirteenth_name"}},
+        {"past": {"era": "cargo1", "flag": "thirteenth_blank"}}
+       ]
+      }
+     },
+     "effects": {"errand": "thirteenth_line", "plot_points": 1},
+     "next": ["errand.plaque.given"]
+    },
+    {
+     "id": "leave",
+     "say": "Leave the line to the miners",
+     "requires": {
+      "errand": {"thirteenth_line": "none"},
+      "not": {
+       "any": [
+        {"past": {"era": "cargo1", "flag": "thirteenth_name"}},
+        {"past": {"era": "cargo1", "flag": "thirteenth_blank"}}
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "errand.plaque.given": {
+   "kind": "event",
+   "arc": "errands",
+   "act": 1,
+   "title": "An errand to 2420",
+   "requires": {"errand": {"thirteenth_line": "open"}},
+   "text": [
+    "Errands to the past travel in your captain's record. To take this one to 2420, use 'captain' to export your record, then start Cargo 1 (1.3.0 or newer) as this captain.",
+    "In 2420, help get the miners out of level nine at Gamma. A few turns later the plaque is cut, and you will be asked for the name. Then start Cargo 3 again as this captain: that 2533 will remember."
+   ]
+  },
+  "thought.errand.plaque": {
+   "kind": "thought",
+   "arc": "errands",
+   "act": 1,
+   "requires": {
+    "errand": {"thirteenth_line": "open"},
+    "not": {
+     "any": [{"past": {"era": "cargo1", "flag": "thirteenth_name"}}, {"past": {"era": "cargo1", "flag": "thirteenth_blank"}}]
+    }
+   },
+   "text": "Level nine's thirteenth line waits for a name. The way back to 2420 is my record: export it with 'captain', start Cargo 1 as this captain, and get the miners out of level nine at Gamma."
+  },
+  "sight.delta.conte": {
+   "kind": "sight",
+   "arc": "errands",
+   "act": 1,
+   "where": "Delta",
+   "who": ["neon_sleeper"],
+   "title": "{neon_sleeper}",
+   "requires": {"flag": "first_friend", "not_flag": "vault_opened"},
+   "text": [
+    "{neon_sleeper} is awake for the restart, barely older than in 2460. She sits on the steps of the Kraal counting room with a cup of coffee, in front of a vault that will not open.",
+    "'I chose the word myself,' she says. 'Seventy-three years in the chamber, and it went first. The chambers take the newest memories first.' The vault holds what the family kept back from the Debacle. She will share it with whoever brings the word back."
+   ],
+   "variants": [
+    {
+     "requires": {"past": {"era": "cargo2", "flag": "vault_word_patience"}},
+     "text": [
+      "{neon_sleeper} sits on the steps of the Kraal counting room with a cup of coffee, in front of a vault that will not open. She has lost the word; the chambers take the newest memories first.",
+      "You were in the room in 2460 when she chose it. 'Patience,' she said. 'Remember it for me, captain. I have a feeling I will ask.'"
+     ]
+    },
+    {
+     "requires": {"past": {"era": "cargo2", "flag": "vault_word_coffee"}},
+     "text": [
+      "{neon_sleeper} sits on the steps of the Kraal counting room with a cup of coffee, in front of a vault that will not open. She has lost the word; the chambers take the newest memories first.",
+      "You were in the room in 2460. The word was your idea, and she laughed at it for the first time in thirty years. She is holding it in her hand."
+     ]
+    },
+    {
+     "requires": {"past": {"era": "cargo2", "flag": "vault_word_tuesday"}},
+     "text": [
+      "{neon_sleeper} sits on the steps of the Kraal counting room with a cup of coffee, in front of a vault that will not open. She has lost the word; the chambers take the newest memories first.",
+      "'I will know it in my bones,' she said in 2460, the day she chose it. You were there. Her bones have forgotten it too. It is a Tuesday."
+     ]
+    },
+    {
+     "requires": {"past": {"era": "cargo2", "flag": "vault_word_known"}},
+     "text": [
+      "{neon_sleeper} sits on the steps of the Kraal counting room with a cup of coffee, in front of a vault that will not open. She has lost the word; the chambers take the newest memories first.",
+      "You were in the room in 2460 when she chose it."
+     ]
+    },
+    {
+     "requires": {"errand": {"vault_word": "open"}},
+     "text": [
+      "{neon_sleeper} sits on the steps of the Kraal counting room with a cup of coffee, in front of a vault that will not open.",
+      "You have promised to bring the word back from 2460, where she is newly awake. Your record carries the errand."
+     ]
+    }
+   ],
+   "choices": [
+    {
+     "id": "say",
+     "say": "Say the word",
+     "requires": {"past": {"era": "cargo2", "flag": "vault_word_known"}},
+     "effects": {"set": "vault_opened", "give": {"items": ["procrustes_analyzer"]}, "plot_points": 5},
+     "next": ["errand.vault.opened"]
+    },
+    {
+     "id": "errand",
+     "say": "Promise to bring the word back (an errand to 2460)",
+     "requires": {"errand": {"vault_word": "none"}, "not": {"past": {"era": "cargo2", "flag": "vault_word_known"}}},
+     "effects": {"errand": "vault_word", "plot_points": 1},
+     "next": ["errand.vault.given"]
+    },
+    {
+     "id": "leave",
+     "say": "Leave her to her coffee",
+     "requires": {
+      "any": [
+       {"errand": {"vault_word": "none"}, "not": {"past": {"era": "cargo2", "flag": "vault_word_known"}}},
+       {"past": {"era": "cargo2", "flag": "vault_word_known"}}
+      ]
+     }
+    }
+   ]
+  },
+  "errand.vault.given": {
+   "kind": "event",
+   "arc": "errands",
+   "act": 1,
+   "title": "An errand to 2460",
+   "requires": {"errand": {"vault_word": "open"}},
+   "text": [
+    "Errands to the past travel in your captain's record. To take this one to 2460, use 'captain' to export your record, then start Cargo 2 (2.3.0 or newer) as this captain.",
+    "In 2460, {neon_sleeper.short} still sleeps at Delta and wakes on her own schedule. Be there when she does, and be in the room when she chooses the word. Then start Cargo 3 again as this captain: in that 2533 you will know it."
+   ]
+  },
+  "thought.errand.vault": {
+   "kind": "thought",
+   "arc": "errands",
+   "act": 1,
+   "requires": {"errand": {"vault_word": "open"}, "not": {"past": {"era": "cargo2", "flag": "vault_word_known"}}},
+   "text": "{neon_sleeper.short} lost the word for her vault in the chamber. The way back to 2460 is my record: export it with 'captain', start Cargo 2 as this captain, and be at Delta when she first wakes."
+  },
+  "thought.vault_word": {
+   "kind": "thought",
+   "arc": "errands",
+   "act": 1,
+   "requires": {"past": {"era": "cargo2", "flag": "vault_word_known"}, "not_flag": "vault_opened"},
+   "text": "I know the word for the Kraal vault. I was there when it was chosen. {neon_sleeper.short} sits at Delta in front of a door she cannot open."
+  },
+  "errand.vault.opened": {
+   "kind": "event",
+   "arc": "errands",
+   "act": 1,
+   "who": ["neon_sleeper"],
+   "requires": {"flag": "vault_opened"},
+   "text": "The vault opens with a sigh of old air. Between deeds to land nobody has seen in a century lies a grey instrument the size of a hand: a Procrustes Analyzer. It turns two shapes until they match, whatever angle each is seen from. 'My father bought it to find ships that changed their names,' {neon_sleeper.short} says. 'Take it. You have one to find.'"
+  },
+  "sight.delta.vault": {
+   "kind": "sight",
+   "arc": "errands",
+   "act": 1,
+   "where": "Delta",
+   "who": ["neon_sleeper"],
+   "title": "The Kraal vault",
+   "requires": {"flag": "vault_opened"},
+   "text": "The Kraal vault stands open now. {neon_sleeper.short} keeps her coffee in it."
+  }
+ }
+}

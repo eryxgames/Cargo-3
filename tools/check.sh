@@ -24,6 +24,9 @@ echo "== act 1 for every kind of captain: the intro, the reasons for no ship, th
 echo "   the berths captains, the first old friend"
 $PY $T/act1.py || fail=1
 
+echo "== the captain's history across the parts, and the errands to 2420 and 2460"
+$PY $T/history.py || fail=1
+
 echo "== the engine's systems, one by one"
 $PY $T/systems.py || fail=1
 
@@ -52,7 +55,7 @@ echo "== the game starts and exits as a program (UTF-8 and cp1252 output)"
 $PY $T/smoke.py $PY cargo3.py || fail=1
 
 echo "== damaged and hostile save / captain files"
-$PY $T/test_files.py $G | tail -1 || fail=1
+$PY $T/test_files.py $G > /tmp/cargo3-files.txt || fail=1; tail -1 /tmp/cargo3-files.txt
 
 echo "== save / load round trips"
 for s in $SEEDS; do $PY $T/roundtrip.py $G $s 1200 800 | $PY -c "

@@ -37,6 +37,8 @@ it around: the captain begins on foot.
   drums seen from the floor; the five berths captains; and the first old friend, Adit, whose
   lists say the ship never came out of the needle. Finding Adit ends the chapter. Chapters II
   and III are a frame still to be written.
+- Errands to the past: a name for level nine's plaque (from 2420) and the word for the Kraal
+  vault (from 2460), carried in the captain's record (`game/record.py`).
 - What the game shows stays on screen until it is read: a turn's screen waits for Enter when
   the last thing shown was a message the player has not answered.
 - **Next:** chapter II (old friends, centuries on), fights on foot, and the ways to a first ship.
@@ -62,6 +64,12 @@ on Windows; `CLIO_AUDIO` picks one) and is silent otherwise.
 Saves and captain records are shared with Cargo 1 and Cargo 2 in `~/.cargo-saga`; set
 `CARGO_SAGA_HOME` to keep them elsewhere. A captain who finished an earlier part can start
 Cargo 3 as themselves: their record is offered when a new game starts.
+
+Some things in 2533 can only be mended in the past. The story gives the captain an errand,
+which travels in the captain's record: export it (`captain`), start Cargo 1 or Cargo 2 as this
+captain (Cargo 1 1.3.0 and Cargo 2 2.3.0 or newer), do it there, and start Cargo 3 again as the
+same captain. Every game begun from a record is a new line of the timeline, so no save is ever
+rewritten; the new 2533 remembers what the captain did.
 
 ## Layout
 

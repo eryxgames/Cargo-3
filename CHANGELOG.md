@@ -60,6 +60,22 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
     record is known at once; a fresh one works the ring first. Adit asks you to ask: about your
     ship (its lists say it never came out of the needle, and Korai would know where needles
     go), about who else is alive, or for a shift beside it. Finding Adit ends chapter I.
+- **Errands to the past** (`story/cargo3/errands.json`). The captain's record now carries the
+  captain's history (`game/record.py`, copied from the Cargo repository, as in Cargo 1 1.3.0 and
+  Cargo 2 2.3.0): the same id and log from part to part, the captain's own time, the line of
+  the timeline each game is, what the captain left in each part (`{"past": ...}`) and errands
+  (`{"errand": ...}`, effects `errand` and `errand_done`). Two errands go back:
+  - level nine's plaque at Gamma has a blank thirteenth line "for the hauler who brought the
+    air". Promise it a name, export the record, start Cargo 1 as this captain, get the miners
+    out, and give the name, or leave the line blank; a new 2533 begun from that record shows it,
+    on the plaque and in the deep levels;
+  - Conte Ottavine sits at Delta in front of a vault she cannot open: she chose its word in 2460
+    and lost it in stasis, the newest memories first. Be in the room in Cargo 2 when she chooses
+    it, and in a new 2533 the vault opens to it: inside is a Procrustes Analyzer, which finds a
+    ship under a new name.
+  Thoughts keep the way back. Keys a newer game writes into a record are kept; a record that went
+  through an older game (Cargo 1 1.2.1) is offered a join with the captain's newer record, and
+  an errand for a version too old is named at import and export. Checks: `tools/history.py`.
 - Story effects can train a skill (`skill.loader`) and wound (`wounds`).
 - A line that fits its box is kept as written (columns lined up with spaces stay lined up).
 - Messages stay until read: every answer goes through one place (`terminal.ask`), and a turn's

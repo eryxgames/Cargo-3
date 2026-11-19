@@ -4,9 +4,11 @@ import base64
 import hashlib
 import json
 import os
+import random
 import time
 import zlib
 from . import VERSION
+from . import record as history     # the captain's history across the parts (storykit/record.py)
 
 # =============================================================================
 # The captain's record: a small file (or a line of text) that carries a captain
@@ -21,6 +23,10 @@ STORY_PLACE_TYPES = ["Planet", "AsteroidBase", "DeepSpaceOutpost", "ResearchColo
 STORY_BUILDINGS = ["stockmarket", "Neuroengineering Guild", "Agrobot Assembly Line", "mining_platform"]
 STORY_VICTORY_TYPES = ["total", "pirate", "militia", "raider", "machine", "rogue_captain", "uprising"]
 CAPTAIN_GAMES = ("cargo1", "cargo2", "cargo3")
+# The keys a record has here; with the history keys (game/record.py) they are cleaned, and any
+# other key, from a newer game, is kept as it came and written out again.
+CAPTAIN_KEYS = ("format", "version", "id", "name", "origin", "rank", "career", "research", "ship", "story",
+                "hold", "achievements", "standing", "log", "check")
 
 
 def _captain_check(record):
@@ -45,8 +51,9 @@ def clean_captain(record):
     """Check a captain record from outside and return a tidy copy.
 
     The record may come from another game, another machine or a text message,
-    so nothing in it is trusted: unknown keys are dropped, texts are shortened,
-    numbers are clamped.  Raises SaveError when it is not a captain record.
+    so nothing in it is trusted: texts are shortened, numbers are clamped, and keys
+    from newer games are kept only when small and plain.  Raises SaveError when it is
+    not a captain record.
     """
     if not isinstance(record, dict) or record.get("format") != "cargo-captain":
         raise SaveError("this is not a captain record")
@@ -98,6 +105,8 @@ def clean_captain(record):
                  "turn": _clean_number(e.get("turn"), 0, 10 ** 9), "at": _clean_text(e.get("at"), 24)}
                 for e in log[-20:] if isinstance(e, dict)],
     }
+    clean.update(history.clean_history(record))
+    clean.update(history.kept_keys(record, set(CAPTAIN_KEYS) | set(clean)))
     clean["check"] = _captain_check(clean)
     return clean
 
@@ -199,14 +208,48 @@ class CaptainMixin:
             "standing": {faction: self.standing_of(faction) for faction in ("hansa", "mandate", "concord")},
             "log": list(self.captain_log) + [entry],
         }
+        history.write_history(record, self.captain_start, GAME_ID, VERSION, self.turn, record["story"]["flags"],
+                              record["story"]["ending"], self.errands)
         record["check"] = _captain_check(record)
         return clean_captain(record)
 
     def record_flags(self):
-        """The flags a record carries: those later parts read first, then the rest."""
+        """The flags a record carries: those later parts read first, then the rest (a renamed
+        flag under both its names)."""
         on = {flag for flag, value in self.story_manager.story_states.items() if value}
         carried = {flag for flag, info in story_data()["flags"].items() if info.get("carries_to")}
-        return sorted(on & carried) + sorted(on - carried)
+        return history.with_aliases(sorted(on & carried) + sorted(on - carried), story_data()["aliases"])
+
+    def own_record(self, record):
+        """Is this record this very game's (the same captain on the same line)?"""
+        return record.get("id") == self.captain_id and record.get("line", "") == self.captain_start["line"]
+
+    def start_history(self, origin):
+        """The captain this game begins as (storykit's record.py): the same id and log as the
+        record, a line of its own, the captain's own time so far, the past and the errands."""
+        start = history.start_from(origin, random, known=CAPTAIN_KEYS, aliases=story_data()["aliases"])
+        self.captain_id = start["id"] or "C3-%08X" % random.getrandbits(32)
+        self.captain_log = start["log"]
+        self.captain_start = {key: start[key] for key in ("line", "parent", "own_time", "ledger", "kept")}
+        self.errands = start["errands"]
+
+    def mend_history(self):
+        """A save from before the history, or one with a damaged history, gets a sound one."""
+        start = getattr(self, "captain_start", None)
+        origin = self.story.origin if isinstance(getattr(self.story, "origin", None), dict) else None
+        if not (isinstance(start, dict) and isinstance(start.get("ledger"), dict) and isinstance(start.get("line"), str)
+                and isinstance(start.get("parent"), str) and isinstance(start.get("kept"), dict)
+                and isinstance(start.get("own_time"), int) and not isinstance(start.get("own_time"), bool)):
+            fresh = history.start_from(origin, random, known=CAPTAIN_KEYS, aliases=story_data()["aliases"])
+            self.captain_start = {key: fresh[key] for key in ("line", "parent", "own_time", "ledger", "kept")}
+        else:
+            self.captain_start["ledger"] = {era: history.clean_era(entry) for era, entry in start["ledger"].items()
+                                            if era in history.ERAS}
+        if not self.captain_start["ledger"] and origin:
+            # a save from before the history, of a game begun as a recorded captain: its past
+            self.captain_start["ledger"] = history.ledger_of(origin, story_data()["aliases"])
+        errands = getattr(self, "errands", None)
+        self.errands = [e for e in (history.clean_errand(e) for e in (errands if isinstance(errands, list) else [])) if e]
 
     def close_record(self, ending):
         """The story is told: remember how it ended and let the record travel on."""
@@ -216,6 +259,7 @@ class CaptainMixin:
         if path:
             lines.append(f"It waits in {path}")
         lines.append("Use 'captain' to carry it into another part of the saga.")
+        lines.extend(history.export_notes(self.errands, GAME_ID, VERSION))
         self.display_story_message(lines)
 
     def export_captain(self, event="export"):
@@ -231,7 +275,7 @@ class CaptainMixin:
 
     def receive_captain(self, record):
         """Take in a captain from another timeline.  Returns a message."""
-        if record["id"] == self.captain_id:
+        if self.own_record(record):
             return "That is your own record. The Loop does not let a captain meet themselves here."
         self.visiting_captains = [c for c in self.visiting_captains if c["id"] != record["id"]]
         self.visiting_captains.append(record)
@@ -259,7 +303,11 @@ class CaptainMixin:
             [f"Captain {self.player_name}", f"{self.rank}"],
             [f"Record {self.captain_id}", f"Turn {self.turn}"],
             [f"Crossings logged: {len(self.captain_log)}", f"Visitors: {len(self.visiting_captains)}"],
+            [f"Your own time: {self.captain_start['own_time'] + self.turn} turns", f"Line {self.captain_start['line']}"],
         ]
+        for errand in self.errands:
+            content.append([f"Errand ({errand['state']}): {errand['title'] or errand['id']}",
+                            f"for {history.ERA_TITLES.get(errand['to'], errand['to'])}"])
         for captain in self.visiting_captains:
             content.append([f"  {captain['name']}", f"from {captain['origin']['game']}"])
         print(self.create_box(content, 'double'))
@@ -268,7 +316,7 @@ class CaptainMixin:
             ['export', 'e', 'import', 'i', 'back', 'b'])
         if action in ('export', 'e'):
             path, code = self.export_captain()
-            lines = ["Your record is ready to travel."]
+            lines = history.export_notes(self.errands, GAME_ID, VERSION) + ["Your record is ready to travel."]
             if path:
                 lines.append(f"File: {path}")
             lines.append("Or carry this code (copy all of it):")
@@ -279,8 +327,7 @@ class CaptainMixin:
             self.handle_captain_import()
 
     def handle_captain_import(self):
-        files = [(path, record) for path, record in list_captain_files()
-                 if record["id"] != self.captain_id]
+        files = [(path, record) for path, record in list_captain_files() if not self.own_record(record)]
         if files:
             content = [["Records in the shared folder:"]]
             for number, (path, record) in enumerate(files[:9], 1):

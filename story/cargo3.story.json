@@ -32,6 +32,7 @@
   "cargo3/places.json",
   "cargo3/hands.json",
   "cargo3/act1.json",
+  "cargo3/errands.json",
   "cargo3/main.json"
  ],
  "stats": {

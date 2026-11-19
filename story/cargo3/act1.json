@@ -202,7 +202,15 @@
    "text": "The deep levels go down eleven now. The old hands will not go below nine, and nobody says why.",
    "variants": [
     {
-     "requires": {"player_origin": {"flag": "saved_level_nine"}},
+     "requires": {"past": {"era": "cargo1", "flag": "thirteenth_name"}},
+     "text": "On level nine there is a plaque with twelve names, and a thirteenth: yours. The old hands touch it for luck and will not go below nine. Now you know why they stop there."
+    },
+    {
+     "requires": {"past": {"era": "cargo1", "flag": "thirteenth_blank"}},
+     "text": "On level nine there is a plaque with twelve names, and a thirteenth line you let stay blank. The old hands touch it for luck and will not go below nine. Now you know why they stop there."
+    },
+    {
+     "requires": {"past": {"era": "cargo1", "flag": "saved_level_nine"}},
      "text": "On level nine there is a plaque with twelve names, and a thirteenth line left blank 'for the hauler'. The old hands will not go below nine. Now you know why they stop there."
     },
     {

@@ -10,6 +10,9 @@ made are paid here. story/STORYKIT.json records where they came from and a check
     python3 tools/sync_story.py ../Cargo       # copy from a Cargo checkout
     python3 tools/sync_story.py --check        # fail if a copied file was changed here
 
+storykit/record.py (the captain record's history: ledger, lines, errands) is also copied into the
+game package as game/record.py, which the game imports.
+
 Change these files in the Cargo repository, then copy them again; never edit them here.
 """
 import hashlib, json, os, shutil, subprocess, sys
@@ -18,8 +21,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 MANIFEST = os.path.join(ROOT, "story", "STORYKIT.json")
 FILES = ["storykit/story.py", "storykit/validate.py", "storykit/storymap.py", "storykit/replay.py",
-         "storykit/map_template.html", "storykit/FORMAT.md", "storykit/README.md",
+         "storykit/record.py", "storykit/map_template.html", "storykit/FORMAT.md", "storykit/README.md",
          "story/saga.json", "story/cargo1.story.json"]
+COPIES = {"game/record.py": "storykit/record.py"}     # copied file here -> its source in the kit
 
 
 def digest(path):
@@ -45,6 +49,9 @@ def copy(cargo):
         target = os.path.join(ROOT, name)
         os.makedirs(os.path.dirname(target), exist_ok=True)
         shutil.copy2(os.path.join(cargo, name), target)
+    for target, source in COPIES.items():
+        shutil.copy2(os.path.join(cargo, source), os.path.join(ROOT, target))
+    names = names + sorted(COPIES)
     manifest = {"from": "eryxgames/Cargo", "commit": commit,
                 "files": {name: digest(os.path.join(ROOT, name)) for name in names}}
     with open(MANIFEST, "w", encoding="utf-8") as handle:
