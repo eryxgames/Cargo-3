@@ -1,9 +1,19 @@
 {
  "format": "storykit",
  "version": 1,
- "about": "Errands to the past (2533): level nine's plaque at Gamma, whose thirteenth line waits for a name from 2420 (Cargo 1), and the Kraal vault at Delta, whose word Conte Ottavine lost in stasis and chose in 2460 (Cargo 2). The captain carries an errand back in the record, does it in the earlier part, and finds the echo here in a new game begun as that captain.",
+ "about": "Errands to the past (2533): level nine's plaque at Gamma, whose thirteenth line waits for a name from 2420 (Cargo 1), and the Kraal vault at Delta, whose word Conte Ottavine lost in stasis and chose in 2460 (Cargo 2); and Kren's notes at Epsilon, whose gap where the segment's shape should be can be filled in 2420 (Cargo 1), before the Institute fire. The captain carries an errand back in the record, does it in the earlier part, and finds the echo here in a new game begun as that captain.",
  "arcs": {"errands": {"title": "Errands to the past", "order": 6}},
- "flags": {"vault_opened": {"about": "the Kraal vault at Delta opened to the word the captain brought back from 2460"}},
+ "characters": {
+  "ancient_scholar": {
+   "about": "her notes, forty years in her hand and decades more from her upload, kept in the Concord's reading room at Epsilon"
+  }
+ },
+ "flags": {
+  "vault_opened": {"about": "the Kraal vault at Delta opened to the word the captain brought back from 2460"},
+  "took_vertex_array": {
+   "about": "the captain took the cartridge from {ancient_scholar.short}'s notes: the Vertex Array, measured in 2420 before the fire"
+  }
+ },
  "nodes": {
   "sight.gamma.plaque": {
    "kind": "sight",
@@ -208,6 +218,93 @@
    "who": ["neon_sleeper"],
    "requires": {"flag": "vault_opened"},
    "text": "The vault opens with a sigh of old air. Between deeds to land nobody has seen in a century lies a grey instrument the size of a hand: a Procrustes Analyzer. It turns two shapes until they match, whatever angle each is seen from. 'My father bought it to find ships that changed their names,' {neon_sleeper.short} says. 'Take it. You have one to find.'"
+  },
+  "sight.epsilon.notes": {
+   "kind": "sight",
+   "arc": "errands",
+   "act": 1,
+   "where": "Epsilon",
+   "who": ["ancient_scholar"],
+   "title": "{ancient_scholar}'s notes",
+   "requires": {"done": ["hall.first"]},
+   "text": [
+    "The Concord keeps a reading room at Epsilon that nobody reads in. One shelf holds {ancient_scholar}'s notes: forty years in her hand, then decades more from her upload, which writes neater than she did.",
+    "One page has a gap where the shape of the missing segment should be. 'Measured from the samples, Stellar Institute, 2420,' it says. 'Lost in the fire.'"
+   ],
+   "variants": [
+    {
+     "requires": {"flag": "took_vertex_array"},
+     "text": [
+      "The Concord keeps a reading room at Epsilon that nobody reads in. One shelf holds {ancient_scholar}'s notes: forty years in her hand, then decades more from her upload, which writes neater than she did.",
+      "Where the gap was, there is a square of old tape. The cartridge is in your pocket."
+     ]
+    },
+    {
+     "requires": {"past": {"era": "cargo1", "flag": "vertex_array_kren"}},
+     "text": [
+      "The Concord keeps a reading room at Epsilon that nobody reads in. One shelf holds {ancient_scholar}'s notes: forty years in her hand, then decades more from her upload, which writes neater than she did.",
+      "Where the gap should be, a data cartridge is taped to the page. The label is in your own hand: 'The shape, measured before the fire. For T.K.' Under it, in hers: 'The hauler kept their word. Whoever restarts the ring will need this.'"
+     ]
+    },
+    {
+     "requires": {"errand": {"vertex_array": "open"}},
+     "text": [
+      "The Concord keeps a reading room at Epsilon that nobody reads in. One shelf holds {ancient_scholar}'s notes: forty years in her hand, then decades more from her upload, which writes neater than she did.",
+      "One page has a gap where the shape of the missing segment should be: 'Lost in the fire.' You have promised to measure the samples before they burn."
+     ]
+    }
+   ],
+   "choices": [
+    {
+     "id": "take",
+     "say": "Take the cartridge",
+     "requires": {"past": {"era": "cargo1", "flag": "vertex_array_kren"}, "not_flag": "took_vertex_array"},
+     "effects": {"give": {"items": ["vertex_array"]}, "set": "took_vertex_array", "plot_points": 5},
+     "next": ["errand.vertex.taken"]
+    },
+    {
+     "id": "errand",
+     "say": "Promise to measure the samples before the fire (an errand to 2420)",
+     "requires": {"errand": {"vertex_array": "none"}, "not": {"past": {"era": "cargo1", "flag": "vertex_array_kren"}}},
+     "effects": {"errand": "vertex_array", "plot_points": 1},
+     "next": ["errand.vertex.given"]
+    },
+    {
+     "id": "leave",
+     "say": "Put the notes back",
+     "requires": {
+      "any": [
+       {"past": {"era": "cargo1", "flag": "vertex_array_kren"}, "not_flag": "took_vertex_array"},
+       {"errand": {"vertex_array": "none"}, "not": {"past": {"era": "cargo1", "flag": "vertex_array_kren"}}}
+      ]
+     }
+    }
+   ]
+  },
+  "errand.vertex.given": {
+   "kind": "event",
+   "arc": "errands",
+   "act": 1,
+   "title": "An errand to 2420",
+   "requires": {"errand": {"vertex_array": "open"}},
+   "text": [
+    "Errands to the past travel in your captain's record. To take this one to 2420, use 'captain' to export your record, then start Cargo 1 (1.3.0 or newer) as this captain.",
+    "In 2420, carry {ancient_scholar.short}'s samples to the Stellar Institute when she asks for them, and measure them there before the fire takes the store. Then start Cargo 3 again as this captain."
+   ]
+  },
+  "thought.errand.vertex": {
+   "kind": "thought",
+   "arc": "errands",
+   "act": 1,
+   "requires": {"errand": {"vertex_array": "open"}, "not": {"past": {"era": "cargo1", "flag": "vertex_array_kren"}}},
+   "text": "{ancient_scholar.short}'s notes have a gap where the shape of the grey alloy should be. The way back to 2420 is my record: carry her samples to the Stellar Institute, and measure them before the fire."
+  },
+  "errand.vertex.taken": {
+   "kind": "event",
+   "arc": "errands",
+   "act": 1,
+   "requires": {"flag": "took_vertex_array"},
+   "text": "The cartridge holds the raw coordinates of the segment the builders lost: a Vertex Array. Whatever is cut to fill the ring's gap will have to be cut to this shape. Nobody else has a copy. You checked."
   },
   "sight.delta.vault": {
    "kind": "sight",

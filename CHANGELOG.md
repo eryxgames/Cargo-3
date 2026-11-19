@@ -73,10 +73,30 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
     and lost it in stasis, the newest memories first. Be in the room in Cargo 2 when she chooses
     it, and in a new 2533 the vault opens to it: inside is a Procrustes Analyzer, which finds a
     ship under a new name.
+  - Tylde Kren's notes at Epsilon have a gap where the shape of the missing segment should be:
+    measured from the samples in 2420, lost in the Institute fire. Promise to measure them, do
+    it in Cargo 1 before the fire, and in a new 2533 the cartridge is taped into her notes,
+    labelled in your own hand: the Vertex Array.
   Thoughts keep the way back. Keys a newer game writes into a record are kept; a record that went
   through an older game (Cargo 1 1.2.1) is offered a join with the captain's newer record, and
   an errand for a version too old is named at import and export. Checks: `tools/history.py`.
-- Story effects can train a skill (`skill.loader`) and wound (`wounds`).
+- **People named by what they do** (`story/cargo3/roles.json`), so the names keep their
+  weight. Each points at the named cast:
+  - the **Perimeter Guard** at Alpha's impound yard (ask, or pay 100 for the yard's list: one
+    hull with no name);
+  - a **Medic** on the berths of Beta, Gamma and Delta in turn (patched up for 40 credits, 30
+    wounds a time; she knows which captains send her their crews);
+  - a **Cybersurgeon** at Epsilon (reads what the pod's cold took; a reflex implant, a level of
+    gunner, for 600 credits);
+  - the **Battle Engineer** and the **Armored Commander** on Delta's test range after a shift at
+    the plant (rig a skirt, ride a live-fire trial as an able gunner). After four shifts the
+    engineer tells you the crew's name for her: Gabion;
+  - a **Squad of Soldiers** and its **Heavy Infantry Commander** on a route through Gamma, Beta,
+    Alpha and Delta: a sweep of the berths, a list that is not theirs. Carry the kit, show the
+    salvager's papers, or slip away as a navigator.
+  Checks: `tools/roles.py`, every scene with every answer at 36 columns.
+- Story effects can train a skill (`skill.loader`), give practice toward the next level on the
+  same curve as work (`practice.loader`), and wound (`wounds`, healing when negative).
 - A line that fits its box is kept as written (columns lined up with spaces stay lined up).
 - Messages stay until read: every answer goes through one place (`terminal.ask`), and a turn's
   screen waits for Enter before clearing when a message since the last answer is still unread

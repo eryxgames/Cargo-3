@@ -27,6 +27,9 @@ $PY $T/act1.py || fail=1
 echo "== the captain's history across the parts, and the errands to 2420 and 2460"
 $PY $T/history.py || fail=1
 
+echo "== people named by what they do: the guard, the medic, the cybersurgeon, the test range, the squad"
+$PY $T/roles.py || fail=1
+
 echo "== the engine's systems, one by one"
 $PY $T/systems.py || fail=1
 

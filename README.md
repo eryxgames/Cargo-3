@@ -37,8 +37,12 @@ it around: the captain begins on foot.
   drums seen from the floor; the five berths captains; and the first old friend, Adit, whose
   lists say the ship never came out of the needle. Finding Adit ends the chapter. Chapters II
   and III are a frame still to be written.
-- Errands to the past: a name for level nine's plaque (from 2420) and the word for the Kraal
-  vault (from 2460), carried in the captain's record (`game/record.py`).
+- Errands to the past: a name for level nine's plaque and the shape of Kren's samples (both
+  from 2420), and the word for the Kraal vault (from 2460), carried in the captain's record
+  (`game/record.py`).
+- People named by what they do (`story/cargo3/roles.json`): a perimeter guard, a medic, a
+  cybersurgeon, a battle engineer, an armored commander, a squad of soldiers and its heavy
+  infantry commander. Names stay for the people who matter.
 - What the game shows stays on screen until it is read: a turn's screen waits for Enter when
   the last thing shown was a message the player has not answered.
 - **Next:** chapter II (old friends, centuries on), fights on foot, and the ways to a first ship.

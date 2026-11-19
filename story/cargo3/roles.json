@@ -1,0 +1,392 @@
+{
+ "format": "storykit",
+ "version": 1,
+ "about": "Roles (anonymous characters): the guard at the impound yard, a medic on the berths, a cybersurgeon at Epsilon, the battle engineer and the armored commander on Delta's test range, and a Mandate squad with its heavy infantry commander on a route. They have no personal names, so the names in the story keep their weight, and what they say points at the named cast: Adit, the berths captains, Conte Ottavine, Serac. One of them earns a name: the battle engineer tells a hand who has worked the plant what the crew calls her (Gabion).",
+ "arcs": {"roles": {"title": "People at work", "order": 5}},
+ "characters": {
+  "perimeter_guard": {
+   "name": "Perimeter Guard",
+   "anonymous": true,
+   "kind": "human",
+   "about": "walks the fence of the Mandate's impound yard at Alpha, where hulls that touched the ring wait for an audit nobody will hold"
+  },
+  "medic": {
+   "name": "Medic",
+   "anonymous": true,
+   "kind": "human",
+   "about": "a dock medic with a folding table and a sign that says CASH, NO NAMES; works the berths of Beta, Gamma and Delta in turn",
+   "route": {"places": ["Beta", "Gamma", "Delta"], "stay": 3}
+  },
+  "cybersurgeon": {
+   "name": "Cybersurgeon",
+   "anonymous": true,
+   "kind": "human",
+   "about": "fits implants in a clinic off Epsilon's research ring; has had Conte Ottavine in the chair"
+  },
+  "battle_engineer": {
+   "name": "Battle Engineer",
+   "anonymous": true,
+   "kind": "human",
+   "about": "rigs the hovertanks on Delta's test range; tells a hand her name once it is earned"
+  },
+  "gabion": {
+   "name": "Gabion",
+   "was": "battle_engineer",
+   "kind": "human",
+   "about": "the battle engineer on Delta's test range, once she has told you her name: a wire cage full of rock, because she builds walls overnight"
+  },
+  "armored_commander": {
+   "name": "Armored Commander",
+   "anonymous": true,
+   "kind": "human",
+   "about": "commands the plant's test hovertank at Delta; a Mandate officer on loan, the papers say"
+  },
+  "infantry_squad": {
+   "name": "Squad of Soldiers",
+   "anonymous": true,
+   "group": true,
+   "kind": "human",
+   "about": "a Mandate squad that sweeps the berths for people on lists",
+   "route": {"places": ["Gamma", "Beta", "Alpha", "Delta"], "stay": 3, "start": 6}
+  },
+  "heavy_infantry_commander": {
+   "name": "Heavy Infantry Commander",
+   "anonymous": true,
+   "kind": "human",
+   "about": "leads the squad; reads names off a slate",
+   "route": {"places": ["Gamma", "Beta", "Alpha", "Delta"], "stay": 3, "start": 6}
+  }
+ },
+ "flags": {
+  "guard_asked": {"about": "the captain asked the impound yard's {perimeter_guard} about hulls from the needles"},
+  "yard_list_seen": {"about": "the captain paid the {perimeter_guard} for a look at the impound yard's list: one hull with no name"},
+  "medic_talked": {"about": "the {medic} told the captain which captains send her patients"},
+  "clinic_scanned": {"about": "the {cybersurgeon} read what the pod's cold took from the captain"},
+  "implant_reflex": {"about": "the captain had a reflex implant fitted at Epsilon (a level of gunner)"},
+  "rigged_the_skirts": {"about": "the captain helped the {battle_engineer} rig a hovertank's skirt"},
+  "rode_the_trial": {"about": "the captain rode as gunner in a live-fire trial on Delta's test range"},
+  "gabion_named": {"about": "the battle engineer told the captain her name: {gabion}"},
+  "squad_carried": {"about": "the captain carried the {heavy_infantry_commander}'s kit"},
+  "squad_dodged": {"about": "the captain slipped away from the squad's sweep"}
+ },
+ "nodes": {
+  "sight.alpha.yard": {
+   "kind": "sight",
+   "arc": "roles",
+   "act": 1,
+   "where": "Alpha",
+   "who": ["perimeter_guard"],
+   "title": "The impound yard",
+   "requires": {"done": ["hall.first"]},
+   "text": [
+    "Behind a fence at the edge of Alpha's ring, the Mandate keeps the hulls that touched the Gyrotron before the Debacle. They wait for an audit nobody will hold.",
+    "The {perimeter_guard} walks the fence with a rifle slung the comfortable way, and does not look at you twice."
+   ],
+   "variants": [
+    {
+     "requires": {"flag": "yard_list_seen"},
+     "text": "The impound yard. The {perimeter_guard} nods to you now, the way you nod to a debt."
+    }
+   ],
+   "choices": [
+    {
+     "id": "ask",
+     "say": "Ask about hulls from the needles",
+     "requires": {"not_flag": "guard_asked"},
+     "effects": {"set": "guard_asked"},
+     "next": ["yard.ask"]
+    },
+    {
+     "id": "list",
+     "say": "Slip the guard 100 credits for a look at the yard's list",
+     "requires": {"money": 100, "not_flag": "yard_list_seen"},
+     "effects": {"money": -100, "set": "yard_list_seen", "plot_points": 3},
+     "next": ["yard.list"]
+    },
+    {"id": "leave", "say": "Walk on"}
+   ]
+  },
+  "yard.ask": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["perimeter_guard"],
+   "requires": {"flag": "guard_asked"},
+   "text": "'Nothing in there came out of a needle,' the {perimeter_guard} says. 'Ask the docks. There is a loader one hand short that keeps lists. It knows more than the Mandate does, and the Mandate does not like that.'",
+   "variants": [
+    {
+     "requires": {"flag": "first_friend"},
+     "text": "'Nothing in there came out of a needle,' the {perimeter_guard} says. 'You know {dock_loader}? Then you know more than I do. Everyone does. I just walk the fence.'"
+    }
+   ]
+  },
+  "yard.list": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["perimeter_guard"],
+   "requires": {"flag": "yard_list_seen"},
+   "text": [
+    "Forty-one hulls, each with a registry and an audit date that came and went. And one with neither: towed in last year, tumbling, from no needle anybody logged. The paint is new. The hull under it is not.",
+    "'Not yours?' the {perimeter_guard} asks. 'Didn't think so. Nobody's is.'"
+   ],
+   "variants": [
+    {
+     "requires": {"has": {"items": ["procrustes_analyzer"]}},
+     "text": [
+      "Forty-one hulls, each with a registry and an audit date that came and went. And one with neither: towed in last year, tumbling, from no needle anybody logged. The paint is new. The hull under it is not.",
+      "The Procrustes Analyzer turns the nameless hull over and over and gives up: it has been cut and welded too often to match anything. Somebody did not want it found."
+     ]
+    }
+   ]
+  },
+  "people.medic": {
+   "kind": "sight",
+   "arc": "roles",
+   "act": 1,
+   "who": ["medic"],
+   "title": "{medic}",
+   "requires": {"here": "medic", "done": ["hall.first"]},
+   "text": "A {medic} has a folding table at the end of the berths, a case of patches and a hand-painted sign: CASH, NO NAMES.",
+   "variants": [
+    {
+     "requires": {"wounds": {"min": 30}},
+     "text": "The {medic} at the end of the berths looks at the way you stand and pushes a stool at you before you ask. The sign says CASH, NO NAMES."
+    }
+   ],
+   "choices": [
+    {
+     "id": "patch",
+     "say": "Get patched up (40 credits, wounds -30)",
+     "requires": {"wounds": {"min": 10}, "money": 40},
+     "effects": {"money": -40, "wounds": -30}
+    },
+    {
+     "id": "talk",
+     "say": "Ask who sends her patients",
+     "requires": {"not_flag": "medic_talked"},
+     "effects": {"set": "medic_talked"},
+     "next": ["medic.talk"]
+    },
+    {"id": "leave", "say": "Leave her to her table"}
+   ]
+  },
+  "medic.talk": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["medic"],
+   "requires": {"flag": "medic_talked"},
+   "text": [
+    "'{caboose} sends me his crews with notes pinned to their shirts,' the {medic} says. '{caspic} sends nobody, and his crews come anyway. {ghillie}'s people pay double and lie about how they got hurt.'",
+    "She does not say who pays her. She taps the sign."
+   ]
+  },
+  "sight.epsilon.clinic": {
+   "kind": "sight",
+   "arc": "roles",
+   "act": 1,
+   "where": "Epsilon",
+   "who": ["cybersurgeon"],
+   "title": "A clinic off the research ring",
+   "requires": {"done": ["hall.first"]},
+   "text": "Off Epsilon's research ring there is a clinic with one chair, and the chair has seen better centuries. The {cybersurgeon} fits implants for hands who need to be quicker than they are, and reads old damage for those who want to know.",
+   "choices": [
+    {
+     "id": "scan",
+     "say": "Have the pod's damage read (20 credits)",
+     "requires": {"money": 20, "not_flag": "clinic_scanned"},
+     "effects": {"money": -20, "set": "clinic_scanned"},
+     "next": ["clinic.scan"]
+    },
+    {
+     "id": "implant",
+     "say": "A reflex implant: a level of gunner (600 credits; it hurts)",
+     "requires": {"money": 600, "not_flag": "implant_reflex", "wounds": {"max": 60}},
+     "effects": {"money": -600, "skill.gunner": 1, "wounds": 20, "set": "implant_reflex"},
+     "next": ["clinic.implant"]
+    },
+    {"id": "leave", "say": "Keep your head as it is"}
+   ]
+  },
+  "clinic.scan": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["cybersurgeon"],
+   "requires": {"flag": "clinic_scanned"},
+   "text": "The {cybersurgeon} reads the scan the way a pilot reads weather. 'The cold took the newest memories first. That is what cold does. The last weeks before the needle are gone, and they are not coming back. Not from me.'",
+   "variants": [
+    {
+     "requires": {"done": ["sight.delta.conte"]},
+     "text": [
+      "The {cybersurgeon} reads the scan the way a pilot reads weather. 'The cold took the newest memories first. That is what cold does.'",
+      "'{neon_sleeper.short} sat in this chair last month. She wanted a word back. I told her what I am telling you: the cold keeps nothing. If you want something back, ask the past.'"
+     ]
+    }
+   ]
+  },
+  "clinic.implant": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["cybersurgeon"],
+   "requires": {"flag": "implant_reflex"},
+   "text": "It takes an hour and a local anaesthetic that runs out halfway. Afterwards your hands move a little before you ask them to. 'Gunners love it,' the {cybersurgeon} says. 'Card players will hate you.'"
+  },
+  "sight.delta.range": {
+   "kind": "sight",
+   "arc": "roles",
+   "act": 1,
+   "where": "Delta",
+   "who": ["battle_engineer", "armored_commander"],
+   "title": "The test range",
+   "requires": {"shifts.hovertank": 1},
+   "text": "Out on the test range a hovertank idles on its skirt. The {battle_engineer} is under it with a torch. The {armored_commander} sits in the hatch with a slate and a cold coffee, and watches the dust.",
+   "variants": [
+    {
+     "requires": {"flag": "gabion_named"},
+     "text": "{gabion} is under the hovertank again. She waves the torch at you, which on the range counts as a greeting. The {armored_commander} raises the cold coffee."
+    },
+    {
+     "requires": {"past": {"era": "cargo1", "flag": "delivered_the_hovertank"}},
+     "text": [
+      "Out on the test range a hovertank idles on its skirt. The {battle_engineer} is under it with a torch. The {armored_commander} sits in the hatch with a slate and a cold coffee, and watches the dust.",
+      "'The first of these came to Delta c in a hauler's hold, a century and more ago,' the {battle_engineer} says from under the skirt. 'We still build to its drawings. The delivery note is signed, and nobody can read the name.'"
+     ]
+    },
+    {
+     "requires": {"past": {"era": "cargo1", "flag": "sold_the_hovertank"}},
+     "text": [
+      "Out on the test range a hovertank idles on its skirt. The {battle_engineer} is under it with a torch. The {armored_commander} sits in the hatch with a slate and a cold coffee, and watches the dust.",
+      "'The licence came through {serac}'s depot,' the {armored_commander} says. 'Everything good comes through his depot in the end. That is what worries me.'"
+     ]
+    }
+   ],
+   "choices": [
+    {
+     "id": "rig",
+     "say": "Help rig the skirt (mechanic practice)",
+     "requires": {"not_flag": "rigged_the_skirts"},
+     "effects": {"practice.mechanic": 3, "plot_points": 1, "set": "rigged_the_skirts"},
+     "next": ["range.rig"]
+    },
+    {
+     "id": "ride",
+     "say": "Ride as gunner in a live-fire trial (gunner: able or better)",
+     "requires": {"skill.gunner": 2, "not_flag": "rode_the_trial"},
+     "effects": {"practice.gunner": 4, "money": 120, "wounds": 10, "plot_points": 2, "set": "rode_the_trial"},
+     "next": ["range.ride"]
+    },
+    {
+     "id": "name",
+     "say": "Ask the {battle_engineer} her name",
+     "requires": {"flag": "rigged_the_skirts", "shifts.hovertank": 4, "not_flag": "gabion_named"},
+     "effects": {"set": "gabion_named", "plot_points": 2},
+     "next": ["range.named"]
+    },
+    {"id": "leave", "say": "Leave them to the dust"}
+   ]
+  },
+  "range.rig": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["battle_engineer"],
+   "requires": {"flag": "rigged_the_skirts"},
+   "text": "You hold the skirt panels while the {battle_engineer} welds them. She works fast and says nothing until the last seam. 'You have done this before,' she says. 'Not on a tank. On something that mattered more to you.'"
+  },
+  "range.ride": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["armored_commander"],
+   "requires": {"flag": "rode_the_trial"},
+   "text": "The {armored_commander} keeps the tank at a crawl and the targets honest. You hit four of six. 'You shoot like somebody who learned on a hauler,' the {armored_commander} says. '{serac}'s people shoot like that too. For other reasons.'"
+  },
+  "range.named": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["gabion"],
+   "requires": {"flag": "gabion_named"},
+   "text": "'Gabion,' she says, without looking up. 'A wire cage full of rock. I build walls overnight, and the crew stopped using my rank the week I stopped a tank with one.' She holds out a hand with a burn across the palm. 'Now you know. Don't spread it around.'"
+  },
+  "squad.sweep": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["infantry_squad", "heavy_infantry_commander"],
+   "title": "A sweep",
+   "requires": {"here": "infantry_squad", "done": ["hall.first"], "turn_min": 8},
+   "chance": 0.5,
+   "text": [
+    "A {infantry_squad} works down the berths, checking papers. Their {heavy_infantry_commander} reads names off a slate and does not look up until yours.",
+    "'{player_name}. Pod survivor.' A pause. 'You are on a list, hand. Not ours.' He puts the slate away. '{serac} likes to find people himself.'"
+   ],
+   "variants": [
+    {
+     "requires": {"past": {"era": "cargo1", "flag": "took_the_commission"}},
+     "text": [
+      "A {infantry_squad} works down the berths, checking papers. Their {heavy_infantry_commander} reads names off a slate and does not look up until yours.",
+      "'{player_name}. Inner-systems wing, a commission nobody closed.' He looks at you properly for the first time. 'You are on {serac}'s list, not ours. He likes to find people himself.'"
+     ]
+    },
+    {
+     "requires": {"past": {"era": "cargo1", "flag": "defied_serac"}},
+     "text": [
+      "A {infantry_squad} works down the berths, checking papers. Their {heavy_infantry_commander} reads names off a slate and does not look up until yours.",
+      "'{player_name}.' A pause. 'You are on a list, hand. Not ours. {serac}'s own, in his own hand, which is never good news.'"
+     ]
+    }
+   ],
+   "choices": [
+    {"id": "papers", "say": "Show the salvager's papers", "effects": {"standing.mandate": 1}},
+    {
+     "id": "carry",
+     "say": "Carry the commander's kit to the next berth (loader practice)",
+     "effects": {"practice.loader": 2, "standing.mandate": 2, "set": "squad_carried"},
+     "next": ["squad.carry"]
+    },
+    {
+     "id": "slip",
+     "say": "Slip away through the cargo ring (navigator: green or better)",
+     "requires": {"skill.navigator": 1},
+     "effects": {"standing.mandate": -2, "set": "squad_dodged"},
+     "next": ["squad.slip"]
+    }
+   ]
+  },
+  "squad.carry": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["infantry_squad", "heavy_infantry_commander"],
+   "requires": {"flag": "squad_carried"},
+   "text": "The kit weighs as much as you do. The {infantry_squad} relaxes a little, the way soldiers do around anyone who carries something for them. The {heavy_infantry_commander} says nothing more about lists, which is a kind of thanks."
+  },
+  "squad.slip": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["heavy_infantry_commander"],
+   "requires": {"flag": "squad_dodged"},
+   "text": "You know the cargo ring better than the squad does. By the time the {heavy_infantry_commander} looks up again you are three berths away and somebody else's problem. He will remember the face."
+  },
+  "people.squad": {
+   "kind": "sight",
+   "arc": "roles",
+   "act": 1,
+   "who": ["infantry_squad", "heavy_infantry_commander"],
+   "title": "{infantry_squad}",
+   "requires": {"here": "infantry_squad", "done": ["squad.sweep"]},
+   "text": "The {infantry_squad} is back on the berths. The {heavy_infantry_commander} nods to you, which is worse than not nodding.",
+   "variants": [
+    {
+     "requires": {"flag": "squad_dodged"},
+     "text": "The {infantry_squad} is back on the berths. The {heavy_infantry_commander} does not nod. He writes something on the slate instead."
+    }
+   ]
+  }
+ }
+}

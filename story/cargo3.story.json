@@ -33,6 +33,7 @@
   "cargo3/hands.json",
   "cargo3/act1.json",
   "cargo3/errands.json",
+  "cargo3/roles.json",
   "cargo3/main.json"
  ],
  "stats": {
@@ -269,6 +270,24 @@
  "effects": {
   "code": {
    "about": "game code the tools cannot read"
+  },
+  "practice.loader": {
+   "about": "practice at the loader skill, toward the next level on the same curve as work"
+  },
+  "practice.mechanic": {
+   "about": "practice at the mechanic skill, toward the next level on the same curve as work"
+  },
+  "practice.gunner": {
+   "about": "practice at the gunner skill, toward the next level on the same curve as work"
+  },
+  "practice.navigator": {
+   "about": "practice at the navigator skill, toward the next level on the same curve as work"
+  },
+  "practice.steward": {
+   "about": "practice at the steward skill, toward the next level on the same curve as work"
+  },
+  "practice.broker": {
+   "about": "practice at the broker skill, toward the next level on the same curve as work"
   }
  },
  "arcs": {

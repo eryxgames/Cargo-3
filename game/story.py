@@ -461,6 +461,11 @@ class StoryRuntime:
             elif key.startswith("skill.") and key[6:] in person.skills:
                 person.skills[key[6:]] = max(0, min(SKILL_TOP, person.skills[key[6:]] + value))
                 person.__dict__.setdefault("next_at", {}).pop(key[6:], None)   # a new level, a new draw
+            elif key.startswith("practice.") and key[9:] in person.skills:
+                # practice toward the next level, on the same curve as work (person.train)
+                risen = person.train(key[9:], max(0, int(value)))
+                if risen:
+                    game.display_story_message(["%s: now %s." % (key[9:].capitalize(), skill_word(risen))], pause=0)
             elif key == "wounds":
                 person.wounds = max(0, min(WOUNDS_DEAD, person.wounds + value))
             elif key.startswith("standing.") or key == "dawn_trust":
@@ -779,5 +784,5 @@ def route_place(route, turn):
         return None
     stay = max(1, int(route.get("stay", 1)))
     return places[((turn + int(route.get("start", 0))) // stay) % len(places)]
-from .person import SKILL_TOP, WOUNDS_DEAD  # noqa: E402
+from .person import SKILL_TOP, WOUNDS_DEAD, skill_word  # noqa: E402
 from .terminal import ask  # noqa: E402

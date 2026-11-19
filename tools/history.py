@@ -129,6 +129,34 @@ play(game, io, "sight.delta.conte", "2", where="Delta")
 expect(history.errand_state(game.errands, "vault_word") == "none" and game.person.items.get("procrustes_analyzer") is None,
        "leaving her to her coffee gives no errand")
 
+# ---- Kren's notes: the Vertex Array, measured in 2420 before the fire --------------------------------------------
+game, io, _ = start(None)
+play(game, io, "opening.pod")
+play(game, io, "hall.first")
+expect("sight.epsilon.notes" in sights(game, "Epsilon"), "Kren's notes are a sight at Epsilon")
+text = flat(play(game, io, "sight.epsilon.notes", "1", where="Epsilon"))
+expect("Lost in the fire" in text and "Cargo 1 (1.3.0 or newer)" in text and "Stellar Institute" in text,
+       "the gap in her notes, and the way back to 2420")
+expect(history.errand_state(game.errands, "vertex_array") == "open" and "thought.errand.vertex" in thoughts(game),
+       "the errand is open, and kept in a thought")
+text = flat(play(game, io, "sight.epsilon.notes", "1", where="Epsilon"))
+expect("You have promised to measure the samples" in text, "looking again: the promise")
+game.turn = 50
+back = came_back(game, "cargo1", ["carried_the_samples", "vertex_array_kren"], "1.3.0")
+again, aio, _ = start(back)
+expect(history.errand_state(again.errands, "vertex_array") == "done" and "thought.errand.vertex" not in thoughts(again),
+       "the errand came back done")
+play(again, aio, "opening.pod")
+play(again, aio, "hall.first")
+text = flat(play(again, aio, "sight.epsilon.notes", "1", where="Epsilon"))
+expect("The label is in your own hand" in text and "For T.K." in text and "Whoever restarts the ring will need this" in text,
+       "the cartridge is taped into her notes, labelled in the captain's hand")
+expect(again.person.items.get("vertex_array") == 1 and again.story_manager.story_states.get("took_vertex_array")
+       and "Nobody else has a copy" in text, "and it is the captain's: the Vertex Array")
+text = flat(play(again, aio, "sight.epsilon.notes", "1", where="Epsilon"))
+expect("a square of old tape" in text and again.person.items.get("vertex_array") == 1, "taken once; the tape stays")
+expect(not again.story_manager.story_states.get("restarted_the_gyrotron"), "and nothing says who restarted the ring")
+
 # ---- the errands travel through older versions ---------------------------------------------------------------
 game, io, _ = start(None)
 play(game, io, "opening.pod")
