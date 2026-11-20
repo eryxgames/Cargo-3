@@ -25,13 +25,14 @@ from .looking import LookMixin
 from .hand import HandMixin
 from .labour import LABOUR_ACTIONS, LABOUR_EVENTS, LABOUR_MARKS, LabourMixin  # noqa: F401
 from .training import TrainingMixin
+from .brawl import FOES, GEAR, BrawlMixin  # noqa: F401
 
 
 class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
            MarketMixin, HansaMixin, EncountersMixin, EventsMixin,
            ResearchMixin, ActionsMixin, PortMixin, RanksMixin,
            FactionsMixin, NeedlesMixin, ModulesMixin, TacticsMixin, AchievementsMixin, SoundMixin,
-           LookMixin, HandMixin, LabourMixin, TrainingMixin):
+           LookMixin, HandMixin, LabourMixin, TrainingMixin, BrawlMixin):
     # How often something happens between docks, by difficulty: an easy game has calmer lanes
     LANE_ACTIVITY = {0: 0.55, 1: 0.85, 2: 1.0}
 
@@ -165,6 +166,11 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             stats["work." + mark] = marks.get(mark, 0)
         stats["implants"] = self.implants_fitted()
         stats["lessons"] = sum(getattr(self, "lessons", {}).values())
+        brawls = self.brawl_counts()        # fights on foot (game/brawl.py)
+        stats["brawls"] = sum(brawls.values())
+        stats["brawls.won"] = brawls.get("won", 0)
+        stats["brawls.lost"] = sum(brawls.get(k, 0) for k in ("robbed", "carried", "saved"))
+        stats["armed"] = int(bool(self.gear_best("melee") or self.gear_best("ranged")))
         for skill in SKILLS:
             stats["skill." + skill] = person.skill(skill)
         regard = getattr(self, "hand_regard", {})
@@ -272,6 +278,7 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         self.labour_list()          # a save from before the labour market, or a damaged one
         self.labour_marks()
         self.implants_fitted()
+        self.brawl_counts()
         if not isinstance(getattr(self, "person", None), Person):
             self.person = Person()
         ship = self.ship

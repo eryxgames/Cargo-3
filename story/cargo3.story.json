@@ -317,6 +317,18 @@
   },
   "lessons": {
    "about": "lessons taken with the masters at the docks (game/training.py)"
+  },
+  "brawls": {
+   "about": "fights on foot, every ending (game/brawl.py)"
+  },
+  "brawls.won": {
+   "about": "fights on foot won by beating them"
+  },
+  "brawls.lost": {
+   "about": "fights on foot that put the captain down (robbed, locked up or dragged clear)"
+  },
+  "armed": {
+   "about": "1 if the captain carries a weapon (game/brawl.py)"
   }
  },
  "sets": {

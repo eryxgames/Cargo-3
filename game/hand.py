@@ -9,10 +9,12 @@ Until the captain has a ship again (chapter III), the turn is a hand's turn:
   ships are the story's captains on their routes (NAMED_SHIPS), the rest come and go;
 - `passage`: a paid place aboard, no duty;
 - `locker`: an able hand's few units of private trade, bought and sold at the market here;
+- `gear`: the outfitter, for what a hand fights with on foot (game/brawl.py);
 - `skills`: the captain as a person: skills, wounds, gear, the locker.
 What is on at the docks (game/labour.py) moves the wages, closes jobs and changes the board.
 Wounds heal with time, faster with rest (`end`). Work and duties can put the captain down
-(WOUNDS_DOWN), never further; at WOUNDS_DEAD (a fight) the captain is dead and the game is over.
+(WOUNDS_DOWN), never further; a fight on foot (game/brawl.py) can put a captain down too, and
+some fights can kill: at WOUNDS_DEAD the captain is dead and the game is over.
 """
 import random
 import zlib
@@ -21,7 +23,7 @@ from .labour import LABOUR_EVENTS
 
 # Commands a hand has (long form, shortcut), besides the global ones (game/commands.py)
 HAND_COMMANDS = [('work', 'w'), ('berths', 'bb'), ('passage', 'pa'), ('locker', 'lo'),
-                 ('skills', 'sk'), ('end', 'e')]
+                 ('gear', 'ge'), ('skills', 'sk'), ('end', 'e')]
 HAND_GLOBAL_SKIP = ('hansa', 'ha')      # the Hansa's bonds and dues are a ship owner's business
 STARTING_PURSE = 300                    # what a captain without a ship starts with
 
@@ -181,6 +183,8 @@ class HandMixin:
         self.story.tick()
         if self.ship is not None:           # the story gave the captain a ship this turn
             return None
+        if self.dock_trouble() in ("robbed", "carried", "saved", "dead"):
+            return None                     # a fight on foot (game/brawl.py) that put the captain down
         valid = []
         for cmd, cut in HAND_COMMANDS + [c for c in GLOBAL_COMMANDS if c != HAND_GLOBAL_SKIP]:
             valid.extend([cmd, cut])
@@ -195,6 +199,8 @@ class HandMixin:
             self.handle_passage()
         elif action in ('locker', 'lo'):
             self.handle_locker()
+        elif action in ('gear', 'ge'):
+            self.handle_gear()
         elif action in ('skills', 'sk'):
             self.show_person()
         elif action in ('end', 'e'):
@@ -714,7 +720,10 @@ class HandMixin:
             rows.append(["%-9s %-7s %s" % (skill.capitalize(), skill_word(level), meter(person.progress(skill)))])
             rows.extend([["  " + line] for line in self.word_wrap(SKILL_WORDS[skill], box_inner_width() - 4)])
         if person.gear:
-            rows.extend([[""], ["Gear: " + ", ".join(person.gear)]])
+            rows.extend([[""]] + [[line] for line in self.word_wrap("Gear: " + ", ".join(person.gear))])
+        brawls = self.brawl_counts()
+        if brawls:
+            rows.append(["Fights on foot: %d, %d won" % (sum(brawls.values()), brawls.get("won", 0))])
         items = sorted(k for k, v in person.items.items() if isinstance(v, int) and v > 0)
         if items:
             rows.extend([[""], ["Carried: " + ", ".join(i.replace("_", " ") for i in items)]])
@@ -747,6 +756,13 @@ class HandMixin:
                  "with work and duties, and decide how the way goes. Bold choices teach more and pay more, "
                  "and can hurt: work can put you down, a fight can kill. Wounds heal with time, faster with rest "
                  "(end/e)."],
+                [""],
+                ["Docks are rough, rougher for a fat purse. In a fight on foot you give an order each round, "
+                 "at odds in words: strike, shoot (with something that shoots), grapple, guard, talk them "
+                 "down, run, or pay what they want. Gunner, loader, steward or broker and navigator decide "
+                 "the odds; the outfitter (gear/ge) sells weapons, suits and exoskeleton knees. A hand who "
+                 "goes down is robbed, locked up or dragged clear, and loses two turns; a few people mean "
+                 "to kill."],
                 [""],
                 ["Money buys skill. Each dock has a master or two who teach for a fee (on the work screen): "
                  "dearer as you get better, and quicker than shifts. The cybersurgeon at Epsilon fits implants: "

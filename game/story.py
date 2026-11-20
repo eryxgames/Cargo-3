@@ -637,6 +637,7 @@ STORY_HOOKS = {
 def story_hook(game, value):
     """Game code a story effect names: a hook above, or one of these phrases:
     'fight <enemy>' (no paying or talking your way out), 'fight <enemy> edge <n>' (with allies),
+    'brawl <foe>' and 'brawl <foe> edge <n>' (a fight on foot, game/brawl.py),
     'crew joins <role>', 'repair <points>', 'damage <points>', 'lose money <share> min <amount>',
     'stow <units> <name> as <words>' (special cargo takes hold room until 'unstow <name>'; the
     words name it on screen and in the journal), 'profit <credits>' (paid, and counted as trade profit),
@@ -656,6 +657,10 @@ def story_hook(game, value):
     person = game.person
     if ship is None and words and (words[0] in SHIP_HOOKS or words[:2] in (["crew", "joins"], ["crew", "leaves"])):
         game.story.note_shipless(" ".join(words[:2]))
+        return None
+    if len(words) in (2, 4) and words[0] == "brawl" and words[1] in FOES:
+        # a fight on foot (game/brawl.py); it sets fight_<outcome>_<foe> for the story
+        game.brawl(words[1], edge=int(words[3]) if len(words) == 4 and words[2] == "edge" else 0)
         return None
     if len(words) in (2, 4) and words[0] == "fight" and words[1] in ENEMIES:
         help_ = int(words[3]) if len(words) == 4 and words[2] == "edge" else 0
@@ -791,5 +796,6 @@ def route_place(route, turn):
     stay = max(1, int(route.get("stay", 1)))
     return places[((turn + int(route.get("start", 0))) // stay) % len(places)]
 from .person import SKILL_TOP, WOUNDS_DEAD, skill_word  # noqa: E402
+from .brawl import FOES  # noqa: E402
 from .labour import LABOUR_EVENTS  # noqa: E402
 from .terminal import ask  # noqa: E402

@@ -119,8 +119,8 @@ LABOUR_ACTIONS = {
          "skill": "mechanic", "chance": 0.6, "mark": "crossed", "against": "crossed",
          "success": {"pay": ("hovertank", "mechanic", 2.0), "practice": 1, "event": {"extend": 1},
                      "text": "You walk in past the pickets with your collar up. The line runs half empty and pays double. Somebody at the gate writes down your name."},
-         "failure": {"pay": ("hovertank", "mechanic", 2.0), "wounds": (10, 20), "practice": 1, "event": {"extend": 1},
-                     "text": "A bolt from the picket line finds you at the gate. You work the shift anyway, and the plant pays double for it."}},
+         "failure": {"pay": ("hovertank", "mechanic", 2.0), "fight": "pickets", "practice": 1, "event": {"extend": 1},
+                     "text": "You work the shift, and the plant pays double for it. At the gate on the way out, the pickets are waiting."}},
         {"id": "picket", "say": "Stand with the picket: no pay, and the strike may break",
          "skill": "steward", "chance": 0.3, "mark": "picketed", "against": "crossed",
          "success": {"plot": 2, "event": {"replace": ("plant_rush", 3)},
@@ -463,6 +463,8 @@ class LabourMixin:
             self.__dict__.pop("labour_fresh", None)
             lines.append(LABOUR_EVENTS[change["replace"][0]]["name"] + ".")
         self.display_story_message([part for part in lines if part is not None], pause=1)
+        if result.get("fight"):
+            self.brawl(result["fight"])     # a fight on foot (game/brawl.py)
         self.pass_turns(1)
         self.autosave()
         return outcome

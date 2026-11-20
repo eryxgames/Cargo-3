@@ -765,6 +765,22 @@ class Bot:
                                       "fit a": "yes"})
                     self.hand_log["implant " + skill] += 1
                     return "look"
+        if "gear" not in self.flags:
+            self.flags.add("gear")
+            sold = list(g.outfitter_here())
+            want = None
+            for name, kind, purse in (("work suit", "armour", 400), ("knife", "melee", 300), ("rivet gun", "ranged", 1500),
+                                      ("stunner", "ranged", 2000), ("vacuum suit", "armour", 4000),
+                                      ("exoskeleton knees", "knees", 5000)):
+                have = g.gear_best(kind)
+                better = have is None or (kind == "armour" and cargo.GEAR[name]["soak"] > cargo.GEAR[have]["soak"])
+                if name in sold and name not in person.gear and better and person.money >= purse:
+                    want = name
+                    break
+            if want:
+                self.hand.update({"buy which": str(sold.index(want) + 1)})
+                self.hand_log["gear " + want] += 1
+                return "gear"
         if "lesson" not in self.flags:
             self.flags.add("lesson")
             shown, _ = g.work_options()
@@ -794,6 +810,35 @@ class Bot:
             return ""
         return None
 
+    ODDS = (("easy", 0.9), ("good odds", 0.7), ("even odds", 0.47), ("long odds", 0.25))
+
+    def brawl_move(self, g, shown):
+        """A round of a fight on foot: talk when it is likely, pay when hurt, run from killers
+        when hurt, else the best blow."""
+        odds = {}
+        for key, label in shown:
+            odds[key] = next((v for word, v in self.ODDS if "(" + word + ")" in label), None)
+        person = g.person
+        foe = cargo.FOES.get(getattr(g, "brawl_foe", None) or "", {})
+        blows = [k for k in ("strike", "shoot", "grapple") if odds.get(k) is not None]
+        best = max(blows, key=lambda k: (odds[k], k == "shoot"))
+        self.hand_log["fight round"] += 1
+        if "pay" in odds and person.wounds >= 50:
+            return "pay"
+        if odds.get("talk") and odds["talk"] >= 0.6:
+            return "talk"
+        if foe.get("lethal") and person.wounds >= 40 and (odds.get("run") or 0) >= 0.45:
+            return "run"
+        if odds[best] >= 0.45:
+            return best
+        if odds.get("talk") and odds["talk"] >= odds[best]:
+            return "talk"
+        if "pay" in odds:
+            return "pay"
+        if (odds.get("run") or 0) > odds[best]:
+            return "run"
+        return best
+
     def move(self, numbers):
         """Read the options on screen (game.move_options) and pick one like a sensible captain."""
         g = self.game
@@ -801,6 +846,8 @@ class Bot:
         if not shown:
             return numbers[0] if numbers else ""
         keys = [k for k, _ in shown]
+        if "strike" in keys:                                 # a fight on foot (Cargo 3)
+            return str(keys.index(self.brawl_move(g, shown)) + 1)
         fighter = goal == "combat" or "combat_victories" in self.need()
         if "leave" in keys:                                  # the bounty board
             best = None
@@ -992,6 +1039,7 @@ if g is not None and g.ship is None:          # still on foot (Cargo 3)
         "ending": getattr(g, "ending_reached", None), "money": int(g.person.money), "afloat": False,
         "plot_points": sm.plot_points, "wounds": g.person.wounds, "skills": dict(g.person.skills),
         "implants": dict(getattr(g.person, "implants", {})), "lessons": dict(getattr(g, "lessons", {})),
+        "brawls": dict(getattr(g, "brawls", {}) or {}), "gear": list(g.person.gear),
         "voyages": getattr(g, "voyages", 0), "shifts": dict(getattr(g, "shifts", {})),
         "locker_profit": getattr(g, "locker_profit", 0), "regard": dict(getattr(g, "hand_regard", {})),
         "hand": dict(bot.hand_log), "known": len(g.known_locations), "here": g.current_location.name,

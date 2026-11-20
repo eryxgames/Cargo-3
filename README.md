@@ -52,6 +52,10 @@ it around: the captain begins on foot.
 - What money buys (`game/training.py`): lessons with a master at each dock, and implants at
   Epsilon, a whole level at once, on steep curves, so a hand with money has a reason to spend
   it and to travel.
+- Fights on foot (`game/brawl.py`): a few rounds of orders at odds in words (strike, shoot,
+  grapple, guard, talk them down, run, pay), gear from the outfitter (`gear`), trouble at rough
+  docks; a hand who goes down is robbed, locked up or dragged clear, and a few people mean to
+  kill.
 - What the game shows stays on screen until it is read: a turn's screen waits for Enter when
   the last thing shown was a message the player has not answered.
 - **Next:** chapter II (old friends, centuries on), fights on foot, and the ways to a first ship.
@@ -97,6 +101,7 @@ game/           the game, Cargo 2.2's engine:
   hand.py         the captain without a ship: work, the berths board, voyages, passage, locker
   labour.py       the docks' events (strikes, gas, crackdowns...) and what a hand does about them
   training.py     what money buys: lessons with the masters, implants
+  brawl.py        fights on foot, trouble at the docks, the outfitter
   saves.py  captain.py      saves; the captain's record carried between the parts
   story.py  chapters.py     the storykit runtime; chapters, milestones, endings
   ship.py  travel.py  market.py  hansa.py  encounters.py  events.py  research.py
@@ -111,7 +116,7 @@ storykit/       the trilogy's story tools (format, validator, map), copied
 themes/         the game's own styles (CLIo theme files), beside CLIo's in kit/style/
 tools/          checks: smoke, bot, fuzzing, save round trips, hostile files, kit, story,
                 act 1, systems, the person, the able hand, the labour market, training,
-                fights, sound
+                fights on foot, convoy fights, sound
 .github/        the release workflow: tag vX.Y.Z to build, release and push to itch.io
 ```
 

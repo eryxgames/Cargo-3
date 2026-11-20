@@ -121,6 +121,34 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
   - measured with the bot by turn 120: a hand who spends ends with 6,000 to 8,000 credits
     instead of 13,000 to 15,000, and with more skill; by turn 250, 10,000 instead of 30,000,
     skills summing 20 to 22 instead of 16 to 18. Checks: `tools/training.py`.
+- **Fights on foot** (`game/brawl.py`). A fight is a few rounds; each round the hand gives an
+  order at odds in words: strike (gunner), shoot (with something that shoots), grapple and hold
+  (loader; no blow back if it works), guard (the next blow likelier), talk them down (steward or
+  broker; easier as they get hurt), run (navigator; harder from people who shoot), or pay what
+  they want. Their blows are wounds, less with a suit on. A hand who goes down is robbed, locked
+  up (the company's guards, the Mandate) or dragged clear, and loses two turns, resting; only
+  people who mean to kill can do worse, and the screen says so.
+  - **Who**: dock toughs, pickpockets, Cargolyte stevedores after a tithe (Beta, Gamma, the
+    bases), the company's guards at Gamma, claim jumpers with rivet guns during a rich seam, a
+    loader agrobot gone wild during an agrobot trial, the picket line (when crossing it goes
+    wrong), and, for the story, the Rootstock's enforcers, a Mandate fire team and two men in
+    grey from Serac.
+  - **Trouble at the docks**: from turn 6, about one turn in 25 at an ordinary dock, half again
+    at Gamma and the bases, half at Alpha; up to three times as often for a hand with a fat
+    purse; more with claim jumpers or a wild agrobot about; never twice within four turns.
+    Robbers take a share of the purse, within limits (a dock tough: a quarter, 40 to 300).
+  - **The outfitter** (`gear`/`ge`): a knife (60), a work suit (120), a rivet gun (220), a
+    stunner (300; a hit stops their next blow), a cutting torch (450) and a slug pistol (1,200;
+    a hit counts twice, and the Mandate takes it off a hand it locks up), a vacuum suit (600),
+    exoskeleton knees from Scholz's Star's old stock (800; grapple and run). Each dock sells a
+    few; the hand fights with the best of each kind.
+  - The story starts fights with `brawl <foe>` (and `edge <n>` for allies) and reads
+    `fight_<won|talked|ran|paid|lost>_<foe>`, and the stats `brawls`, `brawls.won`,
+    `brawls.lost` and `armed`.
+  - Measured with the bot over 250 turns (16 games): 9 to 18 fights, settled about evenly by
+    beating them, talking and paying; no deaths; a saving hand ends with 24,000 to 28,000
+    credits (29,000 to 32,000 before), a spending one with 6,000 to 12,000. Checks:
+    `tools/brawl.py`.
 - **Five more roles, with the labour market**: the **Needle Office Clerk** at Beta, whose board
   says what is on at every dock (and who sends the hand to Korai); the **Company Store Cashier**
   at Gamma (pay a miner's tab while the shafts are shut for gas; Eela pays cash); the **Hansa
