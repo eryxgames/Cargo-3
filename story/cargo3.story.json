@@ -278,6 +278,45 @@
   },
   "labour.berths_delay": {
    "about": "turns left of 'Berths: needle delayed' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "work.beat_the_agrobots": {
+   "about": "times the hand did 'beat the agrobots' about an event at the docks (game/labour.py)"
+  },
+  "work.cleared_gas": {
+   "about": "times the hand did 'cleared gas' about an event at the docks (game/labour.py)"
+  },
+  "work.crossed": {
+   "about": "times the hand did 'crossed' about an event at the docks (game/labour.py)"
+  },
+  "work.greased": {
+   "about": "times the hand did 'greased' about an event at the docks (game/labour.py)"
+  },
+  "work.informed": {
+   "about": "times the hand did 'informed' about an event at the docks (game/labour.py)"
+  },
+  "work.lured_a_hauler": {
+   "about": "times the hand did 'lured a hauler' about an event at the docks (game/labour.py)"
+  },
+  "work.organised": {
+   "about": "times the hand did 'organised' about an event at the docks (game/labour.py)"
+  },
+  "work.picketed": {
+   "about": "times the hand did 'picketed' about an event at the docks (game/labour.py)"
+  },
+  "work.ran_the_crackdown": {
+   "about": "times the hand did 'ran the crackdown' about an event at the docks (game/labour.py)"
+  },
+  "work.saved_seed": {
+   "about": "times the hand did 'saved seed' about an event at the docks (game/labour.py)"
+  },
+  "work.settled": {
+   "about": "times the hand did 'settled' about an event at the docks (game/labour.py)"
+  },
+  "implants": {
+   "about": "implants fitted at the clinic, all skills (game/training.py)"
+  },
+  "lessons": {
+   "about": "lessons taken with the masters at the docks (game/training.py)"
   }
  },
  "sets": {

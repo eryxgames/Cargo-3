@@ -630,6 +630,7 @@ SHIP_HOOKS = ("fight", "stow", "unstow", "damage", "repair")
 STORY_HOOKS = {
     "hull repaired at cost": _repair_at_cost,
     "portal": _open_portal,
+    "implants": lambda game: game.implant_clinic(),     # the cybersurgeon's catalogue (game/training.py)
 }
 
 

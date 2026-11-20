@@ -238,6 +238,106 @@ expect(game.story.fill("{labour_news}") == "A strike at Delta's hovertank plant.
 game.labour = []
 expect(game.story.fill("{labour_news}") == "nothing much on at the other docks.", "and when nothing is on")
 
+# ---- what the hand can do about it ------------------------------------------------------------------------------------
+ACTIONS = cargo.LABOUR_ACTIONS
+
+
+def act(game, eid, aid, roll):
+    action = next(a for a in ACTIONS[eid] if a["id"] == aid)
+    with headless.quiet() as out:
+        outcome = game.do_labour_action(eid, action, roll=roll)
+    return outcome, flat(out.getvalue())
+
+
+game, io = fresh("Delta")
+game.turn = 20
+game.start_labour("plant_strike", "Delta", 2)
+shown, _ = game.work_options()
+offered = [d[1]["id"] for kind, d, _ in shown if kind == "action"]
+expect(offered == ["cross", "picket"], "a strike: cross the line or stand with the picket (settling needs an able steward): %s" % offered)
+money, turn = game.person.money, game.turn
+outcome, text = act(game, "plant_strike", "cross", 0.0)
+expect(outcome == "success" and game.person.money == money + 2 * game.shift_wage(90, "mechanic") and game.turn == turn + 1,
+       "crossing the line pays a line fitter's shift twice over, and takes the turn")
+expect(game.labour_left("plant_strike") == 2 and game.labour_marks()["crossed"] == 1,
+       "a crossed line keeps the strike going a turn longer, and is remembered")
+picket = next(a for a in ACTIONS["plant_strike"] if a["id"] == "picket")
+expect(abs(game.labour_action_chance(picket) - 0.2) < 1e-9, "the pickets remember a line crosser: their odds fall a tenth")
+game.person.skills["steward"] = 2
+expect("settle" in [d[1]["id"] for kind, d, _ in game.work_options()[0] if kind == "action"], "an able steward can try to settle it")
+money = game.person.money
+outcome, text = act(game, "plant_strike", "settle", 0.0)
+expect(outcome == "success" and game.person.money == money + 150 and game.labour_left("plant_strike") == 0
+       and game.labour_left("plant_rush") == 3 and game.labour_marks()["settled"] == 1,
+       "settled: a fee, the strike over, and a backlog that pays (a rush order)")
+expect(game.story_snapshot()["stats"]["work.settled"] == 1 and game.story_snapshot()["stats"]["work.crossed"] == 1,
+       "the story sees what the hand did")
+game.start_labour("plant_strike", "Delta", 2)
+outcome, text = act(game, "plant_strike", "settle", 0.99)
+expect(outcome == "failure" and game.labour_left("plant_strike") == 1 and game.person.wounds > 0,
+       "a failed settlement: shouting, something thrown, the strike goes on")
+io.feed([""])
+text = screen(game, 36, game.handle_work)
+expect(widest(text) <= 36, "the work screen with actions fits 36 columns")
+
+game, io = fresh("Gamma")
+game.start_labour("mine_gas", "Gamma", 3)
+money = game.person.money
+outcome, text = act(game, "mine_gas", "clear", 0.0)
+expect(outcome == "success" and game.person.money == money + 150 and game.labour_left("mine_gas") == 0,
+       "the gas cleared with the fire boss: 150, and the shafts open")
+game.start_labour("mine_gas", "Gamma", 3)
+outcome, text = act(game, "mine_gas", "clear", 0.99)
+expect(outcome == "failure" and game.person.wounds >= 15 and game.labour_left("mine_gas") == 2,
+       "or dragged back up the ladder, hurt, and the shafts stay shut")
+
+game, io = fresh("Beta")
+game.start_labour("drums_blight", "Beta", 3)
+outcome, text = act(game, "drums_blight", "seed", 0.0)
+expect(game.labour_left("drums_blight") == 0 and game.labour_left("drums_harvest") == 2, "the seed saved: a small harvest follows")
+game.start_labour("ring_agrobots", "Beta", 3)
+outcome, text = act(game, "ring_agrobots", "race", 0.0)
+expect(game.labour_left("ring_agrobots") == 0, "the agrobots beaten on the stack: the trial ends")
+game.start_labour("ring_quiet", "Beta", 3)
+outcome, text = act(game, "ring_quiet", "lure", 0.0)
+expect(game.labour_left("ring_quiet") == 0 and game.labour_left("ring_convoy") == 2, "a hauler talked in: the quiet ring gets a convoy")
+
+game, io = fresh("Alpha")
+game.turn = 30
+game.start_labour("berths_crackdown", "Alpha", 3)
+offers = game.berths()
+actions = game.labour_actions_here("berths")
+expect([a["id"] for _, a in actions] == ["run", "inform"], "a crackdown: run cargo past it, or inform")
+io.feed([str(len(offers) + 1)])
+money = game.person.money
+with headless.quiet():
+    game.handle_berths()
+expect(game.labour_marks().get("ran_the_crackdown") == 1 and game.person.money in (money + 300, money - min(money, 200)),
+       "the board offers the actions after its ships")
+game.start_labour("berths_crackdown", "Alpha", 3)
+money, mandate = game.person.money, game.standing_of("mandate")
+outcome, text = act(game, "berths_crackdown", "run", 0.99)
+expect(game.person.money == money - min(money, 200) and game.standing_of("mandate") == mandate - 3, "caught: fined, and on a list")
+money, mandate = game.person.money, game.standing_of("mandate")
+left = game.labour_left("berths_crackdown")
+outcome, text = act(game, "berths_crackdown", "inform", 0.99)
+expect(outcome == "success" and game.person.money == money + 80 and game.standing_of("mandate") == mandate + 2
+       and game.labour_left("berths_crackdown") == left + 1, "informing always works: 80, the Mandate pleased, the crackdown longer")
+game.start_labour("berths_glut", "Alpha", 3)
+act(game, "berths_glut", "organise", 0.0)
+expect(game.labour_left("berths_glut") == 0, "a glut organised away")
+game.start_labour("berths_delay", "Alpha", 3)
+money = game.person.money
+outcome, text = act(game, "berths_delay", "grease", 0.5)
+expect(game.labour_left("berths_delay") == 0 and game.person.money == money - 100, "100 to the needle office, and the needle is on time")
+game.person.money = 50
+game.start_labour("berths_delay", "Alpha", 3)
+expect(not game.labour_actions_here("berths"), "no money, no greasing")
+io.feed([""])
+game.person.money = 500
+text = screen(game, 36, game.handle_berths)
+expect(widest(text) <= 36 and "Pay the needle office" in flat(text), "the board's actions fit 36 columns")
+
 # ---- saves --------------------------------------------------------------------------------------------------------
 game, io = fresh("Delta")
 game.turn = 4
@@ -255,6 +355,7 @@ with headless.quiet():
     loaded.save_game("older")
     older = cargo.load_game("older")
 expect(older.labour == [], "a save from before the labour market starts with nothing on")
+expect(isinstance(older.labour_marks(), dict), "and remembers nothing done")
 
 print("labour: %s" % ("ok" if not problems else "%d problems" % len(problems)))
 sys.exit(1 if problems else 0)

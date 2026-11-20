@@ -33,6 +33,9 @@ $PY $T/roles.py || fail=1
 echo "== the labour market: strikes, rushes, convoys and audits move shifts and the berths board"
 $PY $T/labour.py || fail=1
 
+echo "== what money buys: implants and lessons on their curves, and the bot's purse with and without"
+$PY $T/training.py || fail=1
+
 echo "== the engine's systems, one by one"
 $PY $T/systems.py || fail=1
 

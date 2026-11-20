@@ -106,19 +106,17 @@ game, io = ready(money=1000)
 expect("sight.epsilon.clinic" in sights(game, "Epsilon"), "the clinic is a sight at Epsilon")
 text = scene(game, io, "sight.epsilon.clinic", "1", "Epsilon")
 expect("The cold took the newest memories first" in text and "Conte" not in text, "the pod's damage, read")
-level = game.person.skills["gunner"]
+money = game.person.money
 text = scene(game, io, "sight.epsilon.clinic", "1", "Epsilon")
-expect(game.person.skills["gunner"] == level + 1 and game.person.wounds == 20 and game.person.money == 1000 - 20 - 600,
-       "a reflex implant: a level of gunner, 20 wounds, 600 credits")
-expect("Card players will hate you" in text, "it hurts, and it shows")
-scene(game, io, "sight.epsilon.clinic", "1", "Epsilon")
-expect(options(screens[-1][1]) == 1, "and only once")
+expect("The implant catalogue" in text and "Gunner: untried to green, 500" in text and game.person.money == money,
+       "the catalogue: a level of any skill, priced on a curve (and nothing bought by leaving)")
+expect("Have the pod's damage read" not in text, "once read, the pod's damage is not read again")
 game, io = ready(money=100)
 game.story.done["sight.delta.conte"] = 1
 text = scene(game, io, "sight.epsilon.clinic", "1", "Epsilon")
 expect("Conte Ottavine sat in this chair" in text and "ask the past" in text,
        "a captain who has met the Conte hears she was in the chair")
-expect(options(screens[-1][1]) == 2, "no implant without 600 credits")
+expect(options(screens[-1][1]) == 3, "the scan, the catalogue (whatever the purse), and leaving")
 
 # ---- the test range at Delta -----------------------------------------------------------------------------------------------
 game, io = ready()
@@ -237,6 +235,24 @@ money = game.person.money
 text = scene(game, io, "people.prospector", "1", "Gamma")
 expect(game.person.money == money + 150 and "Stonewright's people are coming home" in text,
        "an able surveyor sells the seam's survey to the cooperative")
+
+# ---- what the hand did about the docks' events is remembered --------------------------------------------------------------------
+game, io = ready()
+game.shifts = {"hovertank": 1}
+game.labour_marks()["crossed"] = 1
+text = scene(game, io, "sight.delta.range", "4", "Delta")
+expect("'line crosser'" in text, "on the test range, a line crosser is called one")
+game, io = ready()
+game.labour_marks()["cleared_gas"] = 1
+text = scene(game, io, "sight.gamma.store", "2", "Gamma")
+expect("You went down with the fire boss" in text, "at the company store, the hand who cleared the gas is known")
+game, io = ready()
+game.turn = 8
+bring(game, "infantry_squad", "Gamma")
+scene(game, io, "squad.sweep", "1", "Gamma")
+game.labour_marks()["informed"] = 1
+text = scene(game, io, "people.squad", "1", "Gamma")
+expect("nods to you like a colleague" in text, "and the squad's commander knows an informer")
 
 # ---- every screen fits 36 columns ----------------------------------------------------------------------------------------------
 wide = [(nid, line) for nid, text in screens for line in text.splitlines() if len(line) > 36]

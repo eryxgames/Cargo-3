@@ -46,7 +46,12 @@ it around: the captain begins on foot.
   tail gunner and a Rockwarden prospector. Names stay for the people who matter.
 - The labour market (`game/labour.py`): strikes, rush orders, gas, rich seams, harvests,
   convoys, audits, crackdowns and pilgrimages at the docks move the wages, close jobs and change
-  the berths board for a few turns; word of them comes from the other docks.
+  the berths board for a few turns; word of them comes from the other docks. A hand can change
+  most of them: cross a picket line or settle a strike, clear the gas, run cargo past a
+  crackdown or inform on it; the docks remember.
+- What money buys (`game/training.py`): lessons with a master at each dock, and implants at
+  Epsilon, a whole level at once, on steep curves, so a hand with money has a reason to spend
+  it and to travel.
 - What the game shows stays on screen until it is read: a turn's screen waits for Enter when
   the last thing shown was a message the player has not answered.
 - **Next:** chapter II (old friends, centuries on), fights on foot, and the ways to a first ship.
@@ -90,6 +95,8 @@ game/           the game, Cargo 2.2's engine:
   look.py         CLIo's terminal detection and themes, applied to the boxes
   person.py       the captain as a person: money, things carried, skills, wounds, locker, berth
   hand.py         the captain without a ship: work, the berths board, voyages, passage, locker
+  labour.py       the docks' events (strikes, gas, crackdowns...) and what a hand does about them
+  training.py     what money buys: lessons with the masters, implants
   saves.py  captain.py      saves; the captain's record carried between the parts
   story.py  chapters.py     the storykit runtime; chapters, milestones, endings
   ship.py  travel.py  market.py  hansa.py  encounters.py  events.py  research.py
@@ -103,7 +110,8 @@ story/          the story: cargo3.story.json and the files in story/cargo3/, bui
 storykit/       the trilogy's story tools (format, validator, map), copied
 themes/         the game's own styles (CLIo theme files), beside CLIo's in kit/style/
 tools/          checks: smoke, bot, fuzzing, save round trips, hostile files, kit, story,
-                act 1, systems, the person, the able hand, fights, sound
+                act 1, systems, the person, the able hand, the labour market, training,
+                fights, sound
 .github/        the release workflow: tag vX.Y.Z to build, release and push to itch.io
 ```
 

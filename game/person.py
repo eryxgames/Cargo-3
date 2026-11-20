@@ -42,6 +42,7 @@ class Person:
         self.locker = {}                # private trade carried as an able hand: {good: units}
         self.locker_cost = {}           # and what it cost: {good: credits}
         self.berth = None               # the ship they work on now (game/hand.py), or None
+        self.implants = {}              # implants fitted, by skill (game/training.py)
 
     def skill(self, name):
         return self.skills.get(name, 0)

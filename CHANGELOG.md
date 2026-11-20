@@ -94,6 +94,33 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
   starts a crackdown); `{labour_news}` fills in the word from elsewhere. Kept in saves. Checks:
   `tools/labour.py`. Measured with the bot: money and voyages by turn 120 as before (11,000 to
   13,000 credits, 40 to 47 voyages).
+- **What the hand does about it**: most of the docks' events can be changed, from the work
+  screen (site events) or the berths board (berth events), each at odds given in words and for
+  a turn. Cross a strike's picket line for a line fitter's shift twice over (the strike runs a
+  turn longer, and the pickets remember), stand with the picket, or settle it as an able
+  steward: both end it in a rush order. Go down with the fire boss to clear the gas, save the
+  seed in a blight (a small harvest follows), race the agrobots on the stack, talk a hauler
+  onto a quiet ring (a convoy follows). On the berths: run cargo past a crackdown (300, or a
+  200 fine and the Mandate's list), inform on the runners (80, and the crackdown runs longer),
+  organise the cheap hands, or pay the needle office 100 to end a delay. A failed try costs
+  wounds or money and the event goes on. What the hand did is remembered (`work.crossed`,
+  `work.informed`, `work.cleared_gas` and the like, for the story): the test range calls a line
+  crosser one, the company store knows who went down for the gas, and the squad's commander
+  nods to an informer like a colleague.
+- **What money buys** (`game/training.py`), so a hand with money has something to spend it on,
+  and a reason to go to the other docks:
+  - **lessons** with a master at each dock, on the work screen: the Hansa's exchange clerk at
+    Alpha (broker), the farm drums' canteen boss at Beta (steward), the crane master on Gamma's
+    ring (loader), the plant's line chief and the range master at Delta (mechanic, gunner), a
+    navigation tutor at Epsilon. A lesson takes a turn and gives the practice of one to nine
+    shifts, at 40 to 1,000 credits: dearer as the hand gets better;
+  - **implants** from the cybersurgeon at Epsilon: a whole level of a skill at once, up to
+    skilled, at 500, 2,000, 4,500 and 8,000 credits for green to skilled, each implant already
+    fitted making the next three tenths dearer; the surgery costs 10 wounds and 5 a level, and
+    is refused to a hand hurt worse than half. A master's level is earned, not fitted;
+  - measured with the bot by turn 120: a hand who spends ends with 6,000 to 8,000 credits
+    instead of 13,000 to 15,000, and with more skill; by turn 250, 10,000 instead of 30,000,
+    skills summing 20 to 22 instead of 16 to 18. Checks: `tools/training.py`.
 - **Five more roles, with the labour market**: the **Needle Office Clerk** at Beta, whose board
   says what is on at every dock (and who sends the hand to Korai); the **Company Store Cashier**
   at Gamma (pay a miner's tab while the shafts are shut for gas; Eela pays cash); the **Hansa
@@ -107,8 +134,8 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
     hull with no name);
   - a **Medic** on the berths of Beta, Gamma and Delta in turn (patched up for 40 credits, 30
     wounds a time; she knows which captains send her their crews);
-  - a **Cybersurgeon** at Epsilon (reads what the pod's cold took; a reflex implant, a level of
-    gunner, for 600 credits);
+  - a **Cybersurgeon** at Epsilon (reads what the pod's cold took; the implant catalogue, a
+    level of any skill, dear and dearer);
   - the **Battle Engineer** and the **Armored Commander** on Delta's test range after a shift at
     the plant (rig a skirt, ride a live-fire trial as an able gunner). After four shifts the
     engineer tells you the crew's name for her: Gabion;

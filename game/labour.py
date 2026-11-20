@@ -8,6 +8,14 @@ berths, a customs crackdown, a Cargolyte pilgrimage. Each runs a few turns at it
 one site's shifts (wage, closed jobs, risk) or the berths board (wages, how many ships, which
 kinds stay away), or both. At most one event a site, and one for the berths, at a dock.
 
+The hand can act on some of them (LABOUR_ACTIONS), a turn each, at odds by skill: cross a
+picket line, stand with it or settle the strike; go down to clear the gas; save the seed from a
+blight; race the agrobots; talk a hauler into a quiet ring; run cargo past a crackdown or tell
+customs where the dark ships are; organise a crew paid off in a glut; pay the needle office to
+keep its needle on time. What the hand did is remembered (marks: `work.<mark>` for the story),
+and some of it changes the event: it ends, runs longer, or turns into another (a settled strike
+leaves a backlog that pays).
+
 The hand sees what is on at this dock in the turn's market box, on the work and berths screens,
 on arrival and in `look`; what is on elsewhere comes as word on the ring (news), so a hand can
 go where the work is. The story reads it as stats (`labour.<id>`: turns left here, 0 if not on)
@@ -97,6 +105,81 @@ LABOUR_EVENTS = {
 
 # The board's usual mix of come-and-go ships (game/hand.py picks from it)
 BOARD_KINDS = {"hauler": 3, "smuggler": 1, "courier": 1, "tail": 1}
+
+# What a hand can do about an event: a turn each. Each action: say (the menu line), skill (the
+# odds rise a tenth for each level; none: always goes the same way), chance (at level 0), min
+# (the skill level it needs, if any), cost (paid first), mark (remembered, whatever happens),
+# against (a mark that lowers the odds a tenth for each time, such as pickets remembering a
+# line crosser), and what success and failure do: pay (site, job's skill, factor of that job's
+# wage) or money, fine, wounds (a range), practice (at the skill), plot points, standing, the
+# event (end, extend by turns, or replace with another for turns), and the text.
+LABOUR_ACTIONS = {
+    "plant_strike": [
+        {"id": "cross", "say": "Cross the picket line: a shift at double pay, and the pickets remember",
+         "skill": "mechanic", "chance": 0.6, "mark": "crossed", "against": "crossed",
+         "success": {"pay": ("hovertank", "mechanic", 2.0), "practice": 1, "event": {"extend": 1},
+                     "text": "You walk in past the pickets with your collar up. The line runs half empty and pays double. Somebody at the gate writes down your name."},
+         "failure": {"pay": ("hovertank", "mechanic", 2.0), "wounds": (10, 20), "practice": 1, "event": {"extend": 1},
+                     "text": "A bolt from the picket line finds you at the gate. You work the shift anyway, and the plant pays double for it."}},
+        {"id": "picket", "say": "Stand with the picket: no pay, and the strike may break",
+         "skill": "steward", "chance": 0.3, "mark": "picketed", "against": "crossed",
+         "success": {"plot": 2, "event": {"replace": ("plant_rush", 3)},
+                     "text": "By the evening shift the plant gives in. There is a backlog to clear, and it pays four tenths more."},
+         "failure": {"text": "A long cold day at the gate. The plant does not give in, yet."}},
+        {"id": "settle", "say": "Talk both sides round", "skill": "steward", "min": 2, "chance": 0.3, "mark": "settled",
+         "success": {"money": 150, "plot": 3, "event": {"replace": ("plant_rush", 3)},
+                     "text": "A day of shouting in the canteen, and then a paper both sides sign. The plant pays you a fee for it, and the line starts up with a backlog to clear."},
+         "failure": {"wounds": (3, 8), "text": "Both sides shout at you, and one of them throws something."}},
+    ],
+    "mine_gas": [
+        {"id": "clear", "say": "Go down with the fire boss to clear the air", "skill": "navigator", "chance": 0.35,
+         "mark": "cleared_gas",
+         "success": {"money": 150, "plot": 2, "practice": 2, "event": {"end": True},
+                     "text": "You walk the galleries behind the fire boss with a lamp held low, opening the brattice doors one by one. By the end of the shift the air is clean and the shafts open."},
+         "failure": {"wounds": (15, 30), "practice": 1,
+                     "text": "Halfway down the air goes thick and sweet. The fire boss drags you back up the ladder by your belt. The shafts stay shut."}},
+    ],
+    "drums_blight": [
+        {"id": "seed", "say": "Save the seed stock in the clean drums", "skill": "mechanic", "chance": 0.4, "mark": "saved_seed",
+         "success": {"money": 80, "plot": 2, "practice": 1, "event": {"replace": ("drums_harvest", 2)},
+                     "text": "You seal the clean drums and move the seed stock before the burners reach it. The clean drums come in early: a small harvest, and every hand wanted."},
+         "failure": {"practice": 1, "text": "The blight is in the clean drums too. You help burn them."}},
+    ],
+    "ring_agrobots": [
+        {"id": "race", "say": "Race the agrobots on the stack", "skill": "loader", "chance": 0.3, "mark": "beat_the_agrobots",
+         "success": {"plot": 2, "practice": 2, "event": {"end": True},
+                     "text": "You and the stevedores against the trial crew, crate for crate. The agrobots stack faster, but they stack wrong, and the crane boss sends them back to the depot."},
+         "failure": {"wounds": (5, 15), "practice": 1, "text": "The agrobots win, and one of them stacks a crate on your foot. The trial goes on."}},
+    ],
+    "ring_quiet": [
+        {"id": "lure", "say": "Talk a passing hauler into docking here", "skill": "broker", "chance": 0.3, "mark": "lured_a_hauler",
+         "success": {"money": 60, "plot": 1, "event": {"replace": ("ring_convoy", 2)},
+                     "text": "You raise a hauler holding at the buoy and quote it a price nobody here has quoted yet. It docks, and two more follow it in."},
+         "failure": {"text": "The haulers at the buoy have heard every price there is."}},
+    ],
+    "berths_crackdown": [
+        {"id": "run", "say": "Run a smuggler's cargo past customs (pays 300)", "skill": "navigator", "chance": 0.45,
+         "mark": "ran_the_crackdown",
+         "success": {"money": 300, "text": "Nine crates through the service ducts while customs reads the front manifests twice. The smuggler pays in cash and gives no name."},
+         "failure": {"fine": 200, "standing": {"mandate": -3},
+                     "text": "Customs is waiting at the far end of the duct. The fine is 200, and your name goes on a list."}},
+        {"id": "inform", "say": "Tell customs where the dark ships are (pays 80; the docks remember)", "mark": "informed",
+         "success": {"money": 80, "standing": {"mandate": 2}, "event": {"extend": 2},
+                     "text": "The customs officer writes it down and pays you from a tin. Somebody on the ring saw you go in."}},
+    ],
+    "berths_glut": [
+        {"id": "organise", "say": "Organise the paid-off crew into a hiring gang", "skill": "steward", "chance": 0.35,
+         "mark": "organised",
+         "success": {"plot": 2, "practice": 2, "event": {"end": True},
+                     "text": "Forty paid-off hands agree on one price and stick to it for a whole day. By the evening the board pays what it used to."},
+         "failure": {"practice": 1, "text": "Forty paid-off hands agree on one price, and then three of them take less."}},
+    ],
+    "berths_delay": [
+        {"id": "grease", "say": "Pay the needle office to keep the needle on time (100)", "cost": 100, "mark": "greased",
+         "success": {"event": {"end": True}, "text": "The clerk counts the hundred twice and finds a gap in the schedule after all."}},
+    ],
+}
+LABOUR_MARKS = sorted({a["mark"] for actions in LABOUR_ACTIONS.values() for a in actions})
 
 
 def percent(factor):
@@ -291,3 +374,101 @@ class LabourMixin:
 
     def labour_arrival_lines(self, place):
         return [LABOUR_EVENTS[eid]["start"] for eid, _, _ in self.labour_at(place)]
+
+    # -- what the hand can do about it ---------------------------------------------------------------
+    def labour_marks(self):
+        marks = getattr(self, "labour_marked", None)
+        if not isinstance(marks, dict):
+            marks = self.labour_marked = {}
+        return marks
+
+    def labour_actions_here(self, scope):
+        """[(event id, action)] the hand can take here now: 'work' for the sites' events, 'berths'
+        for the board's. An action needing a skill level or money the hand lacks is left out."""
+        found = []
+        for eid, event, _ in self.labour_at():
+            if scope == "work" and not event.get("site"):
+                continue
+            if scope == "berths" and (event.get("site") or not event.get("berths")):
+                continue
+            for action in LABOUR_ACTIONS.get(eid, []):
+                if action.get("min") and self.person.skill(action["skill"]) < action["min"]:
+                    continue
+                if action.get("cost") and self.person.money < action["cost"]:
+                    continue
+                found.append((eid, action))
+        return found
+
+    def labour_action_chance(self, action):
+        if not action.get("skill"):
+            return 1.0
+        against = self.labour_marks().get(action.get("against"), 0) if action.get("against") else 0
+        return max(0.05, min(0.95, action["chance"] + 0.1 * self.person.skill(action["skill"]) - 0.1 * against
+                             - self.person.wounds / 250.0))
+
+    def labour_action_label(self, action):
+        if not action.get("skill"):
+            return action["say"]
+        return "%s (%s, %s)" % (action["say"], action["skill"], odds_word(self.labour_action_chance(action)))
+
+    def do_labour_action(self, eid, action, roll=None):
+        """Take an action on an event here: a turn. Returns 'success' or 'failure'."""
+        person = self.person
+        place = self.current_location.name
+        chance = self.labour_action_chance(action)
+        if action.get("cost"):
+            person.money -= action["cost"]
+        roll = random.random() if roll is None else roll
+        outcome = "success" if roll < chance or "failure" not in action else "failure"
+        result = action[outcome]
+        lines = [result["text"], ""]
+        marks = self.labour_marks()
+        marks[action["mark"]] = marks.get(action["mark"], 0) + 1
+        pay = result.get("money", 0)
+        if result.get("pay"):
+            site_id, skill, factor = result["pay"]
+            base = next(job[2] for site in _hand.SITES if site["id"] == site_id for job in site["jobs"] if job[0] == skill)
+            pay += int(self.shift_wage(base, skill) * factor)
+        if pay:
+            person.money += pay
+            lines.append("Paid %s." % self.format_money(pay))
+        if result.get("fine"):
+            fine = min(int(person.money), result["fine"])
+            person.money -= fine
+            lines.append("Fined %s." % self.format_money(fine))
+        if result.get("wounds") and person.wounds < WOUNDS_DOWN:
+            hurt = min(random.randint(*result["wounds"]), WOUNDS_DOWN - person.wounds)
+            person.wounds += hurt
+            lines.append("Wounds +%d%% (%s)." % (hurt, _hand.wound_word(person.wounds)))
+        if result.get("practice") and action.get("skill"):
+            risen = person.train(action["skill"], result["practice"])
+            if risen:
+                lines.append("%s: now %s." % (action["skill"].capitalize(), skill_word(risen)))
+        if result.get("plot"):
+            self.story_manager.plot_points += result["plot"]
+            lines.append("Plot points +%d." % result["plot"])
+        for faction, amount in result.get("standing", {}).items():
+            self.change_standing(faction, amount)
+        change = result.get("event", {})
+        if change.get("end"):
+            self.labour = [e for e in self.labour_list() if not (e["place"] == place and e["id"] == eid)]
+        if change.get("extend"):
+            for item in self.labour_list():
+                if item["place"] == place and item["id"] == eid:
+                    item["until"] += change["extend"]
+        if change.get("replace"):
+            self.labour = [e for e in self.labour_list() if not (e["place"] == place and e["id"] == eid)]
+            # from the turn after this one, which the action takes
+            self.start_labour(change["replace"][0], place, change["replace"][1] + 1)
+            self.__dict__.pop("labour_fresh", None)
+            lines.append(LABOUR_EVENTS[change["replace"][0]]["name"] + ".")
+        self.display_story_message([part for part in lines if part is not None], pause=1)
+        self.pass_turns(1)
+        self.autosave()
+        return outcome
+
+
+# The game's other modules, imported last so that the modules can refer to each other.
+from .encounters import odds_word  # noqa: E402
+from . import hand as _hand  # noqa: E402  (the hand imports this module first)
+from .person import WOUNDS_DOWN, skill_word  # noqa: E402

@@ -8,7 +8,9 @@ usage: bot.py cargo.py <path: trade|combat|discovery> <seed> [max_turns] [--verb
 
 Without a ship (Cargo 3's first chapters) it plays an able hand: it signs on where the pay and
 its skill are best, works a shift when no berth suits, rests when hurt, and keeps a locker of
-private trade.
+private trade. With money to spare it buys skill: an implant at the clinic at Epsilon when it
+has two and a half times the price, a lesson with a master now and then when it has ten times
+the lesson's (--no-spending turns that off, to measure the hand's earnings alone).
 """
 import sys, os, io, re, json, random, shutil, traceback, tempfile, builtins, collections
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -28,6 +30,7 @@ DIFFICULTY = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--diffi
 # --afloat: the captain has a ship from the start (Cargo 3 begins on foot), to play a captain's
 # turns until the story gives a ship
 AFLOAT = "--afloat" in sys.argv
+NO_SPENDING = "--no-spending" in sys.argv
 # --curious: look around at every dock and follow what turns up (people, sights, side quests);
 # without it the bot never looks, and the result still says whom it shared a dock with
 CURIOUS = "--curious" in sys.argv or "--leads" in sys.argv
@@ -679,6 +682,9 @@ class Bot:
         if person.wounds >= 45:
             self.hand_log["rest"] += 1
             return "end"
+        spend = None if NO_SPENDING else self.plan_spending(g)
+        if spend:
+            return spend
         # the locker: sell what is dearer here than it cost, buy what is cheap here
         goods = g.locker_goods_here()
         for good, units in list(person.locker.items()):
@@ -721,13 +727,55 @@ class Bot:
                 self.hand_log["voyage"] += 1
                 self.hand_log["with " + (offers[pick]["who"] or offers[pick]["kind"])] += 1
                 return "berths"
-        jobs = [(site, job) for site in g.sites_here() for job in site["jobs"]]
+        shown, _ = g.work_options()
+        jobs = [i for i, (kind, _, _) in enumerate(shown) if kind == "job"]
         if jobs:
-            pick = max(range(len(jobs)), key=lambda i: g.shift_wage(jobs[i][1][2], jobs[i][1][0]))
+            def wage(i):
+                site, job = shown[i][1]
+                return g.shift_wage(job[2], job[0], site["id"])
+            pick = max(jobs, key=wage)
             self.hand.update({"work which": str(pick + 1)})
-            self.hand_log["shift " + jobs[pick][0]["id"]] += 1
+            self.hand_log["shift " + shown[pick][1][0]["id"]] += 1
             return "work"
         return "end"
+
+    def plan_spending(self, g):
+        """Money to spare buys skill: an implant at the clinic at Epsilon for the best skill whose
+        implant costs no more than two fifths of the purse; else, now and then, a lesson with the
+        master here when the purse holds ten times the lesson's price."""
+        person = g.person
+        ranked = sorted(cargo.SKILLS, key=lambda s: (-person.skill(s), cargo.SKILLS.index(s)))
+        if g.current_location.name == "Epsilon" and "implant" not in self.flags and person.wounds <= 30:
+            self.flags.add("implant")
+            for skill in ranked:
+                price, _, why = g.implant_offer(skill)
+                if price is None:
+                    continue
+                if not why and person.money >= 2.5 * price:
+                    import game.story as gs
+                    sights = g.sights_here()
+                    if "sight.epsilon.clinic" not in sights:
+                        break
+                    node = gs.story_data()["nodes"]["sight.epsilon.clinic"]
+                    snap = g.story.snapshot()
+                    offered = [c for c in node.get("choices") or [] if g.story.check(c.get("requires"), snap)]
+                    pick = next(i for i, c in enumerate(offered) if c["id"] == "implants")
+                    self.hand.update({"look at": str(sights.index("sight.epsilon.clinic") + 1),
+                                      "your choice": str(pick + 1), "fit which": str(cargo.SKILLS.index(skill) + 1),
+                                      "fit a": "yes"})
+                    self.hand_log["implant " + skill] += 1
+                    return "look"
+        if "lesson" not in self.flags:
+            self.flags.add("lesson")
+            shown, _ = g.work_options()
+            lessons = [(i, d) for i, (kind, d, _) in enumerate(shown) if kind == "lesson"]
+            lessons.sort(key=lambda item: ranked.index(item[1][0]))
+            for i, (skill, master, price, practice) in lessons:
+                if person.money >= max(1500, 10 * price) and rng.random() < 0.5:
+                    self.hand.update({"work which": str(i + 1)})
+                    self.hand_log["lesson " + skill] += 1
+                    return "work"
+        return None
 
     def hand_answer(self, p, options):
         """Answers to the hand's own prompts, as hand_action planned them; None if not one."""
@@ -943,6 +991,7 @@ if g is not None and g.ship is None:          # still on foot (Cargo 3)
         "turn": g.turn, "chapter": sm.current_chapter, "completed": sorted(sm.completed_chapters),
         "ending": getattr(g, "ending_reached", None), "money": int(g.person.money), "afloat": False,
         "plot_points": sm.plot_points, "wounds": g.person.wounds, "skills": dict(g.person.skills),
+        "implants": dict(getattr(g.person, "implants", {})), "lessons": dict(getattr(g, "lessons", {})),
         "voyages": getattr(g, "voyages", 0), "shifts": dict(getattr(g, "shifts", {})),
         "locker_profit": getattr(g, "locker_profit", 0), "regard": dict(getattr(g, "hand_regard", {})),
         "hand": dict(bot.hand_log), "known": len(g.known_locations), "here": g.current_location.name,

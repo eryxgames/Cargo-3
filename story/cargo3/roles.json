@@ -92,7 +92,6 @@
   "yard_list_seen": {"about": "the captain paid the {perimeter_guard} for a look at the impound yard's list: one hull with no name"},
   "medic_talked": {"about": "the {medic} told the captain which captains send her patients"},
   "clinic_scanned": {"about": "the {cybersurgeon} read what the pod's cold took from the captain"},
-  "implant_reflex": {"about": "the captain had a reflex implant fitted at Epsilon (a level of gunner)"},
   "rigged_the_skirts": {"about": "the captain helped the {battle_engineer} rig a hovertank's skirt"},
   "rode_the_trial": {"about": "the captain rode as gunner in a live-fire trial on Delta's test range"},
   "gabion_named": {"about": "the battle engineer told the captain her name: {gabion}"},
@@ -227,7 +226,7 @@
    "who": ["cybersurgeon"],
    "title": "A clinic off the research ring",
    "requires": {"done": ["hall.first"]},
-   "text": "Off Epsilon's research ring there is a clinic with one chair, and the chair has seen better centuries. The {cybersurgeon} fits implants for hands who need to be quicker than they are, and reads old damage for those who want to know.",
+   "text": "Off Epsilon's research ring there is a clinic with one chair, and the chair has seen better centuries. The {cybersurgeon} fits implants for hands who need to be better than they are, and reads old damage for those who want to know. Her prices climb with every level, and with every implant already in you.",
    "choices": [
     {
      "id": "scan",
@@ -237,11 +236,9 @@
      "next": ["clinic.scan"]
     },
     {
-     "id": "implant",
-     "say": "A reflex implant: a level of gunner (600 credits; it hurts)",
-     "requires": {"money": 600, "not_flag": "implant_reflex", "wounds": {"max": 60}},
-     "effects": {"money": -600, "skill.gunner": 1, "wounds": 20, "set": "implant_reflex"},
-     "next": ["clinic.implant"]
+     "id": "implants",
+     "say": "Look at the implant catalogue (a level of a skill; dear, and dearer)",
+     "effects": {"code": "implants"}
     },
     {"id": "leave", "say": "Keep your head as it is"}
    ]
@@ -263,14 +260,6 @@
     }
    ]
   },
-  "clinic.implant": {
-   "kind": "event",
-   "arc": "roles",
-   "act": 1,
-   "who": ["cybersurgeon"],
-   "requires": {"flag": "implant_reflex"},
-   "text": "It takes an hour and a local anaesthetic that runs out halfway. Afterwards your hands move a little before you ask them to. 'Gunners love it,' the {cybersurgeon} says. 'Card players will hate you.'"
-  },
   "sight.delta.range": {
    "kind": "sight",
    "arc": "roles",
@@ -284,6 +273,13 @@
     {
      "requires": {"flag": "gabion_named"},
      "text": "{gabion} is under the hovertank again. She waves the torch at you, which on the range counts as a greeting. The {armored_commander} raises the cold coffee."
+    },
+    {
+     "requires": {"work.crossed": 1},
+     "text": [
+      "Out on the test range a hovertank idles on its skirt. The {battle_engineer} is under it with a torch. The {armored_commander} sits in the hatch with a slate and a cold coffee, and watches the dust.",
+      "The {battle_engineer} does not look up from the skirt. Somebody behind you says 'line crosser' to nobody in particular."
+     ]
     },
     {
      "requires": {"past": {"era": "cargo1", "flag": "delivered_the_hovertank"}},
@@ -464,6 +460,10 @@
     {
      "requires": {"labour.mine_gas": 1},
      "text": "The shafts are shut for gas, and the company store is full of miners who cannot earn. The {store_cashier} writes credit she knows will never come back."
+    },
+    {
+     "requires": {"work.cleared_gas": 1},
+     "text": "Gamma's company store sells a miner everything at a price only a miner would pay. The {store_cashier} looks at you and rounds your bill down. 'You went down with the fire boss,' she says. 'Word gets round.'"
     }
    ],
    "choices": [
@@ -614,6 +614,10 @@
    "requires": {"here": "infantry_squad", "done": ["squad.sweep"]},
    "text": "The {infantry_squad} is back on the berths. The {heavy_infantry_commander} nods to you, which is worse than not nodding.",
    "variants": [
+    {
+     "requires": {"work.informed": 1},
+     "text": "The {infantry_squad} is back on the berths. The {heavy_infantry_commander} nods to you like a colleague. That is worse."
+    },
     {
      "requires": {"flag": "squad_dodged"},
      "text": "The {infantry_squad} is back on the berths. The {heavy_infantry_commander} does not nod. He writes something on the slate instead."

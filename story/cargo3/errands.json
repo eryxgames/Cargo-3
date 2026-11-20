@@ -94,7 +94,7 @@
    "title": "An errand to 2420",
    "requires": {"errand": {"thirteenth_line": "open"}},
    "text": [
-    "Errands to the past travel in your captain's record. To take this one to 2420, use 'captain' to export your record, then start Cargo 1 (1.3.0 or newer) as this captain.",
+    "Errands to the past travel in your captain's record. To take this one to 2420, use 'captain' to export your record, then start Cargo 1 (1.3.1 or newer) as this captain.",
     "In 2420, help get the miners out of level nine at Gamma. A few turns later the plaque is cut, and you will be asked for the name. Then start Cargo 3 again as this captain: that 2533 will remember."
    ]
   },
@@ -288,7 +288,7 @@
    "title": "An errand to 2420",
    "requires": {"errand": {"vertex_array": "open"}},
    "text": [
-    "Errands to the past travel in your captain's record. To take this one to 2420, use 'captain' to export your record, then start Cargo 1 (1.3.0 or newer) as this captain.",
+    "Errands to the past travel in your captain's record. To take this one to 2420, use 'captain' to export your record, then start Cargo 1 (1.3.1 or newer) as this captain.",
     "In 2420, carry {ancient_scholar.short}'s samples to the Stellar Institute when she asks for them, and measure them there before the fire takes the store. Then start Cargo 3 again as this captain."
    ]
   },

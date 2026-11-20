@@ -25,7 +25,7 @@ def sealed(rec):
 
 def came_back(game, era, flags, version, turns=120):
     """The record this game exports, carried through an earlier part that did its errands there:
-    what that part (1.3.0 / 2.3.0) writes back. Returns the record as that part would export it."""
+    what that part (1.3.1 / 2.3.0) writes back. Returns the record as that part would export it."""
     rec = game.captain_record()
     rec = json.loads(json.dumps(rec))
     start = history.start_from(rec, __import__("random").Random(7), known=captains.CAPTAIN_KEYS)
@@ -64,20 +64,20 @@ play(game, io, "opening.pod")
 play(game, io, "hall.first")
 expect("sight.gamma.plaque" in sights(game, "Gamma"), "the plaque is a sight at Gamma")
 text = flat(play(game, io, "sight.gamma.plaque", "1", where="Gamma"))
-expect("blank" in text and "Errands to the past travel in your captain's record" in text and "Cargo 1 (1.3.0 or newer)" in text,
+expect("blank" in text and "Errands to the past travel in your captain's record" in text and "Cargo 1 (1.3.1 or newer)" in text,
        "taking the errand says how to go back")
 expect(history.errand_state(game.errands, "thirteenth_line") == "open", "the errand is open")
 expect("thought.errand.plaque" in thoughts(game), "a thought keeps the way back")
 game.turn = 30
 rec = game.captain_record()
-expect([(e["id"], e["to"], e["state"], e["needs"]) for e in rec["errands"]] == [("thirteenth_line", "cargo1", "open", "1.3.0")],
+expect([(e["id"], e["to"], e["state"], e["needs"]) for e in rec["errands"]] == [("thirteenth_line", "cargo1", "open", "1.3.1")],
        "the record carries the errand: %s" % rec["errands"])
 text = flat(play(game, io, "sight.gamma.plaque", "1", where="Gamma"))
 expect("You have promised it a name" in text and "Errands to the past" not in text, "looking again: the promise, no choice")
 # 2420: the plaque is cut with the captain's name; a new 2533 remembers
 for flag, words, mine in (("thirteenth_name", "It says Tester.", "a thirteenth: yours"),
                           ("thirteenth_blank", "still blank", "you let stay blank")):
-    back = came_back(game, "cargo1", ["saved_level_nine", flag], "1.3.0")
+    back = came_back(game, "cargo1", ["saved_level_nine", flag], "1.3.1")
     again, aio, _ = start(back)
     expect(again.captain_id == game.captain_id and again.captain_start["parent"] == back["line"]
            and again.captain_start["own_time"] == 30 + 120, "%s: the same captain, a new line, own time 150" % flag)
@@ -135,14 +135,14 @@ play(game, io, "opening.pod")
 play(game, io, "hall.first")
 expect("sight.epsilon.notes" in sights(game, "Epsilon"), "Kren's notes are a sight at Epsilon")
 text = flat(play(game, io, "sight.epsilon.notes", "1", where="Epsilon"))
-expect("Lost in the fire" in text and "Cargo 1 (1.3.0 or newer)" in text and "Stellar Institute" in text,
+expect("Lost in the fire" in text and "Cargo 1 (1.3.1 or newer)" in text and "Stellar Institute" in text,
        "the gap in her notes, and the way back to 2420")
 expect(history.errand_state(game.errands, "vertex_array") == "open" and "thought.errand.vertex" in thoughts(game),
        "the errand is open, and kept in a thought")
 text = flat(play(game, io, "sight.epsilon.notes", "1", where="Epsilon"))
 expect("You have promised to measure the samples" in text, "looking again: the promise")
 game.turn = 50
-back = came_back(game, "cargo1", ["carried_the_samples", "vertex_array_kren"], "1.3.0")
+back = came_back(game, "cargo1", ["carried_the_samples", "vertex_array_kren"], "1.3.1")
 again, aio, _ = start(back)
 expect(history.errand_state(again.errands, "vertex_array") == "done" and "thought.errand.vertex" not in thoughts(again),
        "the errand came back done")
@@ -164,7 +164,7 @@ play(game, io, "hall.first")
 play(game, io, "sight.gamma.plaque", "1", where="Gamma")
 rec = game.captain_record()
 notes = history.import_notes(rec, "cargo1", "1.2.1", cargo.story_data()["features"])
-expect(len(notes) == 1 and "Cargo 1 1.3.0 or newer" in notes[0], "Cargo 1 1.2.1 would be told to update: %s" % notes)
+expect(len(notes) == 1 and "Cargo 1 1.3.1 or newer" in notes[0], "Cargo 1 1.2.1 would be told to update: %s" % notes)
 # what 1.2.1 writes back: no history, its own id; joined again here by name
 dropped = {k: v for k, v in json.loads(json.dumps(rec)).items() if k not in history.HISTORY_KEYS}
 dropped.update({"id": "C1-12121212", "origin": {"game": "cargo1", "version": "1.2.1"}, "log": []})

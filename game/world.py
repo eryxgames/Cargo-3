@@ -23,14 +23,15 @@ from .achievements import AchievementsMixin
 from .sound import SoundMixin
 from .looking import LookMixin
 from .hand import HandMixin
-from .labour import LABOUR_EVENTS, LabourMixin
+from .labour import LABOUR_ACTIONS, LABOUR_EVENTS, LABOUR_MARKS, LabourMixin  # noqa: F401
+from .training import TrainingMixin
 
 
 class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
            MarketMixin, HansaMixin, EncountersMixin, EventsMixin,
            ResearchMixin, ActionsMixin, PortMixin, RanksMixin,
            FactionsMixin, NeedlesMixin, ModulesMixin, TacticsMixin, AchievementsMixin, SoundMixin,
-           LookMixin, HandMixin, LabourMixin):
+           LookMixin, HandMixin, LabourMixin, TrainingMixin):
     # How often something happens between docks, by difficulty: an easy game has calmer lanes
     LANE_ACTIVITY = {0: 0.55, 1: 0.85, 2: 1.0}
 
@@ -159,6 +160,11 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             stats["shifts." + site["id"]] = shifts.get(site["id"], 0)
         for eid in LABOUR_EVENTS:           # what is on at this dock: turns left, 0 if not
             stats["labour." + eid] = self.labour_left(eid) if self.current_location is not None else 0
+        marks = self.labour_marks()         # what the hand did about it (game/labour.py)
+        for mark in LABOUR_MARKS:
+            stats["work." + mark] = marks.get(mark, 0)
+        stats["implants"] = self.implants_fitted()
+        stats["lessons"] = sum(getattr(self, "lessons", {}).values())
         for skill in SKILLS:
             stats["skill." + skill] = person.skill(skill)
         regard = getattr(self, "hand_regard", {})
@@ -264,6 +270,8 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             self.achievements = {}
         self.mend_history()
         self.labour_list()          # a save from before the labour market, or a damaged one
+        self.labour_marks()
+        self.implants_fitted()
         if not isinstance(getattr(self, "person", None), Person):
             self.person = Person()
         ship = self.ship

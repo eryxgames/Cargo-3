@@ -269,13 +269,21 @@ class HandMixin:
     def site_name(self, site):
         return site.get("names", {}).get(self.current_location.name, site["name"])
 
-    def handle_work(self):
-        jobs, shut = [], []
+    def work_options(self):
+        """What the work screen offers here, in its order: shifts at the open jobs, lessons with
+        the masters (game/training.py), and what can be done about the events on here
+        (game/labour.py). Each: (kind, details, label). And the notes for the foot of the screen:
+        closed jobs, what is on, word from the other docks."""
+        options, shut = [], []
+        person = self.person
         for site in self.sites_here():
             closed = [(job, self.site_terms(site["id"], job[0])[2]) for job in site["jobs"]]
             for job, why in closed:
                 if not why:
-                    jobs.append((site, job))
+                    skill, name, wage = job
+                    options.append(("job", (site, job), "%s at %s: %s a shift (%s, %s)" % (
+                        name.capitalize(), self.site_name(site), self.format_money(self.shift_wage(wage, skill, site["id"])),
+                        skill, skill_word(person.skill(skill)))))
             whys = [why for _, why in closed if why]
             if whys:
                 why = whys[0]
@@ -286,28 +294,37 @@ class HandMixin:
                         "%s at %s: no shifts" % (", ".join(job[1].capitalize() for job, w in closed if w), self.site_name(site)))
                 shut.append("%s (%s, %d turn%s)." % (what, LABOUR_EVENTS[why]["name"].split(": ", 1)[-1], left,
                                                      "" if left == 1 else "s"))
-        footer = self.labour_screen_lines("work")
-        if not jobs:
-            self.display_simple_message(["Nobody here is hiring by the shift."] + shut + footer)
+        for skill, master, price, practice in self.lessons_here():
+            options.append(("lesson", (skill, master, price, practice), "A lesson with %s: %s practice, %s" % (
+                master, skill, self.format_money(price))))
+        for eid, action in self.labour_actions_here("work"):
+            options.append(("action", (eid, action), self.labour_action_label(action)))
+        return options, shut + self.labour_screen_lines("work")
+
+    def handle_work(self):
+        options, notes = self.work_options()
+        if not options:
+            self.display_simple_message(["Nobody here is hiring by the shift."] + notes)
             return
-        person = self.person
-        rows = [["Work a shift"], [""]]
-        for number, (site, (skill, job, wage)) in enumerate(jobs, 1):
-            label = "%s at %s: %s a shift (%s, %s)" % (job.capitalize(), self.site_name(site),
-                                                     self.format_money(self.shift_wage(wage, skill, site["id"])),
-                                                     skill, skill_word(person.skill(skill)))
+        rows = [["Work a shift, or learn"], [""]]
+        for number, (_, _, label) in enumerate(options, 1):
             rows.extend([line] for line in self.option_lines(number, label))
-        if shut or footer:
+        if notes:
             rows.append([""])
-            for line in shut + footer:
+            for line in notes:
                 rows.extend([part] for part in self.word_wrap(line))
         print(self.create_box(rows, 'round'))
-        answer = self.validate_input("Work which (1-%d, Enter to leave): " % len(jobs),
-                                     [str(i) for i in range(1, len(jobs) + 1)])
+        answer = self.validate_input("Work which (1-%d, Enter to leave): " % len(options),
+                                     [str(i) for i in range(1, len(options) + 1)])
         if answer is None:
             return
-        site, job = jobs[int(answer) - 1]
-        self.work_shift(site, job)
+        kind, details, _ = options[int(answer) - 1]
+        if kind == "job":
+            self.work_shift(*details)
+        elif kind == "lesson":
+            self.take_lesson(*details)
+        else:
+            self.do_labour_action(*details)
 
     def shift_wage(self, wage, skill, site_id=None):
         factor = self.site_terms(site_id, skill)[0] if site_id else 1.0
@@ -413,20 +430,29 @@ class HandMixin:
 
     def handle_berths(self):
         offers = self.berths()
+        actions = self.labour_actions_here("berths")
         footer = self.labour_screen_lines("berths")
-        if not offers:
+        if not offers and not actions:
             self.display_simple_message(["No ship here wants a hand this turn."] + footer)
             return
         rows = [["Berths board: %s" % self.current_location.name], [""]]
         for number, offer in enumerate(offers, 1):
             rows.extend([line] for line in self.option_lines(number, self.berth_label(offer)))
+        if not offers:
+            rows.append(["No ship here wants a hand this turn."])
+        for number, (_, action) in enumerate(actions, len(offers) + 1):
+            rows.extend([line] for line in self.option_lines(number, self.labour_action_label(action)))
         rows.extend([[""], ["Pay is on arrival. Your skill at the duty decides how the way goes."]])
         for line in footer:
             rows.extend([part] for part in self.word_wrap(line))
         print(self.create_box(rows, 'round'))
-        answer = self.validate_input("Sign on (1-%d, Enter to leave): " % len(offers),
-                                     [str(i) for i in range(1, len(offers) + 1)])
+        count = len(offers) + len(actions)
+        answer = self.validate_input("Sign on (1-%d, Enter to leave): " % count,
+                                     [str(i) for i in range(1, count + 1)])
         if answer is None:
+            return
+        if int(answer) > len(offers):
+            self.do_labour_action(*actions[int(answer) - len(offers) - 1])
             return
         offer = offers[int(answer) - 1]
         skill = self.person.skill(offer["duty"])
@@ -713,12 +739,19 @@ class HandMixin:
                 ["The docks have their own weather: a strike or a rush order at the plant, gas or a rich seam "
                  "in the mines, a convoy on the ring, crews short on the berths. It moves the wages, closes "
                  "jobs and changes the board for a few turns. The turn's screen shows what is on here; look "
-                 "and the needle office at Beta tell what is on at the other docks."],
+                 "and the needle office at Beta tell what is on at the other docks. Some of it you can "
+                 "change: cross a picket line or stand with it, go down with the fire boss, bribe the "
+                 "needle office. The work and berths screens list what you can do; the docks remember."],
                 [""],
                 ["Six skills (skills/sk): loader, mechanic, gunner, navigator, steward and broker. They rise "
                  "with work and duties, and decide how the way goes. Bold choices teach more and pay more, "
                  "and can hurt: work can put you down, a fight can kill. Wounds heal with time, faster with rest "
                  "(end/e)."],
+                [""],
+                ["Money buys skill. Each dock has a master or two who teach for a fee (on the work screen): "
+                 "dearer as you get better, and quicker than shifts. The cybersurgeon at Epsilon fits implants: "
+                 "a whole level at once, up to skilled, for a lot of money and some blood, and each one fitted "
+                 "makes the next dearer."],
                 [""],
                 ["Look around the docks (look/lk) for people and things, think (th) for your notes, and follow "
                  "the story (log/l, journal/j). Plot points move it: earn them by working, sailing and going "
