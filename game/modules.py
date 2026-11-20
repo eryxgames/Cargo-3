@@ -55,6 +55,12 @@ def module_name(kind):
     return MODULES.get(kind, (kind,))[0]
 
 
+def module_price(ship, kind):
+    """What the yard asks to fit one: dearer for every module already on the grips (game/prices.py).
+    Stripping one back and mending go by the module's own price."""
+    return curve(MODULES[kind][1], 1, len(ship.modules))
+
+
 def mend_cost(module):
     """What a yard charges to bring one module back to sound."""
     price = MODULES.get(module["kind"], ("", 10000))[1]
@@ -140,19 +146,24 @@ class ModulesMixin:
         kinds = list(MODULES)
         rows = [["Modules the yard can fit"], [""]]
         for number, kind in enumerate(kinds, 1):
-            name, price, about, effect = MODULES[kind]
+            name, _, about, effect = MODULES[kind]
             rows.extend([line] for line in self.option_lines(number, "%s, %s: %s. %s." % (
-                name, self.format_money(price), effect, about[0].upper() + about[1:])))
+                name, self.format_money(module_price(ship, kind)), effect, about[0].upper() + about[1:])))
+        if ship.modules:
+            rows.extend([[""]] + [[line] for line in self.word_wrap(
+                "Each module on the grips makes the next dearer to fit. " + price_note("yard"))])
         print(self.create_box(rows, 'double'))
         answer = self.validate_input("Fit which (1-%d, Enter for none): " % len(kinds),
                                      [str(i) for i in range(1, len(kinds) + 1)])
         if answer is None:
             return
         kind = kinds[int(answer) - 1]
-        name, price = MODULES[kind][:2]
+        name, price = MODULES[kind][0], module_price(ship, kind)
         if ship.money < price:
             self.display_simple_message("The yard wants %s for a %s." % (self.format_money(price), name.lower()))
             return
+        if ship.modules:
+            paid_dearer(self, "yard")
         ship.money -= price
         ship.modules.append({"kind": kind, "condition": FULL})
         sfx("fit")
@@ -196,3 +207,4 @@ class ModulesMixin:
 
 from .sound import sfx  # noqa: E402
 from .looking import LOADER_WEAR  # noqa: E402
+from .prices import curve, paid_dearer, price_note  # noqa: E402

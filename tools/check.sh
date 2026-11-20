@@ -46,6 +46,12 @@ $PY $T/friends.py || fail=1
 echo "== chapter III, a bridge again: every way out of the Mandate's yard, the first runs, Scholz's Star"
 $PY $T/ship.py || fail=1
 
+echo "== chapters IV to VI: the heading, who holds the ring, the restart and its three endings"
+$PY $T/heading.py || fail=1
+
+echo "== prices that climb: the curve on implants, upgrades, modules, the shop and the outfitter"
+$PY $T/prices.py || fail=1
+
 echo "== the engine's systems, one by one"
 $PY $T/systems.py || fail=1
 

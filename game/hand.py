@@ -43,6 +43,11 @@ FIRST_SHIFT_POINTS = 2      # plot points for the first shift at each kind of si
 # What a ship needs, from the old friends of chapter II (story/cargo3/friends.json): three of these
 # end the chapter (the story's stat ship_needs)
 SHIP_NEEDS = ("navigator_key", "vouched_for", "papers_in_order", "debt_called_in", "ship_truth")
+# Chapter V (story/cargo3/heading.json): the claims on the ring the captain has heard (three move the
+# chapter on); chapter VI: who will stand with the captain at the restart (three let it start from home)
+CLAIMS = ("claim_mandate", "claim_concord", "claim_collective", "claim_hansa", "claim_home")
+ALLIES = ("ally_stonewright", "ally_korai", "ally_cooperative", "ally_rootstock", "ally_collective", "ally_kraal")
+START_YEAR = 2533           # Cargo 3's first year; relativistic legs add years (story code 'years <n>')
 
 # What a shift can bring, by skill: good (more pay, more practice), fair, or bad (less pay,
 # maybe a wound)

@@ -28,7 +28,8 @@
   "origin.ending",
   "origin.turns",
   "labour_news",
-  "ship_name"
+  "ship_name",
+  "year"
  ],
  "include": [
   "cargo3/places.json",
@@ -38,6 +39,8 @@
   "cargo3/roles.json",
   "cargo3/friends.json",
   "cargo3/ship.json",
+  "cargo3/prices.json",
+  "cargo3/heading.json",
   "cargo3/main.json"
  ],
  "stats": {
@@ -332,6 +335,21 @@
   },
   "armed": {
    "about": "1 if the captain carries a weapon (game/brawl.py)"
+  },
+  "paid_dearer": {
+   "about": "purchases made after their price climbed (game/prices.py)"
+  },
+  "gear": {
+   "about": "pieces of gear the captain carries (game/brawl.py)"
+  },
+  "upgrades": {
+   "about": "points of attack, defense and speed bought at a yard"
+  },
+  "claims": {
+   "about": "claims on the ring the captain has heard (chapter V)"
+  },
+  "allies": {
+   "about": "who will stand with the captain at the restart (chapter VI)"
   },
   "ship_needs": {
    "about": "things a ship needs that old friends have given (chapter II): a navigator's key, someone to vouch, papers, a debt called in, the truth about the ship"

@@ -39,6 +39,19 @@ QUIET = [
     "A cleaning drone circles your boots twice, decides you are not litter, and moves on.",
 ]
 
+# ...and once the captain has paid a price that climbed (game/prices.py), these too: the
+# captain's own sidenotes on what everything costs now
+PRICE_QUIET = [
+    "A price board ticks up a notch as you pass. Everything costs more than it did before the pod. I slept "
+    "through a century of inflation: the most expensive nap in history.",
+    "Somebody has chalked WHAT GOES UP on a bulkhead. Nobody finished the sentence. Nobody here has ever seen a "
+    "price come down.",
+    "The more I own, the more the next thing costs. The yard calls it a curve. From where I stand it's a slope, "
+    "and I'm at the bottom of it.",
+    "A chandler's sign: PRICES SUBJECT TO CHANGE. Change, here, only has one direction. They call it progress.",
+    "The vending machine has put its coffee up again. At this rate the beans will need their own convoy.",
+]
+
 
 import random  # noqa: E402
 import zlib  # noqa: E402
@@ -122,7 +135,8 @@ class LookMixin:
         own = [line for line in (story_data()["places"].get(place) or {}).get("quiet") or []
                if isinstance(line, str)]
         pick = random.Random(zlib.crc32(("%s:%d" % (place, self.turn)).encode("utf-8")))
-        return self.story.fill(pick.choice(own * 2 + QUIET))
+        dearer = getattr(self, "paid_dearer", None)
+        return self.story.fill(pick.choice(own * 2 + QUIET + (PRICE_QUIET if dearer else [])))
 
     def sight_label(self, nid):
         node = story_data()["nodes"][nid]

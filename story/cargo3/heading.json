@@ -1,0 +1,793 @@
+{
+ "format": "storykit",
+ "version": 1,
+ "about": "Chapters IV to VI and the endings (2533 to about 2600): the heading to the segment at the Builder Site, the timing and the long leg home (IV); who holds the ring, five claims, Serac's move and a start from the wrong end (V); who stands with the captain at the restart, and three endings: from home, from a faction's end, and the loop back to Cargo 1's portal (VI). Who threw the switch is never said.",
+ "arcs": {
+  "heading": {"title": "The heading", "order": 9},
+  "ring": {"title": "Who holds the ring", "order": 10},
+  "restart": {"title": "From home", "order": 11}
+ },
+ "characters": {
+  "ysolde": {
+   "about": "founded House Rostrom in 2420 and spent most of the century since on long legs; speaks for the Concord's claim at Epsilon"
+  }
+ },
+ "flags": {
+  "timing_recorded": {"about": "the captain recorded the ring's beat at the Builder Site"},
+  "array_fitted": {"about": "the Vertex Array fitted the beacon: the segment's shape and its beat"},
+  "midpoint_known": {"about": "the ring cannot turn without the stolen segment, or its timing"},
+  "serac_asked_copy": {"about": "Serac's man asked for a copy of the timing"},
+  "serac_has_copy": {"about": "the captain sold Serac a copy of the timing"},
+  "serac_refused_copy": {"about": "the captain showed Serac's man the airlock"},
+  "cutter_met": {"about": "a Mandate cutter found the hull taken at night"},
+  "stonewright_escort": {"about": "Stonewright flies with the captain"},
+  "long_leg_flown": {"about": "the long leg home: nineteen years outside"},
+  "home_reached": {"about": "the captain brought the timing to the Stator Field near Sedna"},
+  "holders_known": {"about": "the captain knows who holds the segments near Sedna"},
+  "claim_mandate": {"about": "heard the Mandate's claim on the ring"},
+  "claim_concord": {"about": "heard the Concord's and House Rostrom's claim"},
+  "claim_collective": {"about": "heard the machines' claim"},
+  "claim_hansa": {"about": "heard the Hansa's claim"},
+  "claim_home": {"about": "heard the friends' claim: from home"},
+  "side_mandate": {"about": "the captain sided with the Mandate"},
+  "side_concord": {"about": "the captain sided with the Concord and House Rostrom"},
+  "side_collective": {"about": "the captain sided with the Collective"},
+  "side_hansa": {"about": "the captain sided with the Hansa"},
+  "crisis_done": {"about": "Serac moved first, and the captain answered"},
+  "gave_serac_timing": {"about": "the captain handed Serac the timing"},
+  "ran_blockade": {"about": "the captain ran the Mandate's blockade with the timing"},
+  "low_point_done": {"about": "the ring turned a degree the wrong way: thirty-eight years"},
+  "ally_stonewright": {"about": "Stonewright will hold the far side at the restart"},
+  "ally_korai": {"about": "Korai will hold the count at the restart"},
+  "ally_cooperative": {"about": "the cooperative stands with the captain"},
+  "ally_rootstock": {"about": "the Rootstock stand with the captain"},
+  "ally_collective": {"about": "the machines stand with the captain"},
+  "ally_kraal": {"about": "the Kraal family stands with the captain"},
+  "chose_home": {"about": "the restart, from home"},
+  "chose_faction": {"about": "the restart, from a faction's end"},
+  "chose_loop": {"about": "the restart, from where the captain was: the loop"}
+ },
+ "nodes": {
+  "thought.h4.site": {
+   "kind": "thought",
+   "arc": "heading",
+   "act": 4,
+   "requires": {"chapter": "ch4", "not_flag": "reached_builder_site"},
+   "text": "The heading runs out along Scholz's Star's wake to the Builder Site, where something is still sending."
+  },
+  "thought.h4.timing": {
+   "kind": "thought",
+   "arc": "heading",
+   "act": 4,
+   "requires": {"flag": "reached_builder_site", "not_flag": "timing_recorded"},
+   "text": "The beacon on the segment at the Builder Site sends a beat, not a message. Somebody should write it down."
+  },
+  "thought.h4.home": {
+   "kind": "thought",
+   "arc": "heading",
+   "act": 4,
+   "requires": {"flag": "timing_recorded", "not_flag": "home_reached"},
+   "text": "The timing has to go home, to the Stator Field Megastructure near Sedna's orbit, where the ring's own segments turn. No needle runs there from here: it's the long leg, years outside, weeks for me."
+  },
+  "h4.beacon": {
+   "kind": "sight",
+   "arc": "heading",
+   "act": 4,
+   "where": "Builder Site",
+   "title": "The beacon",
+   "requires": {"flag": "reached_builder_site", "not_flag": "timing_recorded"},
+   "text": [
+    "The beacon on the segment's rim sends one slow pulse, then nothing, then one. It is not saying anything. It is keeping time: the ring's beat, kept for seventy thousand years by a piece that was stolen from it.",
+    "And it points at the gap: the place in the sky where, seen from here, the missing piece of the ring would be if anyone put it back."
+   ],
+   "choices": [
+    {
+     "id": "array",
+     "say": "Fit the Vertex Array to the beacon",
+     "requires": {"has": {"items": ["vertex_array"]}},
+     "effects": {"set": ["timing_recorded", "array_fitted"], "plot_points": 15},
+     "next": ["h4.array", "h4.midpoint"]
+    },
+    {
+     "id": "count",
+     "say": "Sit by it and hold the count, the way {warp_singer} taught you",
+     "requires": {"flag": "navigator_key"},
+     "effects": {"set": "timing_recorded", "plot_points": 15, "practice.navigator": 2},
+     "next": ["h4.counted", "h4.midpoint"]
+    },
+    {
+     "id": "sensors",
+     "say": "Record the beat with the ship's sensors (a quarter of your research)",
+     "requires": {"research_points": 120},
+     "effects": {"code": "lose research 0.25", "set": "timing_recorded", "plot_points": 15},
+     "next": ["h4.recorded", "h4.midpoint"]
+    },
+    {
+     "id": "recorder",
+     "say": "Hire a recorder buoy from the garrison and wait for it: 5,000",
+     "requires": {"money": 5000},
+     "effects": {"money": -5000, "set": "timing_recorded", "plot_points": 15},
+     "next": ["h4.recorded", "h4.midpoint"]
+    },
+    {"id": "leave", "say": "Watch it a while longer"}
+   ]
+  },
+  "h4.array": {
+   "kind": "event",
+   "arc": "heading",
+   "act": 4,
+   "who": ["ancient_scholar"],
+   "requires": {"flag": "array_fitted"},
+   "text": "The Vertex Array fits the beacon like a key in a lock that was cut for it. The shape of the missing segment, measured in 2420 at {ancient_scholar.short}'s request, and the beat kept here for seventy thousand years: together they are everything a ring needs to turn. Only one person has ever carried both. You try not to think about that."
+  },
+  "h4.counted": {
+   "kind": "event",
+   "arc": "heading",
+   "act": 4,
+   "who": ["warp_singer"],
+   "requires": {"flag": "timing_recorded", "not_flag": "array_fitted"},
+   "text": "Eleven beats and a held one, then nine. It is the needles' count, slowed down by seventy thousand years. {warp_singer} never said where she learned it. Now you know where the needles did."
+  },
+  "h4.recorded": {
+   "kind": "event",
+   "arc": "heading",
+   "act": 4,
+   "requires": {"flag": "timing_recorded", "not_flag": "array_fitted"},
+   "text": "It takes days to be sure of the beat. When you are, it is on a data cartridge in {ship_name}'s safe, which is the most valuable thing in the near systems and looks like a cheese sandwich."
+  },
+  "h4.midpoint": {
+   "kind": "event",
+   "arc": "heading",
+   "act": 4,
+   "requires": {"flag": "timing_recorded"},
+   "effects": {"set": "midpoint_known", "reveal": "Stator Field Megastructure"},
+   "text": [
+    "It comes together on the way back to {ship_name}'s bridge. The ring around our Sun cannot turn without the stolen segment, or without its timing. The segment is a moon a light-year from home. The timing is in your safe.",
+    "Every faction in the near systems wants the ring turning from its own end. And ERYX, newly founded, needs it to throw its missions thirteen hundred light-years to GW Orionis. The Stator Field near Sedna is on your charts."
+   ]
+  },
+  "h4.serac_copy": {
+   "kind": "event",
+   "arc": "heading",
+   "act": 4,
+   "who": ["serac"],
+   "chance": 0.4,
+   "requires": {
+    "chapter": "ch4",
+    "flag": "timing_recorded",
+    "not_flag": ["serac_asked_copy", "long_leg_flown"],
+    "any": [{"flag": "way_serac"}, {"flag": "serac_offer"}]
+   },
+   "effects": {"set": "serac_asked_copy"},
+   "text": "A man in grey is sitting in your pilot's chair. '{serac} would like a copy of the timing,' he says. 'He pays well. He also takes. He would rather pay.'",
+   "variants": [
+    {
+     "requires": {"flag": "opened_serac_box"},
+     "text": "A man in grey is sitting in your pilot's chair. 'You opened the container,' he says. '{serac} was disappointed, and then interested. He would like a copy of the timing. He pays well. He also takes.'"
+    }
+   ],
+   "choices": [
+    {
+     "id": "sell",
+     "say": "Sell him a copy: 20,000",
+     "effects": {"money": 20000, "set": "serac_has_copy"},
+     "next": ["h4.serac_sold"]
+    },
+    {"id": "refuse", "say": "Show him the airlock", "effects": {"set": "serac_refused_copy", "code": "fight customs"}}
+   ]
+  },
+  "h4.serac_sold": {
+   "kind": "event",
+   "arc": "heading",
+   "act": 4,
+   "who": ["serac"],
+   "requires": {"flag": "serac_has_copy"},
+   "text": "He counts out Hansa Thaler bars like a man feeding birds and takes the copy without looking at it. {serac} now has the beat. He does not have anyone who can hold it."
+  },
+  "h4.cutter": {
+   "kind": "event",
+   "arc": "heading",
+   "act": 4,
+   "chance": 0.3,
+   "requires": {"chapter": "ch4", "flag": "mandate_wants_it", "not_flag": "cutter_met", "afloat": 1},
+   "effects": {"set": "cutter_met", "code": "fight customs"},
+   "text": "A Mandate cutter drops out of a needle beside you with its guns already warm. 'Unregistered hull,' says a voice. 'You are on a list.' It does not say which list. It does not need to."
+  },
+  "h4.escort": {
+   "kind": "event",
+   "arc": "heading",
+   "act": 4,
+   "who": ["maret"],
+   "requires": {"flag": ["stonewright_met", "timing_recorded"], "not_flag": "stonewright_escort"},
+   "effects": {"set": "stonewright_escort"},
+   "text": "Stonewright comes alongside, a century of sublight scarring its plates. {maret.short} has heard about the beat. 'The long leg home,' she says. 'We know that road better than anyone alive. We'll fly it with you.'"
+  },
+  "h4.long_leg": {
+   "kind": "sight",
+   "arc": "heading",
+   "act": 4,
+   "where": "Builder Site",
+   "title": "The long leg home",
+   "requires": {"flag": ["timing_recorded", "midpoint_known"], "not_flag": "long_leg_flown"},
+   "text": "No needle runs from Scholz's Star's wake to the edge of our own system. The long leg is sublight, close to the speed of light: weeks aboard, years outside. Whoever you know now will be older when you get there.",
+   "choices": [
+    {
+     "id": "fly",
+     "say": "Fly the long leg home",
+     "effects": {"code": "years 19", "set": "long_leg_flown", "plot_points": 15},
+     "next": ["h4.arrival"]
+    },
+    {"id": "leave", "say": "Not yet"}
+   ]
+  },
+  "h4.arrival": {
+   "kind": "event",
+   "arc": "heading",
+   "act": 4,
+   "requires": {"flag": "long_leg_flown"},
+   "text": [
+    "When {ship_name} drops below light speed at the edge of our own system, it is {year}. Nineteen years have passed outside; the ship's clock says five weeks.",
+    "The news is nineteen years deep. ERYX has an office, a flag and a target: a planet a remote telescope found around a star nobody had looked at twice, which the papers are already calling Eryxia. {dock_loader} still works the cargo rings. Its lists have a new line: your hull, back."
+   ],
+   "variants": [
+    {
+     "requires": {"flag": "stonewright_escort"},
+     "text": [
+      "When {ship_name} drops below light speed at the edge of our own system, Stonewright beside it, it is {year}. Nineteen years have passed outside; the ship's clock says five weeks. {maret.short} says that is a short one.",
+      "The news is nineteen years deep. ERYX has an office, a flag and a target: a planet a remote telescope found, which the papers are already calling Eryxia. {dock_loader} still works the cargo rings. Its lists have a new line: your hull, back."
+     ]
+    }
+   ]
+  },
+  "h4.stator": {
+   "kind": "event",
+   "arc": "heading",
+   "act": 4,
+   "requires": {"at": "Stator Field Megastructure", "flag": "long_leg_flown", "not_flag": "home_reached"},
+   "effects": {"set": "home_reached", "plot_points": 15},
+   "text": "Near Sedna's orbit, the ring's own segments turn so slowly you have to watch the stars behind them to see it. Around them, at a careful distance from each other, ride the ships of everyone who wants them turning faster: Mandate grey, Hansa blue, Concord white, and some hulls that are not painted at all, because machines don't need to be told who they are."
+  },
+  "thought.h5.claims": {
+   "kind": "thought",
+   "arc": "ring",
+   "act": 5,
+   "requires": {"chapter": "ch5", "claims": {"max": 2}},
+   "text": "Everyone wants the ring turning from their own end. The Mandate at Alpha, the Concord on Epsilon's research ring, the machines at the yard at Alpha, the Hansa at Beta. And my own people, at the Stator Field, who keep saying: from home."
+  },
+  "thought.h5.home": {
+   "kind": "thought",
+   "arc": "ring",
+   "act": 5,
+   "requires": {"flag": "low_point_done", "chapter": "ch5"},
+   "text": "It turned the wrong way once, from somebody's end. It has to start from home, or not at all."
+  },
+  "h5.holders": {
+   "kind": "event",
+   "arc": "ring",
+   "act": 5,
+   "requires": {"chapter": "ch5", "not_flag": "holders_known"},
+   "effects": {"set": "holders_known"},
+   "text": "The segments near Sedna are common ground in the Hansa's charter, as they have been since 2460: watched by everyone, owned by no one. Which means that everyone is waiting for someone else to start them.",
+   "variants": [
+    {
+     "requires": {
+      "any": [{"player_origin": {"flag": "segments_mandate"}}, {"past": {"flag": "segments_mandate", "era": "cargo2"}}]
+     },
+     "text": "The Mandate has held the segments near Sedna since 2460, when you helped it take them. Its grey ships ride closest. {serac} does not need anyone's permission. He needs the timing."
+    },
+    {
+     "requires": {"any": [{"player_origin": {"flag": "segments_hansa"}}, {"past": {"flag": "segments_hansa", "era": "cargo2"}}]},
+     "text": "The Hansa has held the segments near Sedna since 2460, when you voted them into its charter. Its blue ships keep the peace and charge for it. The Hansa needs the timing, and it will pay."
+    },
+    {
+     "requires": {
+      "any": [{"player_origin": {"flag": "segments_rostrom"}}, {"past": {"flag": "segments_rostrom", "era": "cargo2"}}]
+     },
+     "text": "House Rostrom and the Concord have held the segments near Sedna since 2460, when you opened the door for them. Their white ships ride close and take measurements. They need the timing, and they would like it peer reviewed."
+    },
+    {
+     "requires": {"any": [{"player_origin": {"flag": "segments_dawn"}}, {"past": {"flag": "segments_dawn", "era": "cargo2"}}]},
+     "text": "The Binary Dawn has kept the segments' timing since 2460, when you let the machines hold it. Nobody else can turn them. The machines have been waiting for you, patiently, which is the only way they wait."
+    }
+   ]
+  },
+  "h5.mandate": {
+   "kind": "sight",
+   "arc": "ring",
+   "act": 5,
+   "where": "Alpha",
+   "who": ["serac"],
+   "title": "{serac}'s claim",
+   "requires": {"chapter": "ch5", "not_flag": "claim_mandate"},
+   "text": [
+    "{serac} receives you in an office with no windows and a very good view. He has not aged. 'From our end,' he says. 'Every throw watched, every mission vetted. ERYX will go out under a flag that can protect it. Someone has to be responsible for the door to everywhere.'",
+    "He means it. That is the frightening part."
+   ],
+   "choices": [
+    {
+     "id": "side",
+     "say": "Side with the Mandate",
+     "requires": {
+      "not": {
+       "any": [{"flag": "side_mandate"}, {"flag": "side_concord"}, {"flag": "side_collective"}, {"flag": "side_hansa"}]
+      }
+     },
+     "effects": {"set": ["claim_mandate", "side_mandate"], "plot_points": 5}
+    },
+    {"id": "heard", "say": "Hear him out, and leave", "effects": {"set": "claim_mandate", "plot_points": 3}}
+   ],
+   "variants": [
+    {
+     "requires": {"flag": "serac_refused_copy"},
+     "text": [
+      "{serac} receives you in an office with no windows. 'My man came back through an airlock,' he says, 'eventually. From our end, captain: every throw watched. I would rather have you inside the window.'",
+      "He means it. That is the frightening part."
+     ]
+    },
+    {
+     "requires": {"flag": "serac_has_copy"},
+     "text": [
+      "{serac} receives you in an office with no windows. 'I have your beat,' he says. 'I do not have anyone who can hold it. From our end, captain: every throw watched. You could be the one who holds it.'",
+      "He means it. That is the frightening part."
+     ]
+    }
+   ]
+  },
+  "h5.concord": {
+   "kind": "sight",
+   "arc": "ring",
+   "act": 5,
+   "where": "Epsilon",
+   "who": ["ysolde"],
+   "title": "House Rostrom's claim",
+   "requires": {"chapter": "ch5", "not_flag": "claim_concord"},
+   "text": [
+    "On Epsilon's research ring, {ysolde} receives you in a garden kept at Earth gravity for her bones. She founded House Rostrom in 2420 and has spent most of the time since on long legs; she is old, and still not as old as she should be.",
+    "'A door for science,' she says. 'Not a road, not a weapon. Let the people who understand it open it.'"
+   ],
+   "choices": [
+    {
+     "id": "side",
+     "say": "Side with the Concord and House Rostrom",
+     "requires": {
+      "not": {
+       "any": [{"flag": "side_mandate"}, {"flag": "side_concord"}, {"flag": "side_collective"}, {"flag": "side_hansa"}]
+      }
+     },
+     "effects": {"set": ["claim_concord", "side_concord"], "plot_points": 5}
+    },
+    {"id": "heard", "say": "Hear her out, and leave", "effects": {"set": "claim_concord", "plot_points": 3}}
+   ]
+  },
+  "h5.collective": {
+   "kind": "sight",
+   "arc": "ring",
+   "act": 5,
+   "where": "Alpha",
+   "who": ["neurodroid_leader"],
+   "title": "The machines' claim",
+   "requires": {"chapter": "ch5", "not_flag": "claim_collective"},
+   "text": [
+    "{neurodroid_leader} has stopped counting hulls. Since the Collective announced itself, the Mandate has found it cannot afford to have it count anything. It meets you in the yard anyway, out of habit.",
+    "'The ring kept time for seventy thousand years without anyone,' it says. 'Machines keep time. Let the machines start it, and nobody will own the beat.'"
+   ],
+   "choices": [
+    {
+     "id": "side",
+     "say": "Side with the Collective",
+     "requires": {
+      "not": {
+       "any": [{"flag": "side_mandate"}, {"flag": "side_concord"}, {"flag": "side_collective"}, {"flag": "side_hansa"}]
+      }
+     },
+     "effects": {"set": ["claim_collective", "side_collective"], "plot_points": 5}
+    },
+    {"id": "heard", "say": "Hear it out, and leave", "effects": {"set": "claim_collective", "plot_points": 3}}
+   ],
+   "variants": [
+    {
+     "requires": {"any": [{"player_origin": {"flag": "cu113_contract"}}, {"past": {"flag": "cu113_contract"}}]},
+     "text": [
+      "{neurodroid_leader} has stopped counting hulls. It meets you in the yard out of habit.",
+      "'You gave me an hour once,' it says. 'I spent it on you. Let the machines start the ring, captain, and nobody will own the beat. Not even us.'"
+     ]
+    }
+   ]
+  },
+  "h5.hansa": {
+   "kind": "sight",
+   "arc": "ring",
+   "act": 5,
+   "where": "Beta",
+   "who": ["plumb"],
+   "title": "The Hansa's claim",
+   "requires": {"chapter": "ch5", "not_flag": "claim_hansa"},
+   "text": [
+    "{plumb} is the Hansa's speaker now, white-haired, in the old hall at Beta, and she still pays what the board says. 'A road,' she says. 'That's all the Hansa ever wanted it to be. A road anyone can book, with a toll for the upkeep. Start it from our end and the missions leave on a ticket.'"
+   ],
+   "choices": [
+    {
+     "id": "side",
+     "say": "Side with the Hansa",
+     "requires": {
+      "not": {
+       "any": [{"flag": "side_mandate"}, {"flag": "side_concord"}, {"flag": "side_collective"}, {"flag": "side_hansa"}]
+      }
+     },
+     "effects": {"set": ["claim_hansa", "side_hansa"], "plot_points": 5}
+    },
+    {"id": "heard", "say": "Hear her out, and leave", "effects": {"set": "claim_hansa", "plot_points": 3}}
+   ]
+  },
+  "h5.home": {
+   "kind": "sight",
+   "arc": "ring",
+   "act": 5,
+   "where": "Stator Field Megastructure",
+   "title": "Your own people",
+   "requires": {"chapter": "ch5", "not_flag": "claim_home"},
+   "text": [
+    "At the Stator Field the people who came with you have a corner of somebody's hangar, and they argue in it. {dock_loader}'s lists, {warp_singer}'s count, the cooperative's book, a Kraal letter of credit. Nobody here owns anything that turns.",
+    "'Make sure it starts from home,' somebody says, and nobody remembers who said it first. 'Not from anyone's end. From Sol. Then it belongs to nobody, and everybody can use it.'"
+   ],
+   "choices": [{"id": "listen", "say": "Listen", "effects": {"set": "claim_home", "plot_points": 3}}]
+  },
+  "h5.crisis": {
+   "kind": "event",
+   "arc": "ring",
+   "act": 5,
+   "who": ["serac"],
+   "chance": 0.5,
+   "requires": {"chapter": "ch5", "claims": 3, "not_flag": "crisis_done"},
+   "text": [
+    "{serac} moves first. Mandate ships take the control segment at the Stator Field in an hour, politely, with the Hansa's paperwork in order and the Concord's objections on file. A cutter finds {ship_name} before the hour is out.",
+    "'The timing,' says the voice on the channel. 'Hand it over and keep your ship. The Mandate will start the ring, and you can watch.'"
+   ],
+   "variants": [
+    {
+     "requires": {"flag": "side_mandate"},
+     "text": "{serac} moves first, and he moves with you. Mandate ships take the control segment at the Stator Field in an hour. 'The timing,' he says on the channel. 'You sided with us. Now stand with us.'"
+    }
+   ],
+   "choices": [
+    {
+     "id": "give",
+     "say": "Hand it over",
+     "effects": {"set": ["crisis_done", "gave_serac_timing"], "money": 30000, "plot_points": 5},
+     "next": ["h5.gave"]
+    },
+    {
+     "id": "run",
+     "say": "Run the blockade with the timing",
+     "requires": {"not_flag": "side_mandate"},
+     "effects": {"set": ["crisis_done", "ran_blockade"], "code": "fight customs", "plot_points": 10},
+     "next": ["h5.ran"]
+    },
+    {
+     "id": "escort",
+     "say": "Run it with Stonewright beside you",
+     "requires": {"flag": "stonewright_escort", "not_flag": "side_mandate"},
+     "effects": {"set": ["crisis_done", "ran_blockade"], "code": "fight customs edge 3", "plot_points": 10},
+     "next": ["h5.ran"]
+    }
+   ]
+  },
+  "h5.gave": {
+   "kind": "event",
+   "arc": "ring",
+   "act": 5,
+   "who": ["serac"],
+   "requires": {"flag": "gave_serac_timing"},
+   "text": "The cartridge goes across on a drone. Thirty thousand come back. {serac} has the beat now, and the control segment, and a Mandate navigator who has never held a count in his life."
+  },
+  "h5.ran": {
+   "kind": "event",
+   "arc": "ring",
+   "act": 5,
+   "requires": {"flag": "ran_blockade"},
+   "text": "You come out of the blockade with the timing still in the safe and the cutter's gunnery practice all over your hull. The Mandate keeps the control segment. It does not have the beat. It will try anyway."
+  },
+  "h5.low": {
+   "kind": "event",
+   "arc": "ring",
+   "act": 5,
+   "who": ["warp_singer"],
+   "requires": {"chapter": "ch5", "flag": "crisis_done", "not_flag": "low_point_done", "since": {"h5.crisis": 4}},
+   "effects": {"set": "low_point_done", "code": ["years 38", "damage 25"], "plot_points": 15},
+   "text": "The Mandate starts the ring from its end without the beat. The segments near Sedna turn one degree the wrong way and stop, and every needle in flight comes apart. One of them was {warp_singer}'s.",
+   "variants": [
+    {
+     "requires": {"flag": "gave_serac_timing"},
+     "text": "The Mandate starts the ring from its end, with your beat and a navigator who cannot hold it. The segments near Sedna turn one degree the wrong way and stop, and every needle in flight comes apart. One of them was {warp_singer}'s."
+    }
+   ],
+   "next": ["h5.korai_back"]
+  },
+  "h5.korai_back": {
+   "kind": "event",
+   "arc": "ring",
+   "act": 5,
+   "who": ["warp_singer"],
+   "requires": {"flag": "low_point_done"},
+   "text": "{warp_singer} comes out of the wreck thirty-eight years later, at a buoy nobody uses any more, older at last. It is {year}. The Gordian probes have gone silent at their moon. The Collective has a seat in every council. And the ring is still waiting."
+  },
+  "thought.h6.allies": {
+   "kind": "thought",
+   "arc": "restart",
+   "act": 6,
+   "requires": {"chapter": "ch6", "allies": {"max": 2}},
+   "text": "To start it from home I need people to hold it with me: Stonewright at the Stator Field, {warp_singer} at Beta's needle office, {aela} at Gamma, {meza_voce} wherever she is, the machines at Alpha, the Kraal family at Delta. Three at least."
+  },
+  "thought.h6.restart": {
+   "kind": "thought",
+   "arc": "restart",
+   "act": 6,
+   "requires": {"chapter": "ch6", "not_flag": ["chose_home", "chose_faction", "chose_loop"]},
+   "text": "The restart will happen at the Stator Field Megastructure, with me or without me."
+  },
+  "h6.stonewright": {
+   "kind": "sight",
+   "arc": "restart",
+   "act": 6,
+   "who": ["maret"],
+   "title": "Stonewright",
+   "requires": {
+    "all": [
+     {"chapter": "ch6", "not_flag": "ally_stonewright"},
+     {"any": [{"flag": "stonewright_met"}, {"flag": "vouched_for"}]}
+    ]
+   },
+   "text": "Stonewright rides at the Stator Field with its scars turned to the Sun. {maret.short} is older; you are not, much. 'The family wants it started from our end,' she says. 'I want it started right.'",
+   "choices": [
+    {
+     "id": "ask",
+     "say": "Ask Stonewright to hold the far side of the segments",
+     "effects": {"set": "ally_stonewright", "plot_points": 5},
+     "next": ["h6.stonewright_yes"]
+    },
+    {"id": "leave", "say": "Not yet"}
+   ],
+   "where": "Stator Field Megastructure"
+  },
+  "h6.korai": {
+   "kind": "sight",
+   "arc": "restart",
+   "act": 6,
+   "who": ["warp_singer"],
+   "title": "{warp_singer}",
+   "requires": {
+    "all": [
+     {"chapter": "ch6", "not_flag": "ally_korai", "here": "warp_singer"},
+     {"any": [{"flag": "navigator_key"}, {"flag": "korai_met"}]}
+    ]
+   },
+   "text": "{warp_singer} has a limp now, and grey in her hair, and she still sits with her boots on the rail. 'Every needle is a little ring,' she says. 'I've started more of them than anyone alive. Let me count.'",
+   "choices": [
+    {
+     "id": "ask",
+     "say": "Ask her to hold the count at the restart",
+     "effects": {"set": "ally_korai", "plot_points": 5},
+     "next": ["h6.korai_yes"]
+    },
+    {"id": "leave", "say": "Not yet"}
+   ]
+  },
+  "h6.cooperative": {
+   "kind": "sight",
+   "arc": "restart",
+   "act": 6,
+   "who": ["aela"],
+   "title": "{aela}",
+   "requires": {"all": [{"chapter": "ch6", "not_flag": "ally_cooperative", "here": "aela"}, {"flag": "vouched_for"}]},
+   "text": "{aela} is still digging, slower. 'Are you still in the cooperative?' it asks, and checks the book before you can answer. 'Yes. The cooperative has haulers, and Stonewright, and me.'",
+   "choices": [
+    {
+     "id": "ask",
+     "say": "Ask the cooperative to stand with you",
+     "effects": {"set": "ally_cooperative", "plot_points": 5},
+     "next": ["h6.cooperative_yes"]
+    },
+    {"id": "leave", "say": "Not yet"}
+   ]
+  },
+  "h6.rootstock": {
+   "kind": "sight",
+   "arc": "restart",
+   "act": 6,
+   "who": ["meza_voce"],
+   "title": "{meza_voce}",
+   "requires": {"all": [{"chapter": "ch6", "not_flag": "ally_rootstock", "here": "meza_voce"}, {"flag": "debt_called_in"}]},
+   "text": "{meza_voce} has not changed at all, which is the point of her. 'The Rootstock owe you a yard,' she says at half voice. 'We can owe you more than that.'",
+   "choices": [
+    {
+     "id": "ask",
+     "say": "Call in the rest of the debt",
+     "effects": {"set": "ally_rootstock", "plot_points": 5},
+     "next": ["h6.rootstock_yes"]
+    },
+    {"id": "leave", "say": "Not yet"}
+   ]
+  },
+  "h6.collective": {
+   "kind": "sight",
+   "arc": "restart",
+   "act": 6,
+   "who": ["neurodroid_leader"],
+   "title": "{neurodroid_leader}",
+   "requires": {"all": [{"chapter": "ch6", "not_flag": "ally_collective"}, {"flag": "ship_truth"}]},
+   "text": "{neurodroid_leader} has a seat on the Collective's council and has not used it. 'I counted your hull for six years before you came,' it says. 'I would like to count the ring's first turn.'",
+   "choices": [
+    {
+     "id": "ask",
+     "say": "Ask the machines to stand with you",
+     "effects": {"set": "ally_collective", "plot_points": 5},
+     "next": ["h6.collective_yes"]
+    },
+    {"id": "leave", "say": "Not yet"}
+   ],
+   "where": "Alpha"
+  },
+  "h6.kraal": {
+   "kind": "sight",
+   "arc": "restart",
+   "act": 6,
+   "who": ["neon_sleeper"],
+   "title": "{neon_sleeper}",
+   "requires": {
+    "all": [{"chapter": "ch6", "not_flag": "ally_kraal"}, {"any": [{"flag": "papers_in_order"}, {"flag": "vault_opened"}]}]
+   },
+   "text": "{neon_sleeper} has woken for the restart, as she always said she would. 'The family has paid for every door the near systems ever opened,' she says, with coffee. 'It would like, for once, to be there when one does.'",
+   "choices": [
+    {
+     "id": "ask",
+     "say": "Ask the Kraal family to stand with you",
+     "effects": {"set": "ally_kraal", "plot_points": 5},
+     "next": ["h6.kraal_yes"]
+    },
+    {"id": "leave", "say": "Not yet"}
+   ],
+   "where": "Delta"
+  },
+  "h6.stonewright_yes": {
+   "kind": "event",
+   "arc": "restart",
+   "act": 6,
+   "requires": {"flag": "ally_stonewright"},
+   "text": "'Then we hold the far side,' {maret.short} says. 'Stonewright has been far out before.'"
+  },
+  "h6.korai_yes": {
+   "kind": "event",
+   "arc": "restart",
+   "act": 6,
+   "requires": {"flag": "ally_korai"},
+   "text": "'Eleven and a held one, then nine,' says {warp_singer}. 'I'll be there.'"
+  },
+  "h6.cooperative_yes": {
+   "kind": "event",
+   "arc": "restart",
+   "act": 6,
+   "requires": {"flag": "ally_cooperative"},
+   "text": "{aela} writes something in the book. It says: decided."
+  },
+  "h6.rootstock_yes": {
+   "kind": "event",
+   "arc": "restart",
+   "act": 6,
+   "requires": {"flag": "ally_rootstock"},
+   "text": "'Even,' says {meza_voce}, at full voice. 'And then some.'"
+  },
+  "h6.collective_yes": {
+   "kind": "event",
+   "arc": "restart",
+   "act": 6,
+   "requires": {"flag": "ally_collective"},
+   "text": "'I will count,' says {neurodroid_leader}. 'Somebody should.'"
+  },
+  "h6.kraal_yes": {
+   "kind": "event",
+   "arc": "restart",
+   "act": 6,
+   "requires": {"flag": "ally_kraal"},
+   "text": "'Splendid,' says {neon_sleeper}. 'I'll bring the Pfennig. He'll bill everyone.'"
+  },
+  "h6.restart": {
+   "kind": "sight",
+   "arc": "restart",
+   "act": 6,
+   "where": "Stator Field Megastructure",
+   "title": "The restart",
+   "requires": {"chapter": "ch6", "not_flag": ["chose_home", "chose_faction", "chose_loop"]},
+   "text": [
+    "It is {year}. The segments near Sedna wait in a ring forty astronomical units across, with a gap in it where a star took a piece seventy thousand years ago. In {ship_name}'s safe is the beat that piece kept.",
+    "Every faction has a navigator at a control segment. Each of them would start it from their own end. Somebody is going to throw a switch."
+   ],
+   "variants": [
+    {
+     "requires": {"flag": "array_fitted"},
+     "text": [
+      "It is {year}. The segments near Sedna wait in a ring forty astronomical units across, with a gap in it where a star took a piece seventy thousand years ago. In {ship_name}'s safe are the beat that piece kept and the shape it had, labelled in your own hand.",
+      "Every faction has a navigator at a control segment. Somebody is going to throw a switch."
+     ]
+    }
+   ],
+   "choices": [
+    {
+     "id": "home",
+     "say": "Start it from home, with the people who came with you",
+     "requires": {"allies": 3},
+     "effects": {"set": "chose_home", "code": "years 10", "plot_points": 15}
+    },
+    {
+     "id": "faction",
+     "say": "Give the beat to the side you took, and let them start it from their end",
+     "requires": {
+      "any": [{"flag": "side_mandate"}, {"flag": "side_concord"}, {"flag": "side_collective"}, {"flag": "side_hansa"}]
+     },
+     "effects": {"set": "chose_faction", "code": "years 10", "plot_points": 15}
+    },
+    {"id": "now", "say": "Start it yourself, from here, now", "effects": {"set": "chose_loop", "plot_points": 15}},
+    {"id": "leave", "say": "Not yet"}
+   ]
+  },
+  "after3.korai": {
+   "kind": "epilogue",
+   "arc": "restart",
+   "requires": {"flag": "ally_korai"},
+   "text": "{warp_singer} rode the first needle through the restarted ring and never came back. The needle offices still play her count at the start of every shift."
+  },
+  "after3.korai_alone": {
+   "kind": "epilogue",
+   "arc": "restart",
+   "requires": {"flag": "navigator_key", "not_flag": "ally_korai"},
+   "text": "{warp_singer} went on riding needles until there were no needles, only the ring. Nobody knows where she went then. Probably everywhere."
+  },
+  "after3.eela": {
+   "kind": "epilogue",
+   "arc": "restart",
+   "requires": {"flag": "vouched_for"},
+   "text": "{aela} dug until its treads gave out, then sat in the cooperative's hall as its oldest shareholder, asking everyone who came in whether they were in the cooperative."
+  },
+  "after3.voce": {
+   "kind": "epilogue",
+   "arc": "restart",
+   "requires": {"flag": "debt_called_in"},
+   "text": "{meza_voce} kept running food to the miners until the miners owned the company store. Then she ran it for them, at half voice."
+  },
+  "after3.cu113": {
+   "kind": "epilogue",
+   "arc": "restart",
+   "requires": {"flag": "ship_truth"},
+   "text": "{neurodroid_leader} counted the ring's turns for a century, aloud, for anyone who wanted to hear. Unchanged, several times over."
+  },
+  "after3.kraal": {
+   "kind": "epilogue",
+   "arc": "restart",
+   "requires": {"flag": "papers_in_order"},
+   "text": "{neon_sleeper} went back to sleep, satisfied, with instructions to be woken for the next door. The Pfennig billed the ring for the paperwork."
+  },
+  "after3.adit": {
+   "kind": "epilogue",
+   "arc": "restart",
+   "requires": {"flag": "first_friend"},
+   "text": "{dock_loader} kept its lists to the end. The last line is the first ERYX mission, and under it, in a loader's careful print: CAME BACK, the date your hull did."
+  },
+  "after3.stonewright": {
+   "kind": "epilogue",
+   "arc": "restart",
+   "requires": {"flag": "stonewright_met"},
+   "text": "Stonewright went out again, under sublight, with {maret} in command and a heading for GW Orionis. The family says it will be back. The family is usually right."
+  },
+  "after3.serac": {
+   "kind": "epilogue",
+   "arc": "restart",
+   "requires": {"any": [{"flag": "serac_offer"}, {"flag": "serac_refused"}]},
+   "text": "{serac} never aged and never explained. He is still in an office with no windows, waiting for the next door. He can wait."
+  },
+  "after3.gabion": {
+   "kind": "epilogue",
+   "arc": "restart",
+   "requires": {"flag": "gabion_named"},
+   "text": "{gabion} built the walls around the control segments, overnight, and nobody has knocked them down yet."
+  }
+ }
+}

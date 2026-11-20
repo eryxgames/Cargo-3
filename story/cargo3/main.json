@@ -1,7 +1,7 @@
 {
  "format": "storykit",
  "version": 1,
- "about": "Cargo 3's frame: chapters, milestones and endings, with their conditions (the game builds its chapters from these). A chapter's \"requires\" opens it and must still hold for it to end, with its milestones. Chapters I to III are written (act1.json, friends.json, ship.json); chapter IV keeps a placeholder until its story is.",
+ "about": "Cargo 3's frame: chapters, milestones and endings, with their conditions (the game builds its chapters from these). A chapter's \"requires\" opens it and must still hold for it to end, with its milestones. Chapters I to VI are written (act1.json, friends.json, ship.json, heading.json); the restart in chapter VI decides which ending opens.",
  "nodes": {
   "ch1": {
    "kind": "chapter",
@@ -12,12 +12,8 @@
     "2533. The Debacle is over, and so is everything it paid for: the research houses are broke, the ring is a joke, and the hulls that touched it sit in impound yards.",
     "Your ship is gone, and nobody can tell you where. The hiring hall opens at the start of every shift."
    ],
-   "requires": {
-    "plot_points": 30
-   },
-   "next": [
-    "ch2"
-   ],
+   "requires": {"plot_points": 30},
+   "next": ["ch2"],
    "start": true
   },
   "ch1.friend": {
@@ -26,9 +22,7 @@
    "in": "ch1",
    "title": "An old friend",
    "text": "Find someone on the docks who remembers your century.",
-   "requires": {
-    "flag": "first_friend"
-   }
+   "requires": {"flag": "first_friend"}
   },
   "ch2": {
    "kind": "chapter",
@@ -38,14 +32,8 @@
    "text": [
     "Some of the people you knew are still alive, a century and more later: machines, sleepers, the ones who rode the long legs. Find them."
    ],
-   "requires": {
-    "done": [
-     "ch1"
-    ]
-   },
-   "next": [
-    "ch3"
-   ]
+   "requires": {"done": ["ch1"]},
+   "next": ["ch3"]
   },
   "ch2.friends": {
    "kind": "milestone",
@@ -53,9 +41,7 @@
    "in": "ch2",
    "title": "What a ship needs",
    "text": "Old friends can give what a ship needs: someone to vouch for you, papers, a debt called in, a navigator's key, the truth about your old ship. Three will do.",
-   "requires": {
-    "ship_needs": 3
-   }
+   "requires": {"ship_needs": 3}
   },
   "ch3": {
    "kind": "chapter",
@@ -65,14 +51,8 @@
    "text": [
     "Your ship is in one of the Mandate's impound yards, under new paint and no name. The Mandate does not give hulls back. Somebody will have to make it, or you will."
    ],
-   "requires": {
-    "done": [
-     "ch2"
-    ]
-   },
-   "next": [
-    "ch4"
-   ]
+   "requires": {"done": ["ch2"]},
+   "next": ["ch4"]
   },
   "ch3.ship": {
    "kind": "milestone",
@@ -80,9 +60,7 @@
    "in": "ch3",
    "title": "A ship again",
    "text": "Get your ship out of the Mandate's yard: by {serac}'s favour, the Rockwardens' money, a time broker's, the salvage court, the auction, or the Rootstock's gate at night.",
-   "requires": {
-    "afloat": 1
-   }
+   "requires": {"afloat": 1}
   },
   "ch3.run": {
    "kind": "milestone",
@@ -90,9 +68,7 @@
    "in": "ch3",
    "title": "The first run",
    "text": "Fly the first run, wherever the ship's price sends you. Every way points at Scholz's Star.",
-   "requires": {
-    "flag": "first_run_done"
-   }
+   "requires": {"flag": "first_run_done"}
   },
   "ch4": {
    "kind": "chapter",
@@ -102,22 +78,169 @@
    "text": [
     "Seventy thousand years ago Scholz's Star took a segment of the ring. In its wake something is still sending, and pointing at an empty patch of sky."
    ],
-   "requires": {
-    "done": [
-     "ch3"
-    ]
-   },
-   "next": []
+   "requires": {"done": ["ch3"]},
+   "next": ["ch5"]
   },
   "ch4.site": {
    "kind": "milestone",
    "arc": "main",
    "in": "ch4",
    "title": "The segment",
-   "text": "Fly the heading to the Builder Site, in Scholz's Star's wake. (Chapter IV is still being written: the story stops there for now.)",
-   "requires": {
-    "flag": "reached_builder_site"
-   }
+   "text": "Fly the heading to the Builder Site, in Scholz's Star's wake.",
+   "requires": {"flag": "reached_builder_site"}
+  },
+  "ch4.timing": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch4",
+   "title": "The beat",
+   "text": "Record the ring's timing from the beacon on the segment.",
+   "requires": {"flag": "timing_recorded"}
+  },
+  "ch4.home": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch4",
+   "title": "The long leg home",
+   "text": "Bring the timing home to the Stator Field Megastructure near Sedna's orbit. No needle runs there: years will pass outside.",
+   "requires": {"flag": "home_reached"}
+  },
+  "ch5": {
+   "kind": "chapter",
+   "arc": "main",
+   "act": 5,
+   "title": "Who Holds the Ring",
+   "text": [
+    "{year}. The ring's own segments turn slowly at the edge of our system, and everyone who wants them turning faster is here: the Mandate, the Hansa, the Concord, the machines. Each of them would start it from their own end."
+   ],
+   "requires": {"done": ["ch4"]},
+   "next": ["ch6"]
+  },
+  "ch5.claims": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch5",
+   "title": "The claims",
+   "text": "Hear who wants the ring, and why: three claims at least.",
+   "requires": {"claims": 3}
+  },
+  "ch5.crisis": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch5",
+   "title": "The Mandate moves first",
+   "text": "Answer the Mandate when it moves.",
+   "requires": {"flag": "crisis_done"}
+  },
+  "ch5.low": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch5",
+   "title": "The wrong way",
+   "text": "Live through a start from the wrong end.",
+   "requires": {"flag": "low_point_done"}
+  },
+  "ch6": {
+   "kind": "chapter",
+   "arc": "main",
+   "act": 6,
+   "title": "From Home",
+   "text": [
+    "{year}. The ring turned the wrong way once. It will start again, with you or without you. Find the people who will hold it with you."
+   ],
+   "requires": {"done": ["ch5"]},
+   "next": ["ending_home", "ending_faction", "ending_loop"]
+  },
+  "ch6.restart": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch6",
+   "title": "The restart",
+   "text": "Be at the Stator Field Megastructure when the ring starts, and decide from which end.",
+   "requires": {"any": [{"flag": "chose_home"}, {"flag": "chose_faction"}, {"flag": "chose_loop"}]}
+  },
+  "ending_home": {
+   "kind": "ending",
+   "arc": "main",
+   "act": 6,
+   "title": "From Home",
+   "requires": {"flag": "chose_home"},
+   "next": [],
+   "pays": ["the_warning"],
+   "text": [
+    "From Home",
+    "The ring turns. Nobody sees which hand moves first. Afterwards, everybody who was in the control segments says it was someone else: the counting machine, the singer, the agrobot, the woman born under sublight. The logs say the beat came from Sol.",
+    "In {year} the first ERYX mission leaves for GW Orionis, thirteen hundred light-years out, on a road nobody owns. Its manifest lists a crate of the coffee nobody drinks any more."
+   ],
+   "variants": [
+    {
+     "requires": {"flag": "array_fitted"},
+     "text": [
+      "From Home",
+      "The ring turns. Nobody sees which hand moves first. Afterwards, everybody who was in the control segments says it was someone else. The logs say the beat came from Sol, and that the shape it turned to was measured in 2420, labelled in a hauler's own hand.",
+      "In {year} the first ERYX mission leaves for GW Orionis, thirteen hundred light-years out, on a road nobody owns. Its manifest lists a data cartridge, returned, with thanks."
+     ]
+    }
+   ]
+  },
+  "ending_faction": {
+   "kind": "ending",
+   "arc": "main",
+   "act": 6,
+   "title": "Their End",
+   "requires": {"flag": "chose_faction"},
+   "next": [],
+   "text": ["Their End", "The ring turns, from somebody's end. In {year} the first ERYX mission leaves under a flag."],
+   "variants": [
+    {
+     "requires": {"flag": "side_mandate"},
+     "text": [
+      "Their End",
+      "The ring turns from the Mandate's end, with your beat and your hands on the count, because nobody else's could hold it. {serac} watches the first throw from an office with no windows.",
+      "In {year} the first ERYX mission leaves for GW Orionis under the Mandate's flag, vetted, escorted and watched. On Eryxia, a century later, the Mandate's Black Ops will still be explaining why."
+     ]
+    },
+    {
+     "requires": {"flag": "side_concord"},
+     "text": [
+      "Their End",
+      "The ring turns from the Concord's end, carefully, after three years of peer review. {ysolde} lives to see it, just.",
+      "In {year} the first ERYX mission leaves for GW Orionis as a research programme: the best instruments, the best minds, and a committee that has to approve every landing. On Eryxia the committee will still be sitting a century later."
+     ]
+    },
+    {
+     "requires": {"flag": "side_collective"},
+     "text": [
+      "Their End",
+      "The ring turns from the machines' end, on time to the nanosecond. {neurodroid_leader} counts the first turn aloud, for the humans.",
+      "In {year} the first ERYX mission leaves for GW Orionis with more synthetics aboard than people, and nobody can quite say who is crew and who is cargo. On Eryxia, nobody will ask for a long time."
+     ]
+    },
+    {
+     "requires": {"flag": "side_hansa"},
+     "text": [
+      "Their End",
+      "The ring turns from the Hansa's end, and the first thing through it is an invoice. {plumb} does not live to see it; her successor pays what the board says.",
+      "In {year} the first ERYX mission leaves for GW Orionis on a ticket, booked, tolled and insured. On Eryxia, a century later, the toll will still be paid in Hansa Thaler bars."
+     ]
+    }
+   ]
+  },
+  "ending_loop": {
+   "kind": "ending",
+   "arc": "main",
+   "act": 6,
+   "title": "The Loop",
+   "requires": {"flag": "chose_loop"},
+   "next": [],
+   "pays": ["the_warning"],
+   "text": [
+    "The Loop",
+    "You start it from here, now, from the wrong end. The ring turns once in the wrong direction.",
+    "Then there is a long fall through grey light, and a ring of grey alloy past the comet cloud, and the Stellar Portal, and a year that says 2420. The Hansa does not exist yet. In your pocket: a shard of grey alloy, still warm.",
+    "Somewhere a younger captain is flying towards the portal. You know what you have to tell them. Make sure it starts from home.",
+    "(Export your captain, and start Cargo 1 as them.)"
+   ]
   }
  }
 }

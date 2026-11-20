@@ -183,17 +183,24 @@ class BrawlMixin:
             return ()
         return OUTFITTERS.get(here.name) or OUTFITTERS.get(here.location_type, ())
 
+    def gear_price(self, name):
+        """The outfitter's price: dearer for every piece the hand carries already (game/prices.py)."""
+        return curve(GEAR[name]["price"], 1, len([g for g in self.person.gear if g in GEAR]))
+
     def buy_gear(self, name):
         person = self.person
         item = GEAR[name]
+        price = self.gear_price(name)
         if name in person.gear:
             self.display_simple_message("You already have %s." % self.gear_name(name), 1)
             return False
-        if person.money < item["price"]:
+        if person.money < price:
             self.display_simple_message("%s costs %s; you have %s." % (
-                self.gear_name(name, True), self.format_money(item["price"]), self.format_money(int(person.money))), 1)
+                self.gear_name(name, True), self.format_money(price), self.format_money(int(person.money))), 1)
             return False
-        person.money -= item["price"]
+        if person.gear:
+            paid_dearer(self, "gear")
+        person.money -= price
         person.gear.append(name)
         self.display_simple_message("You buy %s: %s." % (self.gear_name(name), item["words"]), 1, color='32')
         return True
@@ -213,12 +220,14 @@ class BrawlMixin:
             item = GEAR[name]
             mark = " (yours)" if name in person.gear else ""
             for line in self.option_lines(number, "%s, %s%s: %s" % (
-                    name.capitalize(), self.format_money(item["price"]), mark, item["words"])):
+                    name.capitalize(), self.format_money(self.gear_price(name)), mark, item["words"])):
                 rows.append([line])
         if not sold:
             rows.append(["Nobody here sells gear."])
         rows.append([""])
         rows.extend([line] for line in self.word_wrap("Yours: %s." % (", ".join(person.gear) if person.gear else "nothing")))
+        if person.gear and sold:
+            rows.extend([[""]] + [[line] for line in self.word_wrap(price_note("gear"))])
         print(self.create_box(rows, 'round'))
         if not sold:
             return
@@ -531,3 +540,4 @@ from .encounters import odds_word  # noqa: E402
 from . import hand as _hand  # noqa: E402  (the hand may be importing this module)
 from .person import WOUNDS_DEAD, WOUNDS_DOWN, skill_word  # noqa: E402
 from .sound import sfx  # noqa: E402
+from .prices import curve, paid_dearer, price_note  # noqa: E402

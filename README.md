@@ -44,8 +44,13 @@ it around: the captain begins on foot.
 - Chapter III, A Bridge Again (`story/cargo3/ship.json`): the nameless hull in the Mandate's yard
   is the captain's ship. Get it out by Serac's favour, the Rockwardens' money, a time broker's,
   the salvage court, the auction or the Rootstock's gate at night; name it; fly the first run
-  to Scholz's Star, where Stonewright comes home. Chapter IV, The Heading, begins at the Builder
-  Site and is still to be written.
+  to Scholz's Star, where Stonewright comes home.
+- Chapters IV to VI (`story/cargo3/heading.json`), 2533 to about 2600: the ring's beat at the
+  Builder Site and the long leg home (nineteen years outside); who holds the ring, five claims,
+  the Mandate's move and a start from the wrong end; who stands with you at the restart. Three
+  endings: from home, from a faction's end, or the loop back to Cargo 1's portal.
+- Prices that climb (`game/prices.py`): implants, upgrades, modules, the shop and the outfitter
+  get dearer the more you have, on one curve; the sellers remark on it, and so does the captain.
 - Errands to the past: a name for level nine's plaque and the shape of Kren's samples (both
   from 2420), and the word for the Kraal vault (from 2460), carried in the captain's record
   (`game/record.py`).
@@ -67,8 +72,8 @@ it around: the captain begins on foot.
   kill.
 - What the game shows stays on screen until it is read: a turn's screen waits for Enter when
   the last thing shown was a message the player has not answered.
-- **Next:** chapter IV, The Heading (the segment at the Builder Site, and what its beacon points
-  at), and the economy afloat, which still makes a captain rich quickly.
+- **Next:** a playtest of the whole story; the economy afloat (trade still makes a captain rich
+  quickly, and the bot buys little equipment); labour events afloat.
 
 The plan (the shipless chapters, the ways to the first ship, fights on foot, investments
 matured from Cargo 2) is in the project's design document.
@@ -112,6 +117,7 @@ game/           the game, Cargo 2.2's engine:
   labour.py       the docks' events (strikes, gas, crackdowns...) and what a hand does about them
   training.py     what money buys: lessons with the masters, implants
   brawl.py        fights on foot, trouble at the docks, the outfitter
+  prices.py       the one price curve for equipment, and what the sellers say about it
   saves.py  captain.py      saves; the captain's record carried between the parts
   story.py  chapters.py     the storykit runtime; chapters, milestones, endings
   ship.py  travel.py  market.py  hansa.py  encounters.py  events.py  research.py
@@ -125,8 +131,8 @@ story/          the story: cargo3.story.json and the files in story/cargo3/, bui
 storykit/       the trilogy's story tools (format, validator, map), copied
 themes/         the game's own styles (CLIo theme files), beside CLIo's in kit/style/
 tools/          checks: smoke, bot, fuzzing, save round trips, hostile files, kit, story,
-                act 1, chapters II and III, systems, the person, the able hand, the labour market,
-                training, fights on foot, convoy fights, sound
+                act 1, chapters II to VI and the endings, prices, systems, the person, the able
+                hand, the labour market, training, fights on foot, convoy fights, sound
 .github/        the release workflow: tag vX.Y.Z to build, release and push to itch.io
 ```
 

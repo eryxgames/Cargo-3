@@ -298,7 +298,7 @@ expect(game.person.money == 200 and "already have" in flat(out.getvalue()), "not
 io.feed(["1"])
 with headless.quiet() as out:
     game.handle_gear()
-expect(game.person.money == 200 and "costs 450" in flat(out.getvalue()), "not without the money")
+expect(game.person.money == 200 and "costs 600" in flat(out.getvalue()), "not without the money (450, and three tenths more for the knees)")
 game.current_location = type("Place", (), {"name": "Wolf 359", "location_type": "ResearchColony"})()
 with headless.quiet() as out:
     game.handle_gear()

@@ -26,6 +26,7 @@ from .hand import HandMixin
 from .labour import LABOUR_ACTIONS, LABOUR_EVENTS, LABOUR_MARKS, LabourMixin  # noqa: F401
 from .training import TrainingMixin
 from .brawl import FOES, GEAR, BrawlMixin  # noqa: F401
+from .prices import paid_dearer, price_note, upgrade_price, upgrades_bought
 
 
 class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
@@ -171,8 +172,14 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         stats["brawls.won"] = brawls.get("won", 0)
         stats["brawls.lost"] = sum(brawls.get(k, 0) for k in ("robbed", "carried", "saved"))
         stats["armed"] = int(bool(self.gear_best("melee") or self.gear_best("ranged")))
+        dearer = getattr(self, "paid_dearer", None)     # prices paid after they climbed (game/prices.py)
+        stats["paid_dearer"] = sum(dearer.values()) if isinstance(dearer, dict) else 0
+        stats["gear"] = len(self.person.gear)
+        stats["upgrades"] = sum(upgrades_bought(self.ship).values()) if self.ship is not None else 0
         states = self.story_manager.story_states   # what old friends have given toward a ship (chapter II)
         stats["ship_needs"] = sum(1 for flag in SHIP_NEEDS if states.get(flag))
+        stats["claims"] = sum(1 for flag in CLAIMS if states.get(flag))
+        stats["allies"] = sum(1 for flag in ALLIES if states.get(flag))
         for skill in SKILLS:
             stats["skill." + skill] = person.skill(skill)
         regard = getattr(self, "hand_regard", {})
@@ -215,6 +222,34 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
             "done_at": {n: t for n, t in self.story.done.items() if ":" not in n},
             "visitors": list(getattr(self, "visiting_captains", [])),
         }
+
+    def buy_upgrade(self, prop):
+        """A point of attack, defense or speed at the yard, on the curve of game/prices.py: the square
+        of the level, and dearer for every point already bought. Returns whether it was bought."""
+        cost = upgrade_price(self.ship, prop)
+        dearer = sum(upgrades_bought(self.ship).values()) > 0
+        if not self.ship.upgrade(prop, cost):
+            self.display_simple_message("The yard wants %s for a point of %s." % (self.format_money(cost), prop))
+            return False
+        upgrades_bought(self.ship)[prop] += 1
+        if dearer:
+            paid_dearer(self, "upgrade")
+        self.display_simple_message("Upgraded %s for %s. The next point costs %s." % (
+            prop, self.format_money(cost), self.format_money(upgrade_price(self.ship, prop))))
+        return True
+
+    def show_upgrade_prices(self):
+        """What the yard charges for the next point of each (game/prices.py), and what the foreman
+        says when the prices have climbed."""
+        bought = upgrades_bought(self.ship)
+        rows = [["Shipyard - " + self.current_location.name], [""]]
+        for prop in ("attack", "defense", "speed"):
+            rows.append(["%s %d: next point %s" % (prop.capitalize(), getattr(self.ship, prop),
+                                                   self.format_money(upgrade_price(self.ship, prop)))])
+        if sum(bought.values()):
+            rows.append([""])
+            rows.extend([line] for line in self.word_wrap(price_note("upgrade")))
+        print(self.create_box(rows, 'double'))
 
     def give_ship(self, hull=0, name=None):
         """The captain has a ship again: from here the turn is a captain's (play_turn)."""
@@ -613,6 +648,7 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
                     self.handle_trade('sell')
 
             elif action in ['upgrade', 'u']:
+                self.show_upgrade_prices()
                 property_name = self.validate_input(
                     "Choose property to upgrade (attack/defense/speed/hull/modules): ",
                     ['attack', 'defense', 'speed', 'hull', 'modules', 'mod']
@@ -626,10 +662,7 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
                     self.handle_yard()
                     return
 
-                cost = self.ship.upgrade_costs[property_name]
-                if self.ship.upgrade(property_name, cost):
-                    self.display_simple_message(f"Upgraded {property_name}.")
-                    self.ship.upgrade_costs[property_name] = int(cost * 1.5)
+                self.buy_upgrade(property_name)
 
             elif action in ['travel', 't']:
                 self.handle_travel()
@@ -1041,7 +1074,7 @@ from .commands import (  # noqa: E402,F401
 from .looking import QUIET  # noqa: E402,F401
 from .hand import (  # noqa: E402,F401
     CLEAN_VOYAGE_POINTS, DUTIES, FIRST_SHIFT_POINTS, HAND_COMMANDS, KINDS, LEG_WAGE, NAMED_SHIPS,
-    PASSAGE_FARE, SHIP_NAMES, SHIP_NEEDS, SITES, STARTING_PURSE, TROUBLE, VOYAGE_POINTS, meter, wound_word)
+    ALLIES, CLAIMS, PASSAGE_FARE, SHIP_NAMES, SHIP_NEEDS, SITES, START_YEAR, STARTING_PURSE, TROUBLE, VOYAGE_POINTS, meter, wound_word)
 from .encounters import (  # noqa: E402,F401
     ENEMIES, FIGHT_TRICKS, SITUATIONS, odds_word)
 from .events import (  # noqa: E402,F401

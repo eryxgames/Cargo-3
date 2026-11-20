@@ -100,6 +100,10 @@ os.environ["CARGO_SAGA_HOME"] = home
 size = os.terminal_size((int(next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--cols=")), 80)), 40))
 shutil.get_terminal_size = lambda fallback=(80, 24): size
 cargo = headless.load(path)
+try:                                    # Cargo 3: upgrades on the price curve (game/prices.py)
+    from game.prices import upgrade_price
+except ImportError:
+    upgrade_price = None
 # the flags of the docks' side quests (Cargo 2.1), to see when each moves
 _people = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(path))), "story", "cargo3", "people.json")
 DOCK_FLAGS = list(json.load(open(_people, encoding="utf-8"))["flags"]) if os.path.exists(_people) else []
@@ -177,8 +181,17 @@ class Bot:
                 d["flags"][flag] = g.turn
 
     def advances(self, g, choice):
-        """A choice that sets a flag not yet set or gives an item not yet held."""
+        """A choice that sets a flag not yet set or gives an item not yet held. A careful captain
+        does not count a fight with people who mean to kill, or the restart from the wrong end while
+        it can still be started from home (Cargo 3)."""
         effects = choice.get("effects") or {}
+        code = effects.get("code") or ""
+        code = " ".join(code) if isinstance(code, list) else code
+        if code.startswith("brawl ") and getattr(cargo, "FOES", {}).get(code.split()[1], {}).get("lethal"):
+            return False
+        if "chose_loop" in (effects.get("set") or ()) and g.story_manager.current_chapter == "ch6" \
+                and g.turn - self.docks["chapters"].get("ch5", g.turn) < 120:
+            return False
         states = g.story_manager.story_states
         if any(not states.get(f) for f in ([effects["set"]] if isinstance(effects.get("set"), str) else effects.get("set", []))):
             return True
@@ -422,7 +435,8 @@ class Bot:
                 order = [("defense", 3), ("speed", 4), ("attack", 4)]
             for prop, reserve in order:
                 stat = getattr(ship, prop)
-                if stat < cap and ship.money >= ship.upgrade_costs[prop] * reserve:
+                price = upgrade_price(ship, prop) if upgrade_price else ship.upgrade_costs[prop]
+                if stat < cap and ship.money >= price * reserve:
                     self.flags.add("upgrade")
                     self.upgrade = prop
                     return "u"
@@ -588,7 +602,7 @@ class Bot:
                 self.story_choices += 1
                 offered = getattr(getattr(g, "story", None), "offered", None) or []
                 at = getattr(g.story, "offered_at", None) or ""
-                if CURIOUS and offered and at.startswith(("sight.", "docks.")):
+                if CURIOUS and offered and at:              # any scene: a step forward first
                     forward = [i for i, c in enumerate(offered) if self.advances(g, c)]
                     if forward:
                         return str(forward[0] + 1)

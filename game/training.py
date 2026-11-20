@@ -17,9 +17,9 @@ Measured with the bot (tools/bot.py, which uses both when it has money to spare)
 tools/training.py for the numbers this is checked against.
 """
 from .person import SKILL_TOP, SKILLS, skill_word
+from .prices import curve, paid_dearer, price_note, round_to  # noqa: F401  (round_to: tools/training.py)
 
 IMPLANT_BASE = 500          # the price of an implant to green; the curve is BASE x level^2
-IMPLANT_LOAD = 0.3          # each implant already fitted makes the next dearer by this share
 IMPLANT_TOP = 4             # implants go up to skilled; a master's level is earned
 IMPLANT_WOUNDS = (10, 5)    # surgery: 10 wounds, and 5 more for each level of the new skill
 IMPLANT_MAX_WOUNDS = 50     # the surgeon will not cut a hand hurt worse than this
@@ -34,13 +34,10 @@ MASTERS = {
 }
 
 
-def round_to(value, step=50):
-    return int(step * round(float(value) / step))
-
-
 def implant_price(level_to, fitted):
-    """An implant that brings a skill to this level, when so many are fitted already."""
-    return round_to(IMPLANT_BASE * level_to ** 2 * (1 + IMPLANT_LOAD * fitted))
+    """An implant that brings a skill to this level, when so many are fitted already: the curve
+    every piece of equipment follows (game/prices.py)."""
+    return curve(IMPLANT_BASE, level_to, fitted)
 
 
 def lesson_price(level):
@@ -88,6 +85,8 @@ class TrainingMixin:
             rows.extend([line] for line in self.option_lines(number, label))
         rows.extend([[""]] + [[line] for line in self.word_wrap(
             "Each implant fitted makes the next dearer. Surgery hurts. Nothing is fitted above skilled.")])
+        if self.implants_fitted():
+            rows.extend([[""]] + [[line] for line in self.word_wrap(price_note("implant"))])
         print(self.create_box(rows, 'round'))
         answer = pick if pick is not None else self.validate_input(
             "Fit which (1-%d, Enter to leave): " % len(SKILLS), [str(i) for i in range(1, len(SKILLS) + 1)])
@@ -104,6 +103,8 @@ class TrainingMixin:
         if not sure:
             return None
         person = self.person
+        if self.implants_fitted():
+            paid_dearer(self, "implant")
         person.money -= price
         person.skills[skill] = to
         person.__dict__.setdefault("next_at", {}).pop(skill, None)     # a new level, a new draw

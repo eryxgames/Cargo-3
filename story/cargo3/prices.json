@@ -1,0 +1,50 @@
+{
+ "format": "storykit",
+ "version": 1,
+ "about": "The captain's thoughts on prices that climb (game/prices.py): each one holds for a band of what the captain has bought, so it comes and goes. The sellers' own remarks are in game/prices.py.",
+ "arcs": {"prices": {"title": "What everything costs", "order": 12}},
+ "nodes": {
+  "thought.price.pod": {
+   "kind": "thought",
+   "arc": "prices",
+   "requires": {"paid_dearer": {"min": 1, "max": 2}},
+   "text": "Everything costs more than it did before the pod. I slept through a century of inflation. Technically, the most expensive nap in history."
+  },
+  "thought.price.implants": {
+   "kind": "thought",
+   "arc": "prices",
+   "requires": {"implants": {"min": 2, "max": 3}},
+   "text": "Every implant makes the next one dearer. I am getting more expensive to improve, which I choose to take as a compliment."
+  },
+  "thought.price.gear": {
+   "kind": "thought",
+   "arc": "prices",
+   "requires": {"gear": {"min": 3, "max": 4}},
+   "text": "The outfitter charges more for every piece I already carry. Armed to the teeth, charged to the eyeballs."
+  },
+  "thought.price.lessons": {
+   "kind": "thought",
+   "arc": "prices",
+   "requires": {"lessons": {"min": 6, "max": 9}},
+   "text": "The masters charge more the more I know. Knowledge is power, and power is metered."
+  },
+  "thought.price.modules": {
+   "kind": "thought",
+   "arc": "prices",
+   "requires": {"modules_fitted": {"min": 3, "max": 4}},
+   "text": "Each module on the grips costs more than the last. The yard master says it's the load on the spine. It's the load on my purse he's measuring."
+  },
+  "thought.price.upgrades": {
+   "kind": "thought",
+   "arc": "prices",
+   "requires": {"upgrades": {"min": 3, "max": 5}},
+   "text": "The yard charges the square of the work. A square deal, they call it. A round number would be cheaper."
+  },
+  "thought.price.rich": {
+   "kind": "thought",
+   "arc": "prices",
+   "requires": {"paid_dearer": {"min": 6}, "money": 100000},
+   "text": "I have more money than I had in my whole first century, and the price boards know it. Wealth is relative. So is the yard master, apparently: everything he quotes is related to my balance."
+  }
+ }
+}

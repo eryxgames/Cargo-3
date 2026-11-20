@@ -487,6 +487,10 @@ class StoryManager:
         if len(chapter.next_chapters) == 1:
             self.start_chapter(options[0].id)
             return
+        # endings the story has already decided between (Cargo 3's last chapter): no choice to make
+        if len(options) == 1 and all(cid.startswith("ending") for cid in chapter.next_chapters):
+            self.start_chapter(options[0].id)
+            return
         # Several ways on: ask, but only when the open ways have changed since
         # the last time the captain decided to wait
         open_now = sorted(option.id for option in options)
@@ -571,9 +575,13 @@ class StoryManager:
             chapter_obj = chapter
 
         self.chapter_started = self.game.turn
+        # the chapter's text as it stands now ({year} moves on with the long legs, a variant may hold)
+        story = getattr(self.game, "story", None)
+        opening = " ".join(story.text_of(chapter_obj.id, fallback=chapter_obj.description)) if story else \
+            chapter_obj.description
         self.game.display_story_message([
             f"{self.get_chapter_label()}: {chapter_obj.title}",
-            chapter_obj.description,
+            opening,
             "",
             "New milestones await..."
         ])

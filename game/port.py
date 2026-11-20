@@ -1041,17 +1041,21 @@ class PortMixin:
                 plot_points=self.story_manager.plot_points
             )
 
+        # every piece of the shop's equipment aboard makes the next dearer (game/prices.py)
+        owned = sum(count for item, count in self.ship.items.items() if item in self.shop.base_equipment)
         shop_content = [["Item", "¤", "Description", ""]]
         for item_name, item_data in self.shop.current_turn_items:
             status = "SOLD" if self.shop.is_item_sold(item_name) else "Avail"
             shop_content.append([
                 item_name.title(),
-                self.format_money(item_data["price"]),
+                self.format_money(curve(item_data["price"], 1, owned)),
                 item_data["description"],
                 status
             ])
 
         print(self.create_box(shop_content, 'double'))
+        if owned:
+            self.display_simple_message(price_note("shop"), 1)
 
         # Only show unsold items in options
         available_items_names = [
@@ -1073,8 +1077,11 @@ class PortMixin:
 
         for item_name, item_data in self.shop.current_turn_items:
             if item_choice == item_name:
-                if self.ship.money >= item_data["price"]:
-                    self.ship.money -= item_data["price"]
+                price = curve(item_data["price"], 1, owned)
+                if self.ship.money >= price:
+                    if owned:
+                        paid_dearer(self, "shop")
+                    self.ship.money -= price
                     self.ship.acquire_item(item_name)
                     self.shop.mark_item_sold(item_name)
 
@@ -1084,10 +1091,10 @@ class PortMixin:
                         f"Remaining credits: {self.format_money(self.ship.money)}"
                     ])
                 else:
-                    missing = item_data["price"] - self.ship.money
+                    missing = price - self.ship.money
                     self.display_simple_message([
                         "Not enough money to buy this item.",
-                        f"Price: {self.format_money(item_data['price'])}",
+                        f"Price: {self.format_money(price)}",
                         f"Your credits: {self.format_money(self.ship.money)}",
                         f"Missing: {self.format_money(missing)}"
                     ])
@@ -1100,4 +1107,5 @@ class PortMixin:
 from .contracts import ContractManager  # noqa: E402
 from .passengers import Passenger, PassengerModule  # noqa: E402
 from .places import Planet  # noqa: E402
+from .prices import curve, paid_dearer, price_note  # noqa: E402
 from .terminal import ask  # noqa: E402

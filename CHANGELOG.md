@@ -121,14 +121,67 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
     `the_stonewright`, paid; 4,000); or your own run (a Cargo 1 captain who filed the course
     home in 2420 finds it still on file).
   - **Chapter IV, The Heading**, begins: fly to the Builder Site in Scholz's Star's wake, where
-    the segment hangs with its beacon pointing at an empty patch of sky. The story stops there
-    for now.
+    the segment hangs with its beacon pointing at an empty patch of sky.
   - New story hooks: `ship <hull>` and `rename <words>`; effects after a `ship` code in the same
     scene see the ship. Serac's men and the broker's clerk keep coming until the ship is out.
   - Measured with the curious bot (8 games of 400 turns): the ship comes at turn 76 to 222
     (mostly by the envoy or Serac), chapter III ends at 94 to 244, the Builder Site is reached at
     97 to 295, and no captain went bankrupt on the way. `tools/ship.py` plays every way, run and
     ending at 36 columns; the bot's hand measurements keep it ashore (`--ashore`).
+- **Chapters IV to VI, and the endings** (`story/cargo3/heading.json`, the frame in `main.json`).
+  The story now runs from 2533 to about 2600, and ends.
+  - **IV, The Heading.** The beacon on the segment keeps the ring's beat and points at the gap.
+    Record it: the Vertex Array fits it like a key (and only one person has ever carried both),
+    or hold Korai's count, or spend a quarter of your research, or hire a recorder buoy (5,000).
+    The midpoint: the ring cannot turn without the stolen segment, or its timing. Serac's man
+    wants a copy (20,000, or the airlock), a Mandate cutter hunts a hull taken at night,
+    Stonewright offers to fly the long leg home with you. The long leg: nineteen years outside,
+    five weeks aboard; it is 2552, ERYX has a target the papers call Eryxia, and the timing goes
+    to the Stator Field near Sedna's orbit.
+  - **V, Who Holds the Ring.** Who holds the segments comes from the Cargo 2 ending a record
+    carries (common ground, the Mandate, the Hansa, House Rostrom, the Binary Dawn). Five claims:
+    Serac at Alpha, Yzode van Rostrom at Epsilon, the machines at Alpha, Ola Plumb (the Hansa's
+    speaker now) at Beta, and your own people at the Stator Field: from home. Side with one
+    faction, or none. Then the Mandate moves first: hand over the timing (30,000), or run its
+    blockade (with Stonewright, if it came). It starts the ring from its end: one degree the
+    wrong way, every needle in flight comes apart, and Korai comes out of hers thirty-eight
+    years later, older at last.
+  - **VI, From Home.** Find who will hold the ring with you: Stonewright, Korai, Eela and the
+    cooperative, Meza Voce, CU-113, the Kraal family, each only if chapter II made them your
+    friend. At the restart: from home (three allies or more), from the end of the side you took,
+    or now, from where you stand.
+  - **Three endings.** From Home: the ring turns, nobody saw whose hand moved first, and the
+    first ERYX mission leaves on a road nobody owns. Their End: the mission leaves under the
+    Mandate's flag, the Concord's committee, the machines' clock or the Hansa's ticket. The
+    Loop: the ring turns once the wrong way and throws the captain back to 2420, to Cargo 1's
+    portal, with a shard of grey alloy in a pocket and a warning to give (Cargo 1 already has
+    the opening for that captain, and the older captain at the portal). The saga's promise
+    `the_warning` is paid; who threw the switch is never said. An epilogue tells what became of
+    ten of them.
+  - New story code `years <n>` (a relativistic leg) and `{year}`; stats `claims` and `allies`. A
+    chapter's opening is filled when it starts (it used to be filled at the start of the game,
+    so a year in it would have been 2533). When the story has already decided between endings,
+    the game does not ask.
+  - Measured with the curious bot (8 games): every one reaches From Home, at turn 192 to 483;
+    chapter IV takes 36 to 288 turns, V 12 to 40, VI 18 to 183. `tools/heading.py` plays every
+    scene and all three endings at 36 columns.
+- **Prices that climb** (`game/prices.py`, Dan: the implants' curve on the equipment too). One
+  curve, price = base × level² × (1 + 0.3 × owned):
+  - ship upgrades: a point of attack, defense or speed costs 1,000 × its level², dearer for every
+    point bought (the first four of attack: 1,000, 5,200, 14,400, 30,400); the yard shows the
+    next price of each; saves from before count back from their stored price;
+  - the yard's modules: three tenths dearer for each module on the grips (containers 8,000,
+    10,400, 12,800); stripping and mending go by the module's own price;
+  - the port shop's equipment: three tenths dearer for each piece of the shop's equipment aboard
+    (story items do not count);
+  - the outfitter's gear: three tenths dearer for each piece the hand carries;
+  - the implants were already on it, and are now on the same code.
+  The sellers say so when a price has climbed: the yard master, the yard foreman, the chandler,
+  the outfitter and the cybersurgeon each have their lines. Once the captain has paid a climbed
+  price, a quiet look now and then carries the captain's own sidenote ("the most expensive nap in
+  history"), and thoughts come and go with what has been bought ("Armed to the teeth, charged to
+  the eyeballs"; "A square deal, they call it. A round number would be cheaper"). Stats
+  `paid_dearer`, `gear`, `upgrades`. `tools/prices.py` checks the curve and every seller.
 - **Errands to the past** (`story/cargo3/errands.json`). The captain's record now carries the
   captain's history (`game/record.py`, copied from the Cargo repository, as in Cargo 1 1.3.0 and
   Cargo 2 2.3.0): the same id and log from part to part, the captain's own time, the line of

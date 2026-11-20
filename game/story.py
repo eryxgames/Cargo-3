@@ -257,6 +257,7 @@ class StoryRuntime:
             "discoveries": len(game.discovered_locations),
             "place": game.current_location.name, "turn": game.turn,
             "ship_name": getattr(game.ship, "name", None) or "your ship",
+            "year": _hand.START_YEAR + int(getattr(game, "years_passed", 0) or 0),
             "labour_news": game.labour_news_line(),
         }
         records = {"visitor": visitor, "origin": origin}
@@ -640,6 +641,7 @@ def story_hook(game, value):
     'fight <enemy>' (no paying or talking your way out), 'fight <enemy> edge <n>' (with allies),
     'brawl <foe>' and 'brawl <foe> edge <n>' (a fight on foot, game/brawl.py), 'ship <hull>' (the
     captain has a ship again, named Nameless), 'rename <words>' (the ship's name; {ship_name}),
+    'years <n>' (a relativistic leg: years pass outside; {year}),
     'crew joins <role>', 'repair <points>', 'damage <points>', 'lose money <share> min <amount>',
     'stow <units> <name> as <words>' (special cargo takes hold room until 'unstow <name>'; the
     words name it on screen and in the journal), 'profit <credits>' (paid, and counted as trade profit),
@@ -664,6 +666,10 @@ def story_hook(game, value):
         # a ship again (chapter III, story/cargo3/ship.json): from the next turn the turn is a captain's
         if ship is None:
             game.give_ship(hull=int(words[1]), name="Nameless")
+        return None
+    if len(words) == 2 and words[0] == "years" and words[1].isdigit():
+        # a relativistic leg: years pass outside ({year}); the captain's own time does not
+        game.years_passed = int(getattr(game, "years_passed", 0) or 0) + int(words[1])
         return None
     if len(words) >= 2 and words[0] == "rename":
         if ship is not None:
@@ -808,5 +814,6 @@ def route_place(route, turn):
     return places[((turn + int(route.get("start", 0))) // stay) % len(places)]
 from .person import SKILL_TOP, WOUNDS_DEAD, skill_word  # noqa: E402
 from .brawl import FOES  # noqa: E402
+from . import hand as _hand  # noqa: E402  (the hand may be importing this module)
 from .labour import LABOUR_EVENTS  # noqa: E402
 from .terminal import ask  # noqa: E402

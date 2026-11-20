@@ -1,6 +1,4 @@
 {
  "about": "Findings accepted for now; validate.py --baseline fails only on new ones.",
- "accepted": [
-  "dead-end|cargo3:ch4|chapter leads nowhere and is not an ending"
- ]
+ "accepted": []
 }
