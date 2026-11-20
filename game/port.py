@@ -220,8 +220,8 @@ class Port:
                 self.game.contract_manager.handle_contract_menu()
 
             elif action in ['prices', 'pr']:
-                self.game.show_forecast(self.game.story.fill("{port_broker}, the port's broker robot, "
-                                                             "quotes other docks"))
+                # Cargo 1 names this robot (TALLY-4); this part's story does not
+                self.game.show_forecast("The port's broker robot quotes other docks")
 
             elif action in ['travel', 't']:
                 if self.game.handle_travel():

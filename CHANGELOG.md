@@ -4,6 +4,9 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
 
 ## 3.0.0-dev
 
+- Fixed: the port's price forecast (`prices`, with a ship) was titled "{port_broker}", a Cargo 1
+  name this part never declared. `tools/placeholders.py` makes sure no name is shown as a raw
+  {placeholder}, in the story or the code.
 - Cargo 3 starts from Cargo 2.2's engine: the turn loop, docks and needles, look and think, the
   storykit runtime, saves and the captain's record shared in `~/.cargo-saga`, sound, twelve
   styles, every screen from 36 columns.

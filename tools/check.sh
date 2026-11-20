@@ -23,6 +23,7 @@ grep -E "CRASH|unfilled|FAIL" /tmp/cargo3-scenes.txt | head; tail -1 /tmp/cargo3
 echo "== act 1 for every kind of captain: the intro, the reasons for no ship, the hall, the floor,"
 echo "   the berths captains, the first old friend"
 $PY $T/act1.py || fail=1
+$PY $T/placeholders.py || fail=1     # no {name} on screen, in the story or the code
 
 echo "== the captain's history across the parts, and the errands to 2420 and 2460"
 $PY $T/history.py || fail=1
