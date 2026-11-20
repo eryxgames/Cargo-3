@@ -80,6 +80,27 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
   Thoughts keep the way back. Keys a newer game writes into a record are kept; a record that went
   through an older game (Cargo 1 1.2.1) is offered a join with the captain's newer record, and
   an errand for a version too old is named at import and export. Checks: `tools/history.py`.
+- **The labour market** (`game/labour.py`): the docks have their own weather, as the trade
+  events move prices. Something starts at one of the docks on about one turn in two and runs
+  a few turns: a rush order or a strike at the hovertank plant; gas or a rich seam in the deep
+  levels; a harvest or a blight in the farm drums; a convoy unloading, a quiet ring, an agrobot
+  trial or a Hansa audit on the cargo ring; crews short, hands cheap, a convoy forming, a customs
+  crackdown, a Cargolyte pilgrimage or the needle delayed on the berths. Each moves the wages
+  (from three tenths less to half again), closes jobs, adds risk, or changes the board: more or
+  fewer ships, which kinds come (a crackdown keeps the smugglers dark, Jak Ghillie's Low Water
+  too), a turn more a voyage. The turn's screen shows what is on here, the work and berths
+  screens and arrival say it, and look gives word from the other docks. The story reads it
+  (`labour.<id>`: turns left here) and starts it (the same name as an effect: the squad's sweep
+  starts a crackdown); `{labour_news}` fills in the word from elsewhere. Kept in saves. Checks:
+  `tools/labour.py`. Measured with the bot: money and voyages by turn 120 as before (11,000 to
+  13,000 credits, 40 to 47 voyages).
+- **Five more roles, with the labour market**: the **Needle Office Clerk** at Beta, whose board
+  says what is on at every dock (and who sends the hand to Korai); the **Company Store Cashier**
+  at Gamma (pay a miner's tab while the shafts are shut for gas; Eela pays cash); the **Hansa
+  Auditor** at any dock with an audit (help with the count; Ola Plumb's manifests); the **Convoy
+  Tail Gunner** where a convoy is forming (Brother Caboose's lot, singing); a **Rockwarden
+  Prospector** wherever a rich seam is found (sell her the survey as an able navigator; Eela,
+  and Stonewright's people coming home).
 - **People named by what they do** (`story/cargo3/roles.json`), so the names keep their
   weight. Each points at the named cast:
   - the **Perimeter Guard** at Alpha's impound yard (ask, or pay 100 for the yard's list: one

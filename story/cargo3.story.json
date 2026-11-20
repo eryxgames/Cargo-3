@@ -26,7 +26,8 @@
   "origin.rank",
   "origin.game",
   "origin.ending",
-  "origin.turns"
+  "origin.turns",
+  "labour_news"
  ],
  "include": [
   "cargo3/places.json",
@@ -229,6 +230,54 @@
   },
   "regard.caboose": {
    "about": "what the captain of the Clean Lading thinks of you as a hand (voyages worked well)"
+  },
+  "labour.ring_convoy": {
+   "about": "turns left of 'Ring: a convoy unloading' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.ring_quiet": {
+   "about": "turns left of 'Ring: quiet' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.ring_agrobots": {
+   "about": "turns left of 'Ring: agrobot trial' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.ring_audit": {
+   "about": "turns left of 'Ring: Hansa audit' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.plant_rush": {
+   "about": "turns left of 'Plant: a rush order' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.plant_strike": {
+   "about": "turns left of 'Plant: on strike' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.mine_gas": {
+   "about": "turns left of 'Mine: gas, shafts shut' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.mine_seam": {
+   "about": "turns left of 'Mine: a rich seam' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.drums_harvest": {
+   "about": "turns left of 'Drums: harvest' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.drums_blight": {
+   "about": "turns left of 'Drums: blight' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.berths_short": {
+   "about": "turns left of 'Berths: crews short' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.berths_glut": {
+   "about": "turns left of 'Berths: hands cheap' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.berths_convoy": {
+   "about": "turns left of 'Berths: a convoy forming' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.berths_crackdown": {
+   "about": "turns left of 'Berths: customs crackdown' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.berths_pilgrimage": {
+   "about": "turns left of 'Berths: a pilgrimage' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
+  },
+  "labour.berths_delay": {
+   "about": "turns left of 'Berths: needle delayed' at this dock, 0 if it is not on (game/labour.py); as an effect, starts it here for so many turns"
   }
  },
  "sets": {

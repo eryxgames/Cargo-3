@@ -10,11 +10,14 @@ Until the captain has a ship again (chapter III), the turn is a hand's turn:
 - `passage`: a paid place aboard, no duty;
 - `locker`: an able hand's few units of private trade, bought and sold at the market here;
 - `skills`: the captain as a person: skills, wounds, gear, the locker.
+What is on at the docks (game/labour.py) moves the wages, closes jobs and changes the board.
 Wounds heal with time, faster with rest (`end`). Work and duties can put the captain down
 (WOUNDS_DOWN), never further; at WOUNDS_DEAD (a fight) the captain is dead and the game is over.
 """
 import random
 import zlib
+
+from .labour import LABOUR_EVENTS
 
 # Commands a hand has (long form, shortcut), besides the global ones (game/commands.py)
 HAND_COMMANDS = [('work', 'w'), ('berths', 'bb'), ('passage', 'pa'), ('locker', 'lo'),
@@ -232,6 +235,11 @@ class HandMixin:
         self.clear_screen(hold=True)
         print(self.create_box(self.hand_stats_rows(), 'double', narrow='flow'))
         print(self.create_box(self.market_rows(), 'single'))
+        if self.labour_at():
+            print(self.create_box(self.labour_rows(), 'single'))
+        fresh = self.labour_fresh_lines()
+        if fresh:
+            self.display_simple_message(fresh, 0)
         self.display_simple_message(
             "Commands: " + ", ".join("%s/%s" % pair for pair in HAND_COMMANDS) + " - help/h for more", 0)
 
@@ -249,7 +257,9 @@ class HandMixin:
 
     # -- work ------------------------------------------------------------------------------------
     def sites_here(self):
-        loc = self.current_location
+        return self.sites_at(self.current_location)
+
+    def sites_at(self, loc):
         found = []
         for site in SITES:
             if loc.name in site.get("places", ()) or loc.location_type in site.get("types", ()):
@@ -260,17 +270,37 @@ class HandMixin:
         return site.get("names", {}).get(self.current_location.name, site["name"])
 
     def handle_work(self):
-        jobs = [(site, job) for site in self.sites_here() for job in site["jobs"]]
+        jobs, shut = [], []
+        for site in self.sites_here():
+            closed = [(job, self.site_terms(site["id"], job[0])[2]) for job in site["jobs"]]
+            for job, why in closed:
+                if not why:
+                    jobs.append((site, job))
+            whys = [why for _, why in closed if why]
+            if whys:
+                why = whys[0]
+                left = self.labour_left(why)
+                name = self.site_name(site)
+                what = ("%s: no shifts" % (name[0].upper() + name[1:])
+                        if len(whys) == len(closed) else
+                        "%s at %s: no shifts" % (", ".join(job[1].capitalize() for job, w in closed if w), self.site_name(site)))
+                shut.append("%s (%s, %d turn%s)." % (what, LABOUR_EVENTS[why]["name"].split(": ", 1)[-1], left,
+                                                     "" if left == 1 else "s"))
+        footer = self.labour_screen_lines("work")
         if not jobs:
-            self.display_simple_message("Nobody here is hiring by the shift.")
+            self.display_simple_message(["Nobody here is hiring by the shift."] + shut + footer)
             return
         person = self.person
         rows = [["Work a shift"], [""]]
         for number, (site, (skill, job, wage)) in enumerate(jobs, 1):
             label = "%s at %s: %s a shift (%s, %s)" % (job.capitalize(), self.site_name(site),
-                                                     self.format_money(self.shift_wage(wage, skill)), skill,
-                                                     skill_word(person.skill(skill)))
+                                                     self.format_money(self.shift_wage(wage, skill, site["id"])),
+                                                     skill, skill_word(person.skill(skill)))
             rows.extend([line] for line in self.option_lines(number, label))
+        if shut or footer:
+            rows.append([""])
+            for line in shut + footer:
+                rows.extend([part] for part in self.word_wrap(line))
         print(self.create_box(rows, 'round'))
         answer = self.validate_input("Work which (1-%d, Enter to leave): " % len(jobs),
                                      [str(i) for i in range(1, len(jobs) + 1)])
@@ -279,23 +309,24 @@ class HandMixin:
         site, job = jobs[int(answer) - 1]
         self.work_shift(site, job)
 
-    def shift_wage(self, wage, skill):
-        return int(round(wage * (1 + 0.2 * self.person.skill(skill)) / 5.0) * 5)
+    def shift_wage(self, wage, skill, site_id=None):
+        factor = self.site_terms(site_id, skill)[0] if site_id else 1.0
+        return int(round(wage * factor * (1 + 0.2 * self.person.skill(skill)) / 5.0) * 5)
 
-    def shift_chances(self, skill):
-        """(good, bad): a shift's chances, by skill and wounds."""
+    def shift_chances(self, skill, risk=0.0):
+        """(good, bad): a shift's chances, by skill and wounds (and what is on at the site)."""
         level = self.person.skill(skill)
         hurt = self.person.wounds / 200.0
-        return min(0.85, 0.25 + 0.1 * level), max(0.03, 0.2 - 0.03 * level + hurt)
+        return min(0.85, 0.25 + 0.1 * level), max(0.03, 0.2 - 0.03 * level + hurt + risk)
 
     def work_shift(self, site, job, roll=None):
         """A shift: paid, practised, maybe hurt. The turn ends with it. Returns 'good', 'fair' or 'bad'."""
         skill, name, base = job
         person = self.person
-        good, bad = self.shift_chances(skill)
+        good, bad = self.shift_chances(skill, self.site_terms(site["id"], skill)[1])
         roll = random.random() if roll is None else roll
         lines = SHIFT_LINES[skill]
-        wage = self.shift_wage(base, skill)
+        wage = self.shift_wage(base, skill, site["id"])
         if roll < good:
             outcome, pay, practice, text = "good", int(wage * 1.5), 2, random.choice(lines[0])
         elif roll < 1 - bad:
@@ -327,14 +358,17 @@ class HandMixin:
     # -- the berths board ------------------------------------------------------------------------
     def berths(self):
         """Ships leaving here that want a hand: the story's captains on their routes first, then
-        ships that come and go. Each: {ship, kind, captain, who, to, legs, duty, wage}."""
+        ships that come and go. Each: {ship, kind, captain, who, to, legs, duty, wage, risk}. What
+        is on here (game/labour.py) moves the wages, the number of ships and which kinds come;
+        a kind kept away keeps the story's captain of that kind off the board too."""
         here = self.current_location.name
         names = {loc.name for loc in self.locations}
         offers = []
         chars = story_data()["characters"]
+        terms = self.berth_terms()
         for who, (ship, kind) in NAMED_SHIPS.items():
             info = chars.get(who)
-            if not info or self.story.where_is(who) != here:
+            if not info or self.story.where_is(who) != here or terms["kinds"].get(kind, 1) == 0:
                 continue
             legs, dest = 1, None
             for ahead in range(1, 40):
@@ -347,23 +381,24 @@ class HandMixin:
             pick = _rng(who, self.turn - legs)
             duty = pick.choice(KINDS[kind]["duties"])
             offers.append({"ship": ship, "kind": kind, "who": who, "captain": self.story.fill("{%s}" % who),
-                           "to": dest, "legs": legs, "duty": duty,
-                           "wage": int(LEG_WAGE * KINDS[kind]["wage"] * legs)})
+                           "to": dest, "legs": legs, "duty": duty, "risk": terms["risk"],
+                           "wage": int(LEG_WAGE * KINDS[kind]["wage"] * legs * terms["wage"])})
         pick = _rng(here, self.turn)
         places = sorted(n for n in names if n != here and self.location_named(n) is not None
                         and self.location_named(n).location_type in ("Planet", "AsteroidBase",
                                                                      "DeepSpaceOutpost", "ResearchColony"))
-        count = 3 if self.current_location.location_type == "Planet" else 2
+        count = max(0, (3 if self.current_location.location_type == "Planet" else 2) + terms["ships"])
         taken = {o["ship"] for o in offers}
-        for _ in range(count if places else 0):
-            kind = pick.choice(("hauler", "hauler", "hauler", "smuggler", "courier", "tail"))
+        kinds = [k for k, weight in terms["kinds"].items() if weight > 0]
+        for _ in range(count if places and kinds else 0):
+            kind = pick.choices(kinds, weights=[terms["kinds"][k] for k in kinds])[0]
             ship = pick.choice([n for n in SHIP_NAMES if n not in taken])
             taken.add(ship)
             dest = pick.choice(places)
-            legs = 1 if self.same_system(here, dest) else 2
+            legs = (1 if self.same_system(here, dest) else 2) + terms["legs"]
             offers.append({"ship": ship, "kind": kind, "who": None, "captain": None, "to": dest, "legs": legs,
-                           "duty": pick.choice(KINDS[kind]["duties"]),
-                           "wage": int(LEG_WAGE * KINDS[kind]["wage"] * legs * pick.uniform(0.85, 1.15))})
+                           "duty": pick.choice(KINDS[kind]["duties"]), "risk": terms["risk"],
+                           "wage": int(LEG_WAGE * KINDS[kind]["wage"] * legs * pick.uniform(0.85, 1.15) * terms["wage"])})
         return offers
 
     def location_named(self, name):
@@ -378,13 +413,16 @@ class HandMixin:
 
     def handle_berths(self):
         offers = self.berths()
+        footer = self.labour_screen_lines("berths")
         if not offers:
-            self.display_simple_message("No ship here wants a hand this turn.")
+            self.display_simple_message(["No ship here wants a hand this turn."] + footer)
             return
         rows = [["Berths board: %s" % self.current_location.name], [""]]
         for number, offer in enumerate(offers, 1):
             rows.extend([line] for line in self.option_lines(number, self.berth_label(offer)))
         rows.extend([[""], ["Pay is on arrival. Your skill at the duty decides how the way goes."]])
+        for line in footer:
+            rows.extend([part] for part in self.word_wrap(line))
         print(self.create_box(rows, 'round'))
         answer = self.validate_input("Sign on (1-%d, Enter to leave): " % len(offers),
                                      [str(i) for i in range(1, len(offers) + 1)])
@@ -421,7 +459,7 @@ class HandMixin:
             if down:
                 break
             moments = [(duty,) + duties[leg % len(duties)]]
-            if pick.random() < TROUBLE_CHANCE * kind["risk"]:
+            if pick.random() < TROUBLE_CHANCE * kind["risk"] + offer.get("risk", 0.0):
                 text, options = TROUBLE[offer["kind"]]
                 moments.append((None, text, options))
             for skill_of, text, options in moments:
@@ -508,6 +546,10 @@ class HandMixin:
             lines.append("First time at %s: +3 plot points." % place.name)
             if about:
                 lines.extend([""] + self.word_wrap(about))
+        news = self.labour_arrival_lines(place)
+        self.__dict__.pop("labour_fresh", None)        # told here, not again on the turn's screen
+        if news:
+            lines.extend([""] + news)
         self.display_story_message(lines, pause=1)
 
     # -- passage ---------------------------------------------------------------------------------
@@ -667,6 +709,11 @@ class HandMixin:
                  "and signing on takes you to their destination, paid on arrival; or you can buy passage "
                  "(passage/pa). An able hand may carry a few units of private trade in a locker (locker/lo): "
                  "buy where it is cheap, sell at the next dock."],
+                [""],
+                ["The docks have their own weather: a strike or a rush order at the plant, gas or a rich seam "
+                 "in the mines, a convoy on the ring, crews short on the berths. It moves the wages, closes "
+                 "jobs and changes the board for a few turns. The turn's screen shows what is on here; look "
+                 "and the needle office at Beta tell what is on at the other docks."],
                 [""],
                 ["Six skills (skills/sk): loader, mechanic, gunner, navigator, steward and broker. They rise "
                  "with work and duties, and decide how the way goes. Bold choices teach more and pay more, "

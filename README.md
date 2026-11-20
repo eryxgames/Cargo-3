@@ -42,7 +42,11 @@ it around: the captain begins on foot.
   (`game/record.py`).
 - People named by what they do (`story/cargo3/roles.json`): a perimeter guard, a medic, a
   cybersurgeon, a battle engineer, an armored commander, a squad of soldiers and its heavy
-  infantry commander. Names stay for the people who matter.
+  infantry commander; a needle office clerk, a company store cashier, a Hansa auditor, a convoy
+  tail gunner and a Rockwarden prospector. Names stay for the people who matter.
+- The labour market (`game/labour.py`): strikes, rush orders, gas, rich seams, harvests,
+  convoys, audits, crackdowns and pilgrimages at the docks move the wages, close jobs and change
+  the berths board for a few turns; word of them comes from the other docks.
 - What the game shows stays on screen until it is read: a turn's screen waits for Enter when
   the last thing shown was a message the player has not answered.
 - **Next:** chapter II (old friends, centuries on), fights on foot, and the ways to a first ship.

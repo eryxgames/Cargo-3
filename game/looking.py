@@ -83,6 +83,7 @@ class LookMixin:
         wait = self.needle_wait()
         lines.append("A needle forms at the buoy this turn." if not wait else
                      "The next needle forms in %d turn%s." % (wait, "" if wait == 1 else "s"))
+        lines.extend(self.labour_screen_lines())         # what is on here, and word from elsewhere
         place = self.current_location.name
         for cid, info in story_data()["characters"].items():
             if info.get("route") and self.met(cid) and self.story.where_is(cid) != place \
@@ -98,7 +99,7 @@ class LookMixin:
         if about:
             rows.extend([line] for line in self.word_wrap(about))
             rows.append([""])
-        rows.extend([line] for line in self.happenings())
+        rows.extend([part] for line in self.happenings() for part in self.word_wrap(line))
         if sights:
             rows.append([""])
             for number, nid in enumerate(sights, 1):

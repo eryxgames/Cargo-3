@@ -1,7 +1,7 @@
 {
  "format": "storykit",
  "version": 1,
- "about": "Roles (anonymous characters): the guard at the impound yard, a medic on the berths, a cybersurgeon at Epsilon, the battle engineer and the armored commander on Delta's test range, and a Mandate squad with its heavy infantry commander on a route. They have no personal names, so the names in the story keep their weight, and what they say points at the named cast: Adit, the berths captains, Conte Ottavine, Serac. One of them earns a name: the battle engineer tells a hand who has worked the plant what the crew calls her (Gabion).",
+ "about": "Roles (anonymous characters): the guard at the impound yard, a medic on the berths, a cybersurgeon at Epsilon, the battle engineer and the armored commander on Delta's test range, and a Mandate squad with its heavy infantry commander on a route. They have no personal names, so the names in the story keep their weight, and what they say points at the named cast: Adit, the berths captains, Conte Ottavine, Serac. One of them earns a name: the battle engineer tells a hand who has worked the plant what the crew calls her (Gabion). Five more come with the docks and the labour market (game/labour.py): the needle office clerk at Beta reads out what is on at every dock; the company store cashier at Gamma, the Hansa auditor with an audit, the convoy's tail gunner with a convoy forming, and a Rockwarden prospector with a rich seam.",
  "arcs": {"roles": {"title": "People at work", "order": 5}},
  "characters": {
   "perimeter_guard": {
@@ -55,6 +55,36 @@
    "kind": "human",
    "about": "leads the squad; reads names off a slate",
    "route": {"places": ["Gamma", "Beta", "Alpha", "Delta"], "stay": 3, "start": 6}
+  },
+  "needle_clerk": {
+   "name": "Needle Office Clerk",
+   "anonymous": true,
+   "kind": "human",
+   "about": "stamps manifests at Beta's needle office, under a board of what is on at every dock"
+  },
+  "store_cashier": {
+   "name": "Company Store Cashier",
+   "anonymous": true,
+   "kind": "human",
+   "about": "takes scrip, cash and notice at Gamma's company store"
+  },
+  "hansa_auditor": {
+   "name": "Hansa Auditor",
+   "anonymous": true,
+   "kind": "human",
+   "about": "counts a ring's manifests wherever the Hansa holds an audit (labour: ring_audit)"
+  },
+  "tail_gunner": {
+   "name": "Convoy Tail Gunner",
+   "anonymous": true,
+   "kind": "human",
+   "about": "rides at the back of a Hansa convoy; drinks at the end of the ring while it forms (labour: berths_convoy)"
+  },
+  "rockwarden_prospector": {
+   "name": "Rockwarden Prospector",
+   "anonymous": true,
+   "kind": "human",
+   "about": "buys claims for the cooperative wherever a rich seam is found (labour: mine_seam)"
   }
  },
  "flags": {
@@ -67,7 +97,14 @@
   "rode_the_trial": {"about": "the captain rode as gunner in a live-fire trial on Delta's test range"},
   "gabion_named": {"about": "the battle engineer told the captain her name: {gabion}"},
   "squad_carried": {"about": "the captain carried the {heavy_infantry_commander}'s kit"},
-  "squad_dodged": {"about": "the captain slipped away from the squad's sweep"}
+  "squad_dodged": {"about": "the captain slipped away from the squad's sweep"},
+  "clerk_asked": {"about": "the {needle_clerk} told the captain what the needle's manifest said"},
+  "store_asked": {"about": "the {store_cashier} told the captain who pays cash at Gamma"},
+  "paid_a_tab": {"about": "the captain paid a miner's tab at the company store while the shafts were shut"},
+  "audit_helped": {"about": "the captain helped the {hansa_auditor} count a ring's manifests"},
+  "gunner_drink": {"about": "the captain bought the convoy's {tail_gunner} a drink"},
+  "sold_survey": {"about": "the captain sold a survey of a rich seam to the {rockwarden_prospector}"},
+  "prospector_asked": {"about": "the {rockwarden_prospector} told the captain about the cooperative"}
  },
  "nodes": {
   "sight.alpha.yard": {
@@ -320,6 +357,7 @@
    "title": "A sweep",
    "requires": {"here": "infantry_squad", "done": ["hall.first"], "turn_min": 8},
    "chance": 0.5,
+   "effects": {"labour.berths_crackdown": 3},
    "text": [
     "A {infantry_squad} works down the berths, checking papers. Their {heavy_infantry_commander} reads names off a slate and does not look up until yours.",
     "'{player_name}. Pod survivor.' A pause. 'You are on a list, hand. Not ours.' He puts the slate away. '{serac} likes to find people himself.'"
@@ -372,6 +410,200 @@
    "who": ["heavy_infantry_commander"],
    "requires": {"flag": "squad_dodged"},
    "text": "You know the cargo ring better than the squad does. By the time the {heavy_infantry_commander} looks up again you are three berths away and somebody else's problem. He will remember the face."
+  },
+  "sight.beta.needle_office": {
+   "kind": "sight",
+   "arc": "roles",
+   "act": 1,
+   "where": "Beta",
+   "who": ["needle_clerk"],
+   "title": "The needle office",
+   "requires": {"done": ["hall.first"]},
+   "text": [
+    "Beta's needle office: one window, one {needle_clerk}, and a board of what is on at every dock, chalked fresh each turn.",
+    "The board says: {labour_news}"
+   ],
+   "variants": [
+    {
+     "requires": {"labour.berths_crackdown": 1},
+     "text": [
+      "Beta's needle office has a customs desk inside it this week, and the {needle_clerk} stamps every manifest twice.",
+      "The board says: {labour_news}"
+     ]
+    }
+   ],
+   "choices": [
+    {
+     "id": "needle",
+     "say": "Ask about the needle that shed you",
+     "requires": {"not_flag": "clerk_asked"},
+     "effects": {"set": "clerk_asked", "plot_points": 1},
+     "next": ["clerk.needle"]
+    },
+    {"id": "leave", "say": "Read the board and go"}
+   ]
+  },
+  "clerk.needle": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["needle_clerk"],
+   "requires": {"flag": "clerk_asked"},
+   "text": "'Your needle filed one hull more at the buoy than it filed at the far end,' the {needle_clerk} says, without looking it up. 'It happens. Not often. Ask {warp_singer}: she rides every needle and remembers every one. I only stamp them.'"
+  },
+  "sight.gamma.store": {
+   "kind": "sight",
+   "arc": "roles",
+   "act": 1,
+   "where": "Gamma",
+   "who": ["store_cashier"],
+   "title": "The company store",
+   "requires": {"done": ["hall.first"]},
+   "text": "Gamma's company store sells a miner everything at a price only a miner would pay. The {store_cashier} takes scrip, cash and notice, in that order.",
+   "variants": [
+    {
+     "requires": {"labour.mine_gas": 1},
+     "text": "The shafts are shut for gas, and the company store is full of miners who cannot earn. The {store_cashier} writes credit she knows will never come back."
+    }
+   ],
+   "choices": [
+    {
+     "id": "tab",
+     "say": "Pay a miner's tab (60 credits)",
+     "requires": {"labour.mine_gas": 1, "money": 60, "not_flag": "paid_a_tab"},
+     "effects": {"money": -60, "plot_points": 3, "set": "paid_a_tab"},
+     "next": ["store.tab"]
+    },
+    {
+     "id": "cash",
+     "say": "Ask who pays cash at Gamma",
+     "requires": {"not_flag": "store_asked"},
+     "effects": {"set": "store_asked"},
+     "next": ["store.cash"]
+    },
+    {"id": "leave", "say": "Buy nothing"}
+   ]
+  },
+  "store.tab": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["store_cashier"],
+   "requires": {"flag": "paid_a_tab"},
+   "text": "The tab belongs to a shaft sinker with two children and one boot. She does not thank you; miners don't. Word of it goes round the deep levels the way gas does."
+  },
+  "store.cash": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["store_cashier"],
+   "requires": {"flag": "store_asked"},
+   "text": "'{aela},' the {store_cashier} says. 'An agrobot that still digs for the Rockwardens and pays its crew in cash. The company hates it. It asks every new hand whether they are in the cooperative.'",
+   "variants": [
+    {
+     "requires": {"past": {"era": "cargo1", "flag": "aela_member"}},
+     "text": [
+      "'{aela},' the {store_cashier} says. 'An agrobot that still digs for the Rockwardens and pays its crew in cash. The company hates it.'",
+      "'It asked after you once. It said you gave it a share, a hundred years ago, and that a share is forever.'"
+     ]
+    }
+   ]
+  },
+  "people.auditor": {
+   "kind": "sight",
+   "arc": "roles",
+   "act": 1,
+   "who": ["hansa_auditor"],
+   "title": "{hansa_auditor}",
+   "requires": {"at_type": ["Planet", "AsteroidBase", "DeepSpaceOutpost", "ResearchColony"], "labour.ring_audit": 1},
+   "text": "A {hansa_auditor} has the ring's manifests spread over three tables, with a fourth on order. The smugglers have found somewhere else to be.",
+   "choices": [
+    {
+     "id": "count",
+     "say": "Help with the count (broker practice, 50 credits)",
+     "requires": {"not_flag": "audit_helped"},
+     "effects": {"practice.broker": 3, "money": 50, "set": "audit_helped"},
+     "next": ["auditor.count"]
+    },
+    {"id": "leave", "say": "Leave the auditor to the count"}
+   ]
+  },
+  "auditor.count": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["hansa_auditor"],
+   "requires": {"flag": "audit_helped"},
+   "text": "You count crates until the numbers stop meaning anything. '{plumb},' the {hansa_auditor} says at the end, closing a ledger. 'The only manifest on this ring I have never had to count twice. Honest as a plumb line, and about as much fun.'"
+  },
+  "people.tail_gunner": {
+   "kind": "sight",
+   "arc": "roles",
+   "act": 1,
+   "who": ["tail_gunner"],
+   "title": "{tail_gunner}",
+   "requires": {"at_type": ["Planet", "AsteroidBase", "DeepSpaceOutpost", "ResearchColony"], "labour.berths_convoy": 1},
+   "text": "The convoy's {tail_gunner} is drinking at the end of the ring, because tail gunners always end up at the end of things.",
+   "choices": [
+    {
+     "id": "drink",
+     "say": "Buy a drink and ask about the back of a convoy (10 credits)",
+     "requires": {"money": 10, "not_flag": "gunner_drink"},
+     "effects": {"money": -10, "practice.gunner": 1, "set": "gunner_drink"},
+     "next": ["tailgun.talk"]
+    },
+    {"id": "leave", "say": "Leave the gunner to the drink"}
+   ]
+  },
+  "tailgun.talk": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["tail_gunner"],
+   "requires": {"flag": "gunner_drink"},
+   "text": "'Raiders hit the third hull in a file, never the last,' the {tail_gunner} says. 'The last is us, or it is {caboose}'s lot, singing. Nobody wants to board a ship full of people singing.'"
+  },
+  "people.prospector": {
+   "kind": "sight",
+   "arc": "roles",
+   "act": 1,
+   "who": ["rockwarden_prospector"],
+   "title": "{rockwarden_prospector}",
+   "requires": {"at_type": ["Planet", "AsteroidBase"], "labour.mine_seam": 1},
+   "text": "A {rockwarden_prospector} in a cooperative jacket is buying claims on the new seam before the company can file them.",
+   "choices": [
+    {
+     "id": "survey",
+     "say": "Sell her your survey of the seam (navigator: able or better)",
+     "requires": {"skill.navigator": 2, "not_flag": "sold_survey"},
+     "effects": {"money": 150, "plot_points": 2, "set": "sold_survey"},
+     "next": ["prospector.survey"]
+    },
+    {
+     "id": "coop",
+     "say": "Ask about the cooperative",
+     "requires": {"not_flag": "prospector_asked"},
+     "effects": {"set": "prospector_asked"},
+     "next": ["prospector.coop"]
+    },
+    {"id": "leave", "say": "Leave her to her claims"}
+   ]
+  },
+  "prospector.survey": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["rockwarden_prospector"],
+   "requires": {"flag": "sold_survey"},
+   "text": "She pays in cash, counts it twice, and writes your name in a book with a stone on the cover. 'The cooperative remembers who helped,' she says. 'Stonewright's people are coming home. They will want to know.'"
+  },
+  "prospector.coop": {
+   "kind": "event",
+   "arc": "roles",
+   "act": 1,
+   "who": ["rockwarden_prospector"],
+   "requires": {"flag": "prospector_asked"},
+   "text": "'{aela} dug our first gallery, a hundred years before I was born,' the {rockwarden_prospector} says. 'It still asks everyone whether they are in the cooperative. Most of us say yes, to be kind. Some of us mean it.'"
   },
   "people.squad": {
    "kind": "sight",

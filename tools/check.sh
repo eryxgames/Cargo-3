@@ -30,6 +30,9 @@ $PY $T/history.py || fail=1
 echo "== people named by what they do: the guard, the medic, the cybersurgeon, the test range, the squad"
 $PY $T/roles.py || fail=1
 
+echo "== the labour market: strikes, rushes, convoys and audits move shifts and the berths board"
+$PY $T/labour.py || fail=1
+
 echo "== the engine's systems, one by one"
 $PY $T/systems.py || fail=1
 

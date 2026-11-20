@@ -256,6 +256,7 @@ class StoryRuntime:
             "research_points": game.person.research_points,
             "discoveries": len(game.discovered_locations),
             "place": game.current_location.name, "turn": game.turn,
+            "labour_news": game.labour_news_line(),
         }
         records = {"visitor": visitor, "origin": origin}
 
@@ -461,6 +462,10 @@ class StoryRuntime:
             elif key.startswith("skill.") and key[6:] in person.skills:
                 person.skills[key[6:]] = max(0, min(SKILL_TOP, person.skills[key[6:]] + value))
                 person.__dict__.setdefault("next_at", {}).pop(key[6:], None)   # a new level, a new draw
+            elif key.startswith("labour.") and key[7:] in LABOUR_EVENTS:
+                # something starts at this dock (game/labour.py), for so many turns
+                if game.current_location is not None:
+                    game.start_labour(key[7:], game.current_location.name, max(1, int(value)))
             elif key.startswith("practice.") and key[9:] in person.skills:
                 # practice toward the next level, on the same curve as work (person.train)
                 risen = person.train(key[9:], max(0, int(value)))
@@ -785,4 +790,5 @@ def route_place(route, turn):
     stay = max(1, int(route.get("stay", 1)))
     return places[((turn + int(route.get("start", 0))) // stay) % len(places)]
 from .person import SKILL_TOP, WOUNDS_DEAD, skill_word  # noqa: E402
+from .labour import LABOUR_EVENTS  # noqa: E402
 from .terminal import ask  # noqa: E402

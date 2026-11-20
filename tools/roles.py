@@ -55,7 +55,8 @@ def sights(game, place=None):
 # ---- the cast: roles have no personal names; one of them earns one --------------------------------------
 roles = [cid for cid, info in chars.items() if info.get("anonymous") or info.get("group")]
 expect(sorted(roles) == sorted(["perimeter_guard", "medic", "cybersurgeon", "battle_engineer", "armored_commander",
-                                "infantry_squad", "heavy_infantry_commander"]), "seven roles: %s" % roles)
+                                "infantry_squad", "heavy_infantry_commander", "needle_clerk", "store_cashier",
+                                "hansa_auditor", "tail_gunner", "rockwarden_prospector"]), "twelve roles: %s" % roles)
 expect(all(not chars[cid].get("short") for cid in roles) and chars["infantry_squad"].get("group"),
        "roles have no short names, and the squad is a group")
 expect(chars["gabion"].get("was") == "battle_engineer", "Gabion is the battle engineer, once named")
@@ -171,6 +172,71 @@ text = scene(game, io, "squad.sweep", "3", "Beta")
 expect("somebody else's problem" in text and game.story_manager.story_states.get("squad_dodged"), "a navigator slips away")
 text = scene(game, io, "people.squad", "1", "Beta")
 expect("writes something on the slate" in text, "and the commander remembers the face")
+
+# ---- the sweep starts a customs crackdown on the berths -----------------------------------------------------------------------
+game, io = ready()
+game.turn = 8
+bring(game, "infantry_squad", "Alpha")
+scene(game, io, "squad.sweep", "1", "Alpha")
+expect(game.labour_left("berths_crackdown") == 3 and not any(o["kind"] == "smuggler" for o in game.berths()),
+       "after the squad's sweep, a crackdown: no smugglers on the board for three turns")
+
+# ---- the needle office at Beta ----------------------------------------------------------------------------------------------------
+game, io = ready()
+game.known_locations.extend(n for n in ("Delta", "Gamma") if n not in game.known_locations)
+game.start_labour("plant_strike", "Delta", 2)
+text = scene(game, io, "sight.beta.needle_office", "1", "Beta")
+expect("Needle Office Clerk" in text and "The board says: A strike at Delta's hovertank plant." in text,
+       "the needle office's board says what is on at the other docks")
+expect("Ask Korai: she rides every needle" in text, "the clerk sends the hand to Korai")
+game.start_labour("berths_crackdown", "Beta", 2)
+text = scene(game, io, "sight.beta.needle_office", "1", "Beta")
+expect("a customs desk inside it this week" in text and options(screens[-1][1]) == 1, "in a crackdown, customs in the office")
+
+# ---- the company store at Gamma -----------------------------------------------------------------------------------------------------
+game, io = ready()
+text = scene(game, io, "sight.gamma.store", "1", "Gamma")
+expect("Company Store Cashier" in text and "Eela" in text and "the cooperative" in text, "who pays cash at Gamma: Eela")
+expect(options(screens[-1][1]) == 2, "no tab to pay while the shafts are open")
+game.start_labour("mine_gas", "Gamma", 2)
+money = game.person.money
+text = scene(game, io, "sight.gamma.store", "1", "Gamma")
+expect("cannot earn" in text and game.person.money == money - 60 and "two children and one boot" in text,
+       "with the shafts shut for gas, a hand can pay a miner's tab")
+game, io = ready(record("cargo1", "trade", ["aela_member"]))
+text = scene(game, io, "sight.gamma.store", "1", "Gamma")
+expect("a share is forever" in text, "a captain who gave Eela a share hears that it asked after them")
+
+# ---- the Hansa auditor, with an audit ----------------------------------------------------------------------------------------------------
+game, io = ready()
+expect("people.auditor" not in sights(game, "Alpha"), "no auditor without an audit")
+game.start_labour("ring_audit", "Alpha", 2)
+expect("people.auditor" in sights(game, "Alpha"), "an audit brings the auditor")
+money = game.person.money
+text = scene(game, io, "people.auditor", "1", "Alpha")
+expect("Ola Plumb" in text and "never had to count twice" in text and game.person.money == money + 50,
+       "counting with the auditor pays 50, and points at Ola Plumb")
+scene(game, io, "people.auditor", "1", "Alpha")
+expect(options(screens[-1][1]) == 1 and game.person.money == money + 50, "once")
+
+# ---- the convoy's tail gunner, with a convoy forming -----------------------------------------------------------------------------------
+game, io = ready()
+expect("people.tail_gunner" not in sights(game, "Delta"), "no tail gunner without a convoy")
+game.start_labour("berths_convoy", "Delta", 2)
+text = scene(game, io, "people.tail_gunner", "1", "Delta")
+expect("Convoy Tail Gunner" in text and "Brother Caboose's lot, singing" in text, "the tail gunner points at Brother Caboose")
+
+# ---- the Rockwarden prospector, with a rich seam --------------------------------------------------------------------------------------------
+game, io = ready()
+game.start_labour("mine_seam", "Gamma", 3)
+expect("people.prospector" in sights(game, "Gamma"), "a rich seam brings a Rockwarden prospector")
+text = scene(game, io, "people.prospector", "1", "Gamma")
+expect("Eela dug our first gallery" in text and options(screens[-1][1]) == 2, "a green surveyor can only ask about the cooperative")
+game.person.skills["navigator"] = 2
+money = game.person.money
+text = scene(game, io, "people.prospector", "1", "Gamma")
+expect(game.person.money == money + 150 and "Stonewright's people are coming home" in text,
+       "an able surveyor sells the seam's survey to the cooperative")
 
 # ---- every screen fits 36 columns ----------------------------------------------------------------------------------------------
 wide = [(nid, line) for nid, text in screens for line in text.splitlines() if len(line) > 36]

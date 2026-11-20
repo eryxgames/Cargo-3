@@ -23,13 +23,14 @@ from .achievements import AchievementsMixin
 from .sound import SoundMixin
 from .looking import LookMixin
 from .hand import HandMixin
+from .labour import LABOUR_EVENTS, LabourMixin
 
 
 class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
            MarketMixin, HansaMixin, EncountersMixin, EventsMixin,
            ResearchMixin, ActionsMixin, PortMixin, RanksMixin,
            FactionsMixin, NeedlesMixin, ModulesMixin, TacticsMixin, AchievementsMixin, SoundMixin,
-           LookMixin, HandMixin):
+           LookMixin, HandMixin, LabourMixin):
     # How often something happens between docks, by difficulty: an easy game has calmer lanes
     LANE_ACTIVITY = {0: 0.55, 1: 0.85, 2: 1.0}
 
@@ -103,6 +104,7 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         # carries (game/record.py), and the records of captains who crossed over into this one
         self.start_history(origin)
         self.visiting_captains = []
+        self.labour = []            # what is on at the docks: strikes, rushes, convoys (game/labour.py)
         self.ending_reached = None
 
         # Initialize the story
@@ -155,6 +157,8 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         stats["shifts"] = sum(shifts.values())
         for site in SITES:
             stats["shifts." + site["id"]] = shifts.get(site["id"], 0)
+        for eid in LABOUR_EVENTS:           # what is on at this dock: turns left, 0 if not
+            stats["labour." + eid] = self.labour_left(eid) if self.current_location is not None else 0
         for skill in SKILLS:
             stats["skill." + skill] = person.skill(skill)
         regard = getattr(self, "hand_regard", {})
@@ -259,6 +263,7 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         if not isinstance(getattr(self, "achievements", None), dict):
             self.achievements = {}
         self.mend_history()
+        self.labour_list()          # a save from before the labour market, or a damaged one
         if not isinstance(getattr(self, "person", None), Person):
             self.person = Person()
         ship = self.ship
@@ -802,6 +807,7 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         if not first:
             for loc in self.locations:
                 loc.recover()
+            self.labour_tick()
             if self.ship is not None:
                 self.mend_on_the_way()
             self.check_achievements()
