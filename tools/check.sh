@@ -39,6 +39,9 @@ $PY $T/training.py || fail=1
 echo "== fights on foot: odds, endings, trouble at the docks, the outfitter, and the bot"
 $PY $T/brawl.py || fail=1
 
+echo "== chapter II, old friends: five things a ship needs, every way to each, and who closes in"
+$PY $T/friends.py || fail=1
+
 echo "== the engine's systems, one by one"
 $PY $T/systems.py || fail=1
 

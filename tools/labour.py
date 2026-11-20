@@ -17,6 +17,7 @@ import headless  # noqa: E402
 
 cargo = headless.load(os.path.join(os.path.dirname(HERE), "game", "world.py"))
 EVENTS = cargo.LABOUR_EVENTS
+from game.hand import HEAL_PER_TURN  # noqa: E402
 problems = []
 
 
@@ -243,9 +244,14 @@ ACTIONS = cargo.LABOUR_ACTIONS
 
 
 def act(game, eid, aid, roll):
+    """An action, with nothing new starting at the docks during its turn (so what it ends stays ended)."""
     action = next(a for a in ACTIONS[eid] if a["id"] == aid)
-    with headless.quiet() as out:
-        outcome = game.do_labour_action(eid, action, roll=roll)
+    game.labour_tick = lambda: None
+    try:
+        with headless.quiet() as out:
+            outcome = game.do_labour_action(eid, action, roll=roll)
+    finally:
+        del game.labour_tick
     return outcome, flat(out.getvalue())
 
 
@@ -288,7 +294,7 @@ expect(outcome == "success" and game.person.money == money + 150 and game.labour
        "the gas cleared with the fire boss: 150, and the shafts open")
 game.start_labour("mine_gas", "Gamma", 3)
 outcome, text = act(game, "mine_gas", "clear", 0.99)
-expect(outcome == "failure" and game.person.wounds >= 15 and game.labour_left("mine_gas") == 2,
+expect(outcome == "failure" and game.person.wounds >= 15 - HEAL_PER_TURN and game.labour_left("mine_gas") == 2,
        "or dragged back up the ladder, hurt, and the shafts stay shut")
 
 game, io = fresh("Beta")

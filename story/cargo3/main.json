@@ -1,7 +1,7 @@
 {
  "format": "storykit",
  "version": 1,
- "about": "Cargo 3's frame: chapters, milestones and endings, with their conditions (the game builds its chapters from these). A chapter's \"requires\" opens it and must still hold for it to end, with its milestones. Chapter I is written (act1.json); chapters II and III keep placeholder conditions until their story is.",
+ "about": "Cargo 3's frame: chapters, milestones and endings, with their conditions (the game builds its chapters from these). A chapter's \"requires\" opens it and must still hold for it to end, with its milestones. Chapter I is written (act1.json), and chapter II (friends.json); chapter III keeps a placeholder until its story is.",
  "nodes": {
   "ch1": {
    "kind": "chapter",
@@ -51,10 +51,10 @@
    "kind": "milestone",
    "arc": "main",
    "in": "ch2",
-   "title": "Old friends found",
-   "text": "Find the people who outlived their century.",
+   "title": "What a ship needs",
+   "text": "Old friends can give what a ship needs: someone to vouch for you, papers, a debt called in, a navigator's key, the truth about your old ship. Three will do.",
    "requires": {
-    "plot_points": 80
+    "ship_needs": 3
    }
   },
   "ch3": {

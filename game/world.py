@@ -171,6 +171,8 @@ class Game(ScreensMixin, SavingMixin, CaptainMixin, TravelMixin,
         stats["brawls.won"] = brawls.get("won", 0)
         stats["brawls.lost"] = sum(brawls.get(k, 0) for k in ("robbed", "carried", "saved"))
         stats["armed"] = int(bool(self.gear_best("melee") or self.gear_best("ranged")))
+        states = self.story_manager.story_states   # what old friends have given toward a ship (chapter II)
+        stats["ship_needs"] = sum(1 for flag in SHIP_NEEDS if states.get(flag))
         for skill in SKILLS:
             stats["skill." + skill] = person.skill(skill)
         regard = getattr(self, "hand_regard", {})
@@ -1039,7 +1041,7 @@ from .commands import (  # noqa: E402,F401
 from .looking import QUIET  # noqa: E402,F401
 from .hand import (  # noqa: E402,F401
     CLEAN_VOYAGE_POINTS, DUTIES, FIRST_SHIFT_POINTS, HAND_COMMANDS, KINDS, LEG_WAGE, NAMED_SHIPS,
-    PASSAGE_FARE, SHIP_NAMES, SITES, STARTING_PURSE, TROUBLE, VOYAGE_POINTS, meter, wound_word)
+    PASSAGE_FARE, SHIP_NAMES, SHIP_NEEDS, SITES, STARTING_PURSE, TROUBLE, VOYAGE_POINTS, meter, wound_word)
 from .encounters import (  # noqa: E402,F401
     ENEMIES, FIGHT_TRICKS, SITUATIONS, odds_word)
 from .events import (  # noqa: E402,F401

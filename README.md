@@ -35,8 +35,13 @@ it around: the captain begins on foot.
   the needle that shed them into a pod, asleep for years until a salvager found it, while the
   ship flew on without them; the hiring hall; the hovertank plant, the deep levels and the farm
   drums seen from the floor; the five berths captains; and the first old friend, Adit, whose
-  lists say the ship never came out of the needle. Finding Adit ends the chapter. Chapters II
-  and III are a frame still to be written.
+  lists say the ship never came out of the needle. Finding Adit ends the chapter.
+- Chapter II, Old Friends (`story/cargo3/friends.json`): five old friends, each with one thing a
+  ship needs: Korai's count for the needles, the Rockwarden cooperative's word (Eela's seam),
+  Kraal family papers (the seal is in the Mandate's yard), a debt the Rootstock owe (Meza Voce's
+  crates past the company's guards), and the truth about the ship (CU-113, counting hulls in
+  the yard). Three end the chapter; Serac's men, a Rockwarden envoy and a time broker close in.
+  Chapter III is a frame still to be written.
 - Errands to the past: a name for level nine's plaque and the shape of Kren's samples (both
   from 2420), and the word for the Kraal vault (from 2460), carried in the captain's record
   (`game/record.py`).
@@ -58,7 +63,8 @@ it around: the captain begins on foot.
   kill.
 - What the game shows stays on screen until it is read: a turn's screen waits for Enter when
   the last thing shown was a message the player has not answered.
-- **Next:** chapter II (old friends, centuries on), fights on foot, and the ways to a first ship.
+- **Next:** chapter III, the ways to a first ship (the hull in the Mandate's yard, Serac's offer,
+  the Rockwarden envoy, the time broker), and the ship's own life after it.
 
 The plan (the shipless chapters, the ways to the first ship, fights on foot, investments
 matured from Cargo 2) is in the project's design document.
@@ -115,8 +121,8 @@ story/          the story: cargo3.story.json and the files in story/cargo3/, bui
 storykit/       the trilogy's story tools (format, validator, map), copied
 themes/         the game's own styles (CLIo theme files), beside CLIo's in kit/style/
 tools/          checks: smoke, bot, fuzzing, save round trips, hostile files, kit, story,
-                act 1, systems, the person, the able hand, the labour market, training,
-                fights on foot, convoy fights, sound
+                act 1, chapter II, systems, the person, the able hand, the labour market,
+                training, fights on foot, convoy fights, sound
 .github/        the release workflow: tag vX.Y.Z to build, release and push to itch.io
 ```
 

@@ -19,7 +19,7 @@
   },
   "serac": {"about": "unaged; asks after the captain at every hiring hall (he finds you first, in chapter III)"},
   "neon_sleeper": {"about": "sleeps at Delta between decades"},
-  "aela": {"about": "still digging for the Rockwardens, a century on"},
+  "aela": {"about": "still digging for the Rockwardens, a century on, in Gamma's deep levels", "route": {"places": ["Gamma"], "stay": 1}},
   "warp_singer": {
    "name": "Korai",
    "short": "Korai",

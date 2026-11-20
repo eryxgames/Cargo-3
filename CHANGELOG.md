@@ -60,6 +60,38 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
     record is known at once; a fresh one works the ring first. Adit asks you to ask: about your
     ship (its lists say it never came out of the needle, and Korai would know where needles
     go), about who else is alive, or for a shift beside it. Finding Adit ends chapter I.
+- **Chapter II, Old Friends** (`story/cargo3/friends.json`). The chapter ends when old friends
+  have given three of the five things a ship needs (the story's stat `ship_needs`); it used to
+  end at 80 plot points. A thought for each points the way.
+  - **A navigator's key**: Korai, in the needle office's signal loft on her route, teaches the
+    count that tells a needle where to put a ship. An untried navigator learns how it goes; a
+    green one rides a needle with her and holds the count (and can ask where the ship went: a
+    ship without a file comes out late, and the Mandate tows those to Alpha). A captain who
+    learned needle-talk in 2460 sings her the verse.
+  - **Someone to vouch for you**: Eela digs at Gamma, and claim jumpers come for its seam. Stand
+    on the seam with it (a fight on foot, Eela at your side), or survey it as an able navigator;
+    the captain who made Eela a shareholder in 2420 is in the cooperative's book already. Then a
+    Rockwarden envoy writes: Stonewright is coming home.
+  - **Papers**: the Magister at the Kraal counting room at Delta can charter a family captain,
+    with the family seal. The seal is in a yacht in the Mandate's yard at Alpha: pay the guard
+    300, show him the Magister's letter as an able broker, or go over the fence at night past
+    the night watch. Or pay 2,500 and fill in the forms.
+  - **A debt called in**: Meza Voce, on her route between Beta and Gamma, wants twelve crates of
+    AGROBOT SPARES walked past the company's guards at Gamma's gallery gate (100 credits, an able
+    broker's manifest, or a fight). Family from 2420 or 2460 call the debt in at once; a captain
+    who sold her run to customs settles first, with 1,500 credits or with her androids. The
+    Rootstock will open a yard that asks no questions, once.
+  - **The truth about your ship**: in the Mandate's yard at Alpha, CU-113 counts the hulls. Take
+    its count for a shift (or spend the hour you gave it in 2420, or pay the machine you sold a
+    wage in advance) and it reads the nameless hull's keel log: the hull is yours. It came out of
+    a needle last year, tumbling and empty; somebody cut out its name before the Mandate found it.
+  - **Closing in**: with two things in hand, two men in grey wait at the bunk: Serac can have the
+    ship released, for an errand. Hear them out, or say no and see what they do about it (a
+    colonel of his says no politely). A Chronos Corporation clerk brings word that something of
+    the captain's has matured. Two new roles: the Rockwarden Envoy and the Chronos clerk.
+  - Measured with the curious bot: chapter I ends at turn 8 to 18, chapter II at 44 to 62 (it
+    ended at 50 to 70 on plot points); by turn 300 it has four or five of the five. Checks:
+    `tools/friends.py` plays every way to each, at 36 columns.
 - **Errands to the past** (`story/cargo3/errands.json`). The captain's record now carries the
   captain's history (`game/record.py`, copied from the Cargo repository, as in Cargo 1 1.3.0 and
   Cargo 2 2.3.0): the same id and log from part to part, the captain's own time, the line of
@@ -145,6 +177,7 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
   - The story starts fights with `brawl <foe>` (and `edge <n>` for allies) and reads
     `fight_<won|talked|ran|paid|lost>_<foe>`, and the stats `brawls`, `brawls.won`,
     `brawls.lost` and `armed`.
+  - The yard's night watch at Alpha joins the foes, for chapter II.
   - Measured with the bot over 250 turns (16 games): 9 to 18 fights, settled about evenly by
     beating them, talking and paying; no deaths; a saving hand ends with 24,000 to 28,000
     credits (29,000 to 32,000 before), a spending one with 6,000 to 12,000. Checks:

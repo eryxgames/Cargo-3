@@ -75,6 +75,14 @@ FOES = {
         "saved": "The stevedores drag you out from under it and someone finds the power coupling.",
         "kill": "The agrobot stacks you with the rest of the load.",
     },
+    "yard_guards": {
+        "name": "the yard's night watch", "marks": 2, "skill": 2, "harm": (8, 14), "talk": 0.4, "talk_skill": "broker",
+        "robs": 0, "fine": 150, "carry": True, "loot": (0, 0), "plot": 1,
+        "start": ["Torches come on along the fence: the impound yard's night watch, two of them, with stun batons."],
+        "won": "The night watch sits down in the dust between two hulls and decides it saw nothing.",
+        "talked": "You show the night watch a letter on good paper. Neither of them can read it, and both of them nod.",
+        "carried": "You wake up in the yard's guardhouse. The Mandate fines trespassers by the hour.",
+    },
     "pickets": {
         "name": "the picket line", "marks": 2, "skill": 1, "harm": (6, 12), "talk": 0.5, "robs": 0, "loot": (0, 0),
         "start": ["The pickets close the gate on you, arms linked."],

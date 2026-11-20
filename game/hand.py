@@ -40,6 +40,9 @@ SITES = [
      "jobs": [("mechanic", "agrobot tender", 75), ("steward", "shift steward", 70)]},
 ]
 FIRST_SHIFT_POINTS = 2      # plot points for the first shift at each kind of site
+# What a ship needs, from the old friends of chapter II (story/cargo3/friends.json): three of these
+# end the chapter (the story's stat ship_needs)
+SHIP_NEEDS = ("navigator_key", "vouched_for", "papers_in_order", "debt_called_in", "ship_truth")
 
 # What a shift can bring, by skill: good (more pay, more practice), fair, or bad (less pay,
 # maybe a wound)

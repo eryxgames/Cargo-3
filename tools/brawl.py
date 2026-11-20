@@ -263,7 +263,7 @@ def choices(game):
 game, io = fresh("Beta")
 game.trouble_chance = lambda: 1.0
 game.trouble_foes = lambda: [("pickpockets", 1)]
-scripted(game, ["talk"] * 5)
+scripted(game, ["talk"] * 4 + ["pay"])
 asked = choices(game)
 with headless.quiet():
     game.play_hand_turn()
@@ -320,7 +320,7 @@ with headless.quiet() as out:
 expect(game.brawls and any(k.endswith("_pickets") for k, v in game.story_manager.story_states.items() if v),
        "a crossed picket line that goes wrong: a fight at the gate")
 game, io = fresh()
-scripted(game, ["talk"] * 3 + ["run"] * 6)
+scripted(game, ["pay"])
 with headless.quiet():
     story.story_hook(game, "brawl dock_tough")
 expect(game.brawls, "the story can start a fight on foot ('brawl <foe>')")

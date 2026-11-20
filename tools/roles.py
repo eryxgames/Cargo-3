@@ -56,7 +56,8 @@ def sights(game, place=None):
 roles = [cid for cid, info in chars.items() if info.get("anonymous") or info.get("group")]
 expect(sorted(roles) == sorted(["perimeter_guard", "medic", "cybersurgeon", "battle_engineer", "armored_commander",
                                 "infantry_squad", "heavy_infantry_commander", "needle_clerk", "store_cashier",
-                                "hansa_auditor", "tail_gunner", "rockwarden_prospector"]), "twelve roles: %s" % roles)
+                                "hansa_auditor", "tail_gunner", "rockwarden_prospector",
+                                "rockwarden_envoy", "chronos_clerk"]), "fourteen roles (two in chapter II): %s" % roles)
 expect(all(not chars[cid].get("short") for cid in roles) and chars["infantry_squad"].get("group"),
        "roles have no short names, and the squad is a group")
 expect(chars["gabion"].get("was") == "battle_engineer", "Gabion is the battle engineer, once named")

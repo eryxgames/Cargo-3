@@ -1040,6 +1040,8 @@ if g is not None and g.ship is None:          # still on foot (Cargo 3)
         "plot_points": sm.plot_points, "wounds": g.person.wounds, "skills": dict(g.person.skills),
         "implants": dict(getattr(g.person, "implants", {})), "lessons": dict(getattr(g, "lessons", {})),
         "brawls": dict(getattr(g, "brawls", {}) or {}), "gear": list(g.person.gear),
+        "ship_needs": [f for f in cargo.SHIP_NEEDS if sm.story_states.get(f)],
+        "closing": [f for f in ("serac_offer", "serac_refused", "envoy_heard", "broker_card") if sm.story_states.get(f)],
         "voyages": getattr(g, "voyages", 0), "shifts": dict(getattr(g, "shifts", {})),
         "locker_profit": getattr(g, "locker_profit", 0), "regard": dict(getattr(g, "hand_regard", {})),
         "hand": dict(bot.hand_log), "known": len(g.known_locations), "here": g.current_location.name,
