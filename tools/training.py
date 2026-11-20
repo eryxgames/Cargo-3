@@ -150,7 +150,7 @@ if "--quick" not in sys.argv:
         runs = []
         for seed in (1, 2):
             out = subprocess.run([sys.executable, os.path.join(HERE, "bot.py"), os.path.join(os.path.dirname(HERE), "game", "world.py"),
-                                  "trade", str(seed), "120", "--curious"] + ([mode] if mode else []),
+                                  "trade", str(seed), "120", "--curious", "--ashore"] + ([mode] if mode else []),
                                  capture_output=True, text=True, timeout=900, env=dict(os.environ, CARGO_SOUND="0"))
             runs.append(json.loads(out.stdout.strip().splitlines()[-1]))
         results[mode or "spend"] = runs

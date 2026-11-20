@@ -744,7 +744,7 @@
    "act": 2,
    "who": ["serac"],
    "chance": 0.3,
-   "requires": {"chapter": "ch2", "ship_needs": 2, "not_flag": "serac_answered"},
+   "requires": {"ship_needs": 2, "not_flag": "serac_answered", "afloat": {"max": 0}},
    "text": "Two men in grey are waiting at your bunk, sitting on it. '{serac} sends his regards,' says one. 'He has been patient. He knows where your ship is, and so do you, now. He can have it released from the yard. He would want an errand run, of course.'",
    "variants": [
     {
@@ -823,7 +823,7 @@
    "act": 2,
    "who": ["chronos_clerk"],
    "chance": 0.25,
-   "requires": {"chapter": "ch2", "ship_needs": 1, "not_flag": "broker_card"},
+   "requires": {"ship_needs": 1, "not_flag": "broker_card", "afloat": {"max": 0}},
    "effects": {"set": "broker_card", "plot_points": 2},
    "text": "At the hiring hall a {chronos_clerk} in a suit too good for the docks hands you a card with an hourglass on it. 'Something of yours has matured,' she says. 'A great-aunt's implant bonds, bought the year you were born. Interest is a kind of time travel. When you want it, ask for me at any Hansa office.'",
    "variants": [

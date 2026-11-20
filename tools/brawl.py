@@ -360,7 +360,7 @@ if "--quick" not in sys.argv:
     runs = []
     for seed in (1, 2, 3):
         out = subprocess.run([sys.executable, os.path.join(HERE, "bot.py"), os.path.join(os.path.dirname(HERE), "game", "world.py"),
-                              "trade", str(seed), "150", "--curious"],
+                              "trade", str(seed), "150", "--curious", "--ashore"],
                              capture_output=True, text=True, timeout=900, env=dict(os.environ, CARGO_SOUND="0"))
         runs.append(json.loads(out.stdout.strip().splitlines()[-1]))
     fights = [sum(r.get("brawls", {}).values()) for r in runs]

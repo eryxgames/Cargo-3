@@ -1,0 +1,508 @@
+{
+ "format": "storykit",
+ "version": 1,
+ "about": "Chapter III, A Bridge Again (2533): the captain's ship is the nameless hull in the Mandate's yard at Alpha. Getting it out, by the way the earlier chapters opened (Serac, the Rockwarden envoy, the time broker, the salvage court, the Rootstock's gate at night, the auction), and the first run that way's price sends the ship on. Every run ends at Scholz's Star, where the heading begins.",
+ "arcs": {"ship3": {"title": "A ship again", "order": 8}},
+ "characters": {
+  "maret": {
+   "name": "Maret Rockwarden",
+   "short": "Maret",
+   "kind": "human",
+   "about": "commands Stonewright, home after a century under sublight; Anselm's granddaughter, born on the way out"
+  },
+  "anselm": {"about": "took Stonewright out under sublight in 2420; his granddaughter brings it home"}
+ },
+ "flags": {
+  "way_serac": {"about": "Serac had the ship released, for an errand"},
+  "way_envoy": {"about": "the Rockwarden family bought the ship at auction and refitted it"},
+  "way_broker": {"about": "a time broker's matured money paid the release fee"},
+  "way_court": {"about": "the salvage court gave the ship back"},
+  "way_night": {"about": "the captain took the ship out of the yard at night"},
+  "way_auction": {"about": "the captain bought the ship back at auction"},
+  "night_tried": {"about": "a night at the yard's gate, until it is settled"},
+  "mandate_wants_it": {"about": "the Mandate has the ship on a list"},
+  "run_serac": {"about": "the first run: Serac's sealed container to Scholz's Star"},
+  "run_envoy": {"about": "the first run: stores for Stonewright at Scholz's Star"},
+  "run_own": {"about": "the first run: the captain's own, to Scholz's Star"},
+  "first_run_done": {"about": "the first run is done: the heading begins at Scholz's Star"},
+  "serac_trusts": {"about": "the captain delivered Serac's container sealed"},
+  "opened_serac_box": {"about": "the captain opened Serac's container: a receiver tuned to the beacon"},
+  "stonewright_met": {"about": "the captain met Stonewright coming home"},
+  "reached_builder_site": {"about": "the captain found the segment in Scholz's Star's wake (chapter IV)"}
+ },
+ "nodes": {
+  "thought.ship_where": {
+   "kind": "thought",
+   "arc": "ship3",
+   "act": 3,
+   "requires": {"all": [{"chapter": "ch3", "not_flag": "ship_truth"}, {"afloat": {"max": 0}}]},
+   "text": "Somewhere in the Mandate's impound yards is the ship that went into the needle with me. The machine that counts the hulls at Alpha would know which one."
+  },
+  "thought.ship_yard": {
+   "kind": "thought",
+   "arc": "ship3",
+   "act": 3,
+   "requires": {"all": [{"chapter": "ch3", "flag": "ship_truth"}, {"afloat": {"max": 0}}]},
+   "text": "My ship is in the Mandate's yard at Alpha, under new paint. The Mandate does not give hulls back. {serac} could make it, or the Rockwardens' money, or a time broker's, or a court, or an auction, or the Rootstock's gate at night."
+  },
+  "thought.scholz": {
+   "kind": "thought",
+   "arc": "ship3",
+   "act": 3,
+   "requires": {"any": [{"flag": "run_serac"}, {"flag": "run_envoy"}, {"flag": "run_own"}], "not_flag": "first_run_done"},
+   "text": "The first run goes to Scholz's Star: the garrison's outpost, DSO-Gamma."
+  },
+  "ship.yard": {
+   "kind": "sight",
+   "arc": "ship3",
+   "act": 3,
+   "where": "Alpha",
+   "who": ["perimeter_guard"],
+   "title": "Your ship, in the Mandate's yard",
+   "requires": {"all": [{"chapter": "ch3", "flag": "ship_truth"}, {"afloat": {"max": 0}}]},
+   "text": [
+    "It sits three rows in from the fence under Mandate grey, with a stencilled number where its name was: your hull, whatever the paint says. You know the dent by the cargo door. You put it there.",
+    "The release office's window says RELEASES: NONE. AUCTIONS: MONTHLY. The {perimeter_guard} has started nodding to you."
+   ],
+   "choices": [
+    {
+     "id": "serac",
+     "say": "Turn over {serac}'s card",
+     "requires": {"flag": "serac_offer"},
+     "effects": {"set": "way_serac"},
+     "next": ["ship.serac"]
+    },
+    {
+     "id": "envoy",
+     "say": "Write to the Rockwarden envoy",
+     "requires": {"flag": "envoy_heard"},
+     "effects": {"set": "way_envoy"},
+     "next": ["ship.envoy"]
+    },
+    {
+     "id": "broker",
+     "say": "Cash the matured money and pay the release fee: 6,000 of your own on top",
+     "requires": {"flag": "broker_card", "money": 6000, "not": {"player_origin": {}}},
+     "effects": {"money": -6000, "set": "way_broker"},
+     "next": ["ship.broker"]
+    },
+    {
+     "id": "account",
+     "say": "Cash the matured account and pay the release fee: 3,000 of your own on top",
+     "requires": {"flag": "broker_card", "money": 3000, "player_origin": {}},
+     "effects": {"money": -3000, "set": "way_broker"},
+     "next": ["ship.broker"]
+    },
+    {
+     "id": "court",
+     "say": "Claim it in the salvage court with the Kraal papers, the keel log and the cooperative's word: 2,000 in fees",
+     "requires": {"flag": ["papers_in_order", "vouched_for"], "money": 2000},
+     "effects": {"money": -2000, "set": "way_court"},
+     "next": ["ship.court"]
+    },
+    {
+     "id": "advocate",
+     "say": "Claim it in the salvage court with the Kraal papers, the keel log and an advocate: 4,000",
+     "requires": {"flag": "papers_in_order", "not_flag": "vouched_for", "money": 4000},
+     "effects": {"money": -4000, "set": "way_court"},
+     "next": ["ship.court"]
+    },
+    {
+     "id": "night",
+     "say": "Take it out at night: the Rootstock open the gate, and {warp_singer}'s count takes it through a needle with no file",
+     "requires": {"flag": ["debt_called_in", "navigator_key"]},
+     "effects": {
+      "clear": ["fight_won_yard_guards", "fight_talked_yard_guards", "fight_ran_yard_guards"],
+      "code": "brawl yard_guards",
+      "set": "night_tried"
+     },
+     "next": ["ship.night", "ship.night_caught"]
+    },
+    {
+     "id": "auction",
+     "say": "Bid for it at the monthly auction: 25,000",
+     "requires": {"money": 25000},
+     "effects": {"money": -25000, "set": "way_auction"},
+     "next": ["ship.auction"]
+    },
+    {"id": "leave", "say": "Not yet"}
+   ]
+  },
+  "ship.serac": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "who": ["serac"],
+   "requires": {"flag": "way_serac"},
+   "effects": {"code": "ship 0", "money": 3000, "plot_points": 10},
+   "text": [
+    "{serac} comes to the yard himself, in a coat the colour of the hulls. He has not aged a day. The release paper is already signed; he hands it to you as if you had dropped it.",
+    "'One errand,' he says. 'A container, sealed, to the garrison at Scholz's Star. You will not open it. And the Mandate will know where you are, every jump. It would anyway. This way it is polite about it.' He adds three thousand for expenses, which you will not account for."
+   ],
+   "variants": [
+    {
+     "requires": {"any": [{"player_origin": {"flag": "took_the_commission"}}, {"past": {"flag": "took_the_commission"}}]},
+     "text": [
+      "{serac} comes to the yard himself. He has not aged a day since he pinned your commission on. 'Colonel,' he says, and hands you the release paper, already signed.",
+      "'One errand. A container, sealed, to the garrison at Scholz's Star. You will not open it. The Mandate will know where you are, every jump, as it always has.'"
+     ]
+    },
+    {
+     "requires": {"any": [{"player_origin": {"flag": "defied_serac"}}, {"past": {"flag": "defied_serac"}}]},
+     "text": [
+      "{serac} comes to the yard himself. He has not aged a day since you told him no, and he remembers it to the day. The release paper is signed. He holds it a moment longer than he needs to.",
+      "'One errand,' he says. 'A container, sealed, to the garrison at Scholz's Star. You will not open it. Consider it interest.'"
+     ]
+    }
+   ],
+   "choices": [
+    {
+     "id": "name1",
+     "say": "Call it Late Arrival",
+     "effects": {"code": "rename Late Arrival"},
+     "next": ["ship.run_serac"]
+    },
+    {
+     "id": "name2",
+     "say": "Call it Second Chance",
+     "effects": {"code": "rename Second Chance"},
+     "next": ["ship.run_serac"]
+    },
+    {"id": "nameless", "say": "Leave it Nameless, as it came out of the yard", "next": ["ship.run_serac"]}
+   ]
+  },
+  "ship.envoy": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "who": ["rockwarden_envoy"],
+   "requires": {"flag": "way_envoy"},
+   "effects": {"code": "ship 1", "money": 4000, "plot_points": 10},
+   "text": [
+    "The {rockwarden_envoy} buys your hull at the Mandate's monthly auction, outbidding two scrap dealers without looking up, and the family's yard at Alpha has Ironback plating on it in a week. 'The cooperative vouched for you,' the envoy says. 'The family is the cooperative's creditor. It comes to the same.'",
+    "'Stonewright is coming home after a century under sublight. Its first port is the garrison at Scholz's Star. The family wants someone it trusts there when it docks, with what a crew needs after a century.' The family advances four thousand against the run."
+   ],
+   "choices": [
+    {
+     "id": "name1",
+     "say": "Call it Late Arrival",
+     "effects": {"code": "rename Late Arrival"},
+     "next": ["ship.run_envoy"]
+    },
+    {
+     "id": "name2",
+     "say": "Call it Second Chance",
+     "effects": {"code": "rename Second Chance"},
+     "next": ["ship.run_envoy"]
+    },
+    {"id": "nameless", "say": "Leave it Nameless, as it came out of the yard", "next": ["ship.run_envoy"]}
+   ]
+  },
+  "ship.broker": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "who": ["chronos_clerk"],
+   "requires": {"flag": "way_broker"},
+   "effects": {"code": "ship 0", "money": 2000, "plot_points": 10},
+   "text": "The {chronos_clerk} pays the Mandate's release fee in Hansa Thaler bars, which the release office has to look up. 'A great-aunt's implant bonds,' she says. 'Interest is a kind of time travel. It never asks where you have been.' No strings, no errand: the hull is yours, and two thousand of interest on the interest.",
+   "variants": [
+    {
+     "requires": {"player_origin": {}},
+     "text": "The {chronos_clerk} pays the Mandate's release fee in Hansa Thaler bars, which the release office has to look up. 'An account in your name, a century old,' she says. 'Some of it boomed and some of it died in the Debacle. It comes to a ship, and two thousand over.' No strings, no errand: the hull is yours."
+    }
+   ],
+   "choices": [
+    {
+     "id": "name1",
+     "say": "Call it Late Arrival",
+     "effects": {"code": "rename Late Arrival"},
+     "next": ["ship.run_own"]
+    },
+    {
+     "id": "name2",
+     "say": "Call it Second Chance",
+     "effects": {"code": "rename Second Chance"},
+     "next": ["ship.run_own"]
+    },
+    {"id": "nameless", "say": "Leave it Nameless, as it came out of the yard", "next": ["ship.run_own"]}
+   ]
+  },
+  "ship.court": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "requires": {"flag": "way_court"},
+   "effects": {"code": "ship 0", "money": 3000, "plot_points": 10},
+   "text": "The salvage court sits for an afternoon in a room that smells of the last century's coffee. The Kraal charter says you may command a ship; the keel log, read into the record by a machine nobody thought to object to, says this one was yours. The Mandate's officer objects to everything, beautifully. The court finds for the claimant, and orders the Mandate to pay back the storage it charged you: three thousand.",
+   "variants": [
+    {
+     "requires": {"flag": "vouched_for"},
+     "text": "The salvage court sits for an afternoon. The Kraal charter says you may command a ship; the keel log, read into the record by a machine nobody thought to object to, says this one was yours; a prospector in a cooperative jacket says the cooperative vouches for you, and the Mandate's officer stops objecting. The court finds for the claimant, and orders the Mandate to pay back the storage it charged you: three thousand."
+    }
+   ],
+   "choices": [
+    {
+     "id": "name1",
+     "say": "Call it Late Arrival",
+     "effects": {"code": "rename Late Arrival"},
+     "next": ["ship.run_own"]
+    },
+    {
+     "id": "name2",
+     "say": "Call it Second Chance",
+     "effects": {"code": "rename Second Chance"},
+     "next": ["ship.run_own"]
+    },
+    {"id": "nameless", "say": "Leave it Nameless, as it came out of the yard", "next": ["ship.run_own"]}
+   ]
+  },
+  "ship.night": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "who": ["meza_voce", "warp_singer"],
+   "requires": {
+    "all": [
+     {"flag": "night_tried"},
+     {
+      "any": [{"flag": "fight_won_yard_guards"}, {"flag": "fight_talked_yard_guards"}, {"flag": "fight_ran_yard_guards"}]
+     },
+     {"afloat": {"max": 0}}
+    ]
+   },
+   "effects": {
+    "code": "ship 0",
+    "set": ["way_night", "mandate_wants_it"],
+    "clear": "night_tried",
+    "money": 1000,
+    "cargo.agri": 150,
+    "plot_points": 10
+   },
+   "text": [
+    "The Rootstock's androids open the gate with a code nobody should have, and you walk your own ship out of the yard on its manoeuvring jets, with no lights.",
+    "Out past Alpha's buoy, a needle is forming. You hold {warp_singer}'s count through the jump, eleven beats and a held one, then nine, and the needle takes a ship with no file and puts it where you asked. By morning the Mandate has your hull on a list. It does not have its name. In the hold: a hundred and fifty units of the Rootstock's seed stock, and a thousand credits in an envelope marked A START."
+   ],
+   "choices": [
+    {
+     "id": "name1",
+     "say": "Call it Late Arrival",
+     "effects": {"code": "rename Late Arrival"},
+     "next": ["ship.run_own"]
+    },
+    {
+     "id": "name2",
+     "say": "Call it Second Chance",
+     "effects": {"code": "rename Second Chance"},
+     "next": ["ship.run_own"]
+    },
+    {"id": "nameless", "say": "Leave it Nameless, as it came out of the yard", "next": ["ship.run_own"]}
+   ]
+  },
+  "ship.night_caught": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "repeat": true,
+   "requires": {
+    "all": [
+     {"flag": "night_tried"},
+     {
+      "not": {
+       "any": [{"flag": "fight_won_yard_guards"}, {"flag": "fight_talked_yard_guards"}, {"flag": "fight_ran_yard_guards"}]
+      }
+     }
+    ]
+   },
+   "effects": {"clear": "night_tried"},
+   "text": "The night watch walks you back out of the gate. Your hull stays where it is. The Rootstock's androids say nothing, which is how they say there will be another night."
+  },
+  "ship.auction": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "requires": {"flag": "way_auction"},
+   "effects": {"code": "ship 0", "plot_points": 10},
+   "text": "You bid against two scrap dealers and a man in grey who stops at twenty-four thousand, looks at you, and leaves. The auctioneer bangs a spanner on the desk. The release office stamps the paper without reading it. The hull is yours, and paid for.",
+   "choices": [
+    {
+     "id": "name1",
+     "say": "Call it Late Arrival",
+     "effects": {"code": "rename Late Arrival"},
+     "next": ["ship.run_own"]
+    },
+    {
+     "id": "name2",
+     "say": "Call it Second Chance",
+     "effects": {"code": "rename Second Chance"},
+     "next": ["ship.run_own"]
+    },
+    {"id": "nameless", "say": "Leave it Nameless, as it came out of the yard", "next": ["ship.run_own"]}
+   ]
+  },
+  "ship.run_serac": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "who": ["serac"],
+   "requires": {"flag": "way_serac"},
+   "effects": {"code": "stow 20 serac_container as a sealed Mandate container", "set": "run_serac", "reveal": "DSO-Gamma"},
+   "text": "Twenty units of your hold are a grey container with the Mandate's seal on every face. A technician fits a transponder under the console, and does not hide it. The garrison at Scholz's Star is waiting for you: DSO-Gamma is on your charts. {ship_name} is yours. Mostly."
+  },
+  "ship.run_envoy": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "who": ["rockwarden_envoy"],
+   "requires": {"flag": "way_envoy"},
+   "effects": {"code": "stow 40 stonewright_stores as stores for Stonewright's crew", "set": "run_envoy", "reveal": "DSO-Gamma"},
+   "text": "The family fills forty units of your hold with what a crew wants after a century under sublight: fresh fruit, news, and a crate of the coffee nobody drinks any more. Stonewright docks at Scholz's Star's garrison, DSO-Gamma, and {ship_name} is to be there first."
+  },
+  "ship.run_own": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "requires": {"any": [{"flag": "way_broker"}, {"flag": "way_court"}, {"flag": "way_night"}, {"flag": "way_auction"}]},
+   "effects": {"set": "run_own", "reveal": "DSO-Gamma"},
+   "text": "{ship_name} is yours, and nobody has a run for it. {ancient_scholar.short}'s notes, {warp_singer}'s needles and the old hands' talk all point the same way: Scholz's Star, where the Mandate's oldest garrison guards something in the ice. DSO-Gamma is on your charts.",
+   "variants": [
+    {
+     "requires": {
+      "any": [
+       {"player_origin": {"game": "cargo1", "ending": "discovery"}},
+       {"past": {"era": "cargo1", "ending": "discovery"}}
+      ]
+     },
+     "text": "{ship_name} is yours, and nobody has a run for it. You do, though. In 2420 you filed a course home from Scholz's Star, and nobody read it. The garrison at DSO-Gamma still has it on file. They have kept everything."
+    }
+   ]
+  },
+  "ship.scholz": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "requires": {
+    "all": [
+     {"at": "DSO-Gamma", "not_flag": "first_run_done"},
+     {"any": [{"flag": "run_serac"}, {"flag": "run_envoy"}, {"flag": "run_own"}]}
+    ]
+   },
+   "text": [
+    "The garrison at Scholz's Star is three domes and a mast on a rock at the edge of nothing. Its quartermaster is a Bushing, the third of that name, and the garrison still guards what the first one guarded: a grey layer in the ice, seventy thousand years down, and a heading.",
+    "'Every century somebody comes for it,' the quartermaster says. 'This century it's you.'"
+   ],
+   "variants": [
+    {
+     "requires": {"flag": "run_serac"},
+     "text": [
+      "The garrison at Scholz's Star is three domes and a mast on a rock at the edge of nothing. The quartermaster, a Bushing, the third of that name, comes to sign for {serac}'s container.",
+      "The garrison still guards what the first Bushing guarded: a grey layer in the ice, seventy thousand years down, and a heading."
+     ]
+    },
+    {
+     "requires": {"flag": "run_envoy"},
+     "text": "The garrison at Scholz's Star is three domes and a mast on a rock at the edge of nothing. On its approach radar, something big is coming in from the dark on a sublight burn, a century late."
+    }
+   ],
+   "choices": [
+    {
+     "id": "sealed",
+     "say": "Hand over the container, sealed",
+     "requires": {"flag": "run_serac"},
+     "effects": {
+      "code": "unstow serac_container",
+      "set": ["first_run_done", "serac_trusts"],
+      "money": 6000,
+      "plot_points": 15,
+      "reveal": "Builder Site"
+     },
+     "next": ["ship.heading"]
+    },
+    {
+     "id": "open",
+     "say": "Open it first",
+     "requires": {"flag": "run_serac"},
+     "effects": {
+      "code": "unstow serac_container",
+      "set": ["first_run_done", "opened_serac_box"],
+      "plot_points": 15,
+      "reveal": "Builder Site"
+     },
+     "next": ["ship.serac_box", "ship.heading"]
+    },
+    {
+     "id": "stores",
+     "say": "Wait for it at the dock with the stores",
+     "requires": {"flag": "run_envoy"},
+     "effects": {
+      "code": "unstow stonewright_stores",
+      "set": ["first_run_done", "stonewright_met"],
+      "money": 4000,
+      "plot_points": 15,
+      "reveal": "Builder Site"
+     },
+     "next": ["ship.stonewright", "ship.heading"]
+    },
+    {
+     "id": "heading",
+     "say": "Ask for the heading",
+     "requires": {"flag": "run_own"},
+     "effects": {"set": "first_run_done", "plot_points": 15, "reveal": "Builder Site"},
+     "next": ["ship.heading"]
+    }
+   ]
+  },
+  "ship.stonewright": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "who": ["maret", "anselm"],
+   "requires": {"flag": "stonewright_met"},
+   "pays": ["the_stonewright"],
+   "text": [
+    "Stonewright docks beside {ship_name}, scarred like a riverbed, a century after {anselm} took it out under sublight. In command is {maret}, his granddaughter, who was born on the way out and has never stood on a planet. She stands on this one carefully.",
+    "She takes the coffee first. 'We found it,' she says, before anything else. 'In Scholz's Star's wake. Something still sending, and pointing at nothing.' The family pays the rest of the run: four thousand."
+   ]
+  },
+  "ship.serac_box": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "who": ["serac"],
+   "requires": {"flag": "opened_serac_box"},
+   "text": "Inside, packed in grey foam: a receiver tuned to a single frequency, and nothing else. The frequency of whatever is sending in Scholz's Star's wake. {serac} wants it too. He will know you looked: the seal reports itself."
+  },
+  "ship.heading": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 3,
+   "requires": {"flag": "first_run_done"},
+   "variants": [
+    {
+     "requires": {"flag": "serac_trusts"},
+     "text": "The heading goes into {ship_name}'s navigator: out along Scholz's Star's wake, to whatever is still sending there. {serac}'s transponder blinks under the console, pleased with you, and six thousand are in your account before you undock. The Builder Site is on your charts. Seventy thousand years ago a star took something from the ring. It may have left the receipt."
+    },
+    {
+     "requires": {"flag": "stonewright_met"},
+     "text": "The heading goes into {ship_name}'s navigator, and into Stonewright's: out along Scholz's Star's wake, to whatever is still sending there. {maret.short} says she will follow you, which from a Rockwarden is a compliment and a warning. The Builder Site is on your charts."
+    },
+    {
+     "requires": {"flag": "mandate_wants_it"},
+     "text": "The heading goes into {ship_name}'s navigator: out along Scholz's Star's wake, to whatever is still sending there. Somewhere behind you the Mandate is looking for a hull with no name. The Builder Site is on your charts, and nobody else's, for now."
+    }
+   ],
+   "text": "The heading goes into {ship_name}'s navigator: out along Scholz's Star's wake, to whatever is still sending there. The Builder Site is on your charts. Seventy thousand years ago a star took something from the ring. It may have left the receipt."
+  },
+  "ship.builder_site": {
+   "kind": "event",
+   "arc": "ship3",
+   "act": 4,
+   "requires": {"at": "Builder Site", "flag": "first_run_done"},
+   "effects": {"set": "reached_builder_site", "plot_points": 15},
+   "text": [
+    "In Scholz's Star's wake, far past the last buoy, a grey curve of alloy the size of a moon hangs in the dark: the segment, seventy thousand years from home. A beacon on its rim is still sending, slow and patient.",
+    "It points at an empty patch of sky. {ship_name}'s navigator checks it three times. There is nothing there. There is nothing there yet."
+   ]
+  }
+ }
+}

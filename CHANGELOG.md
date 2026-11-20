@@ -95,6 +95,40 @@ Cargo 3, the last part of the Cargo trilogy. Versions follow the game (`game/__i
   - Measured with the curious bot: chapter I ends at turn 8 to 18, chapter II at 44 to 62 (it
     ended at 50 to 70 on plot points); by turn 300 it has four or five of the five. Checks:
     `tools/friends.py` plays every way to each, at 36 columns.
+- **Chapter III, A Bridge Again** (`story/cargo3/ship.json`). The captain's ship is the nameless
+  hull in the Mandate's yard at Alpha; the chapter is getting it out, and the first run that
+  way's price sends it on. In the yard, by what the earlier chapters opened:
+  - **Serac** has it released, in person, unaged: 3,000 for expenses, a sealed Mandate container
+    for the garrison at Scholz's Star, and a transponder under the console (a colonel of his, or
+    a captain who once said no, hears it differently);
+  - **the Rockwarden envoy** buys it at auction and plates it as an Ironback, advances 4,000, and
+    sends stores for Stonewright, coming home after a century under sublight;
+  - **the time broker's clerk** pays the release fee with matured money (6,000 of your own on top
+    for a fresh captain's great-aunt's bonds, 3,000 for an old account), 2,000 back; no strings;
+  - **the salvage court**, with the Kraal papers and CU-113's keel log, and the cooperative's word
+    (2,000) or an advocate (4,000); the Mandate pays back 3,000 of storage;
+  - **at night**: the Rootstock open the gate, Korai's count takes the ship through a needle with
+    no file, if you get past the night watch (a fight on foot; caught, try another night); the
+    Rootstock leave seed stock and 1,000 in the hold, and the Mandate has the hull on a list;
+  - **the auction**: 25,000.
+  The ship is named (Late Arrival, Second Chance, or Nameless, as it came out of the yard;
+  `{ship_name}` in the story) and the turn is a captain's from then on. Every way leaves working
+  capital, so nobody starts afloat broke.
+  - **The first run** ends at Scholz's Star's garrison (DSO-Gamma), where a Bushing, the third of
+    that name, still guards the grey layer in the ice and a heading: Serac's container delivered
+    sealed (6,000) or opened (a receiver tuned to the beacon, and Serac will know); Stonewright
+    docking with Maret Rockwarden, Anselm's granddaughter, in command (the saga's promise
+    `the_stonewright`, paid; 4,000); or your own run (a Cargo 1 captain who filed the course
+    home in 2420 finds it still on file).
+  - **Chapter IV, The Heading**, begins: fly to the Builder Site in Scholz's Star's wake, where
+    the segment hangs with its beacon pointing at an empty patch of sky. The story stops there
+    for now.
+  - New story hooks: `ship <hull>` and `rename <words>`; effects after a `ship` code in the same
+    scene see the ship. Serac's men and the broker's clerk keep coming until the ship is out.
+  - Measured with the curious bot (8 games of 400 turns): the ship comes at turn 76 to 222
+    (mostly by the envoy or Serac), chapter III ends at 94 to 244, the Builder Site is reached at
+    97 to 295, and no captain went bankrupt on the way. `tools/ship.py` plays every way, run and
+    ending at 36 columns; the bot's hand measurements keep it ashore (`--ashore`).
 - **Errands to the past** (`story/cargo3/errands.json`). The captain's record now carries the
   captain's history (`game/record.py`, copied from the Cargo repository, as in Cargo 1 1.3.0 and
   Cargo 2 2.3.0): the same id and log from part to part, the captain's own time, the line of

@@ -41,7 +41,11 @@ it around: the captain begins on foot.
   Kraal family papers (the seal is in the Mandate's yard), a debt the Rootstock owe (Meza Voce's
   crates past the company's guards), and the truth about the ship (CU-113, counting hulls in
   the yard). Three end the chapter; Serac's men, a Rockwarden envoy and a time broker close in.
-  Chapter III is a frame still to be written.
+- Chapter III, A Bridge Again (`story/cargo3/ship.json`): the nameless hull in the Mandate's yard
+  is the captain's ship. Get it out by Serac's favour, the Rockwardens' money, a time broker's,
+  the salvage court, the auction or the Rootstock's gate at night; name it; fly the first run
+  to Scholz's Star, where Stonewright comes home. Chapter IV, The Heading, begins at the Builder
+  Site and is still to be written.
 - Errands to the past: a name for level nine's plaque and the shape of Kren's samples (both
   from 2420), and the word for the Kraal vault (from 2460), carried in the captain's record
   (`game/record.py`).
@@ -63,8 +67,8 @@ it around: the captain begins on foot.
   kill.
 - What the game shows stays on screen until it is read: a turn's screen waits for Enter when
   the last thing shown was a message the player has not answered.
-- **Next:** chapter III, the ways to a first ship (the hull in the Mandate's yard, Serac's offer,
-  the Rockwarden envoy, the time broker), and the ship's own life after it.
+- **Next:** chapter IV, The Heading (the segment at the Builder Site, and what its beacon points
+  at), and the economy afloat, which still makes a captain rich quickly.
 
 The plan (the shipless chapters, the ways to the first ship, fights on foot, investments
 matured from Cargo 2) is in the project's design document.
@@ -121,7 +125,7 @@ story/          the story: cargo3.story.json and the files in story/cargo3/, bui
 storykit/       the trilogy's story tools (format, validator, map), copied
 themes/         the game's own styles (CLIo theme files), beside CLIo's in kit/style/
 tools/          checks: smoke, bot, fuzzing, save round trips, hostile files, kit, story,
-                act 1, chapter II, systems, the person, the able hand, the labour market,
+                act 1, chapters II and III, systems, the person, the able hand, the labour market,
                 training, fights on foot, convoy fights, sound
 .github/        the release workflow: tag vX.Y.Z to build, release and push to itch.io
 ```

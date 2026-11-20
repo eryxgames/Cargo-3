@@ -1,7 +1,7 @@
 {
  "format": "storykit",
  "version": 1,
- "about": "Cargo 3's frame: chapters, milestones and endings, with their conditions (the game builds its chapters from these). A chapter's \"requires\" opens it and must still hold for it to end, with its milestones. Chapter I is written (act1.json), and chapter II (friends.json); chapter III keeps a placeholder until its story is.",
+ "about": "Cargo 3's frame: chapters, milestones and endings, with their conditions (the game builds its chapters from these). A chapter's \"requires\" opens it and must still hold for it to end, with its milestones. Chapters I to III are written (act1.json, friends.json, ship.json); chapter IV keeps a placeholder until its story is.",
  "nodes": {
   "ch1": {
    "kind": "chapter",
@@ -63,14 +63,61 @@
    "act": 3,
    "title": "A Bridge Again",
    "text": [
-    "Someone has found you, and they have a ship and a job that nobody else will take."
+    "Your ship is in one of the Mandate's impound yards, under new paint and no name. The Mandate does not give hulls back. Somebody will have to make it, or you will."
    ],
    "requires": {
     "done": [
      "ch2"
     ]
    },
+   "next": [
+    "ch4"
+   ]
+  },
+  "ch3.ship": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch3",
+   "title": "A ship again",
+   "text": "Get your ship out of the Mandate's yard: by {serac}'s favour, the Rockwardens' money, a time broker's, the salvage court, the auction, or the Rootstock's gate at night.",
+   "requires": {
+    "afloat": 1
+   }
+  },
+  "ch3.run": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch3",
+   "title": "The first run",
+   "text": "Fly the first run, wherever the ship's price sends you. Every way points at Scholz's Star.",
+   "requires": {
+    "flag": "first_run_done"
+   }
+  },
+  "ch4": {
+   "kind": "chapter",
+   "arc": "main",
+   "act": 4,
+   "title": "The Heading",
+   "text": [
+    "Seventy thousand years ago Scholz's Star took a segment of the ring. In its wake something is still sending, and pointing at an empty patch of sky."
+   ],
+   "requires": {
+    "done": [
+     "ch3"
+    ]
+   },
    "next": []
+  },
+  "ch4.site": {
+   "kind": "milestone",
+   "arc": "main",
+   "in": "ch4",
+   "title": "The segment",
+   "text": "Fly the heading to the Builder Site, in Scholz's Star's wake. (Chapter IV is still being written: the story stops there for now.)",
+   "requires": {
+    "flag": "reached_builder_site"
+   }
   }
  }
 }

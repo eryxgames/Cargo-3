@@ -256,6 +256,7 @@ class StoryRuntime:
             "research_points": game.person.research_points,
             "discoveries": len(game.discovered_locations),
             "place": game.current_location.name, "turn": game.turn,
+            "ship_name": getattr(game.ship, "name", None) or "your ship",
             "labour_news": game.labour_news_line(),
         }
         records = {"visitor": visitor, "origin": origin}
@@ -404,9 +405,9 @@ class StoryRuntime:
         ship can take (crew, cargo, passenger reputation, guns) waits for nobody when there is
         no ship: it is noted in `shipless` for the checks, and nothing happens."""
         game = self.game
-        ship = game.ship
         person = game.person
         for key, value in (effects or {}).items():
+            ship = game.ship                # a 'ship' code earlier in these effects gives one
             if ship is None and (key in SHIP_EFFECTS or key.startswith("cargo.") or (
                     key == "give" and isinstance(value, dict) and "crew" in value)):
                 self.note_shipless(key)
@@ -637,7 +638,8 @@ STORY_HOOKS = {
 def story_hook(game, value):
     """Game code a story effect names: a hook above, or one of these phrases:
     'fight <enemy>' (no paying or talking your way out), 'fight <enemy> edge <n>' (with allies),
-    'brawl <foe>' and 'brawl <foe> edge <n>' (a fight on foot, game/brawl.py),
+    'brawl <foe>' and 'brawl <foe> edge <n>' (a fight on foot, game/brawl.py), 'ship <hull>' (the
+    captain has a ship again, named Nameless), 'rename <words>' (the ship's name; {ship_name}),
     'crew joins <role>', 'repair <points>', 'damage <points>', 'lose money <share> min <amount>',
     'stow <units> <name> as <words>' (special cargo takes hold room until 'unstow <name>'; the
     words name it on screen and in the journal), 'profit <credits>' (paid, and counted as trade profit),
@@ -657,6 +659,15 @@ def story_hook(game, value):
     person = game.person
     if ship is None and words and (words[0] in SHIP_HOOKS or words[:2] in (["crew", "joins"], ["crew", "leaves"])):
         game.story.note_shipless(" ".join(words[:2]))
+        return None
+    if len(words) == 2 and words[0] == "ship" and words[1].isdigit():
+        # a ship again (chapter III, story/cargo3/ship.json): from the next turn the turn is a captain's
+        if ship is None:
+            game.give_ship(hull=int(words[1]), name="Nameless")
+        return None
+    if len(words) >= 2 and words[0] == "rename":
+        if ship is not None:
+            ship.name = " ".join(words[1:])
         return None
     if len(words) in (2, 4) and words[0] == "brawl" and words[1] in FOES:
         # a fight on foot (game/brawl.py); it sets fight_<outcome>_<foe> for the story

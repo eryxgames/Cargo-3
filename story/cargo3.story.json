@@ -27,7 +27,8 @@
   "origin.game",
   "origin.ending",
   "origin.turns",
-  "labour_news"
+  "labour_news",
+  "ship_name"
  ],
  "include": [
   "cargo3/places.json",
@@ -36,6 +37,7 @@
   "cargo3/errands.json",
   "cargo3/roles.json",
   "cargo3/friends.json",
+  "cargo3/ship.json",
   "cargo3/main.json"
  ],
  "stats": {

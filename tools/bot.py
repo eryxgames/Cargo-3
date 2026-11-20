@@ -31,6 +31,7 @@ DIFFICULTY = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--diffi
 # turns until the story gives a ship
 AFLOAT = "--afloat" in sys.argv
 NO_SPENDING = "--no-spending" in sys.argv
+ASHORE = "--ashore" in sys.argv         # Cargo 3: never get the ship out of the yard (to measure a hand's life)
 # --curious: look around at every dock and follow what turns up (people, sights, side quests);
 # without it the bot never looks, and the result still says whom it shared a dock with
 CURIOUS = "--curious" in sys.argv or "--leads" in sys.argv
@@ -204,14 +205,14 @@ class Bot:
         """The sight a curious captain looks at: one with a step forward, else one not seen yet."""
         import game.story as gs
         nodes = gs.story_data()["nodes"]
-        sights = g.sights_here()
+        sights = [n if not (ASHORE and n == "ship.yard") else None for n in g.sights_here()]
         snap = g.story.snapshot()
         for i, nid in enumerate(sights):
-            if any(self.advances(g, c) and g.story.check(c.get("requires"), snap)
-                   for c in nodes[nid].get("choices") or []):
+            if nid and any(self.advances(g, c) and g.story.check(c.get("requires"), snap)
+                           for c in nodes[nid].get("choices") or []):
                 return str(i + 1)
         for i, nid in enumerate(sights):
-            if nid not in g.story.done:
+            if nid and nid not in g.story.done:
                 return str(i + 1)
         return None
 
@@ -1054,6 +1055,9 @@ elif g is not None:
     sm = g.story_manager
     result.update({
         "first_ship": bot.first_ship,
+        "way": [f[4:] for f in ("way_serac", "way_envoy", "way_broker", "way_court", "way_night", "way_auction")
+                if sm.story_states.get(f)],
+        "chapters_at": bot.docks["chapters"],
         "turn": g.turn, "chapter": sm.current_chapter, "completed": sorted(sm.completed_chapters),
         "ending": getattr(g, "ending_reached", None), "money": int(g.person.money),
         "modules": ["%s %d" % (m["kind"], m["condition"]) for m in getattr(g.ship, "modules", [])],
